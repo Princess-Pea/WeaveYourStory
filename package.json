@@ -16,17 +16,5 @@
     "cloud-deployment"
   ],
   "author": "PixelForge Team",
-  "license": "MIT",
-  "devDependencies": {
-    "live-server": "^1.2.2",
-    "serve": "^14.2.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/[your-team-name]/pixelforge.git"
-  },
-  "bugs": {
-    "url": "https://github.com/[your-team-name]/pixelforge/issues"
-  },
-  "homepage": "https://github.com/[your-team-name]/pixelforge#readme"
+  "license": "MIT"
 }

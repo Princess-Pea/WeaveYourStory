@@ -44,4 +44,23 @@ npm run dev
 
 ## 部署到魔搭创空间
 
-项目已配置 `modao.config.json`，支持部署到魔搭创空间。
+项目已配置支持部署到魔搭创空间，包含所需的 `app.py` 和 `Dockerfile` 文件。
+
+### 部署步骤
+
+1. 克隆项目空间：
+   ```bash
+   git lfs install
+   git clone http://oauth2:YOUR_TOKEN@www.modelscope.cn/studios/YOUR_USERNAME/YOUR_STUDIO_NAME.git
+   ```
+
+2. 复制项目文件到克隆的仓库
+
+3. 提交文件：
+   ```bash
+   git add app.py Dockerfile
+   git commit -m "Add application and Dockerfile"
+   git push
+   ```
+
+项目将会自动构建并部署到魔搭创空间。
