@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import datetime
@@ -6,7 +7,7 @@ from utils.ai_wrapper import start_async_ai_task, get_task_status, generate_id
 
 app = Flask(__name__)
 CORS(app) # 允许跨域请求
-app.config['SECRET_KEY'] = 'pixelforge_secret_key'
+app.config['SECRET_KEY'] = os.environ.get("PIXELFORGE_SECRET_KEY", "pixelforge_secret_key")
 
 # 模拟数据库存储
 projects = [

@@ -4,6 +4,6 @@ WORKDIR /home/user/app
 
 COPY ./ /home/user/app
 
-RUN pip install gradio pydantic
+RUN pip install gradio pydantic flask flask-cors pyjwt
 
 ENTRYPOINT ["python", "-u", "app.py"]
