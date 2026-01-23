@@ -4,39 +4,39 @@
 """
 import os
 import sys
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request, redirect, url_for
 from flask_cors import CORS
 
 # 添加backend目录到Python路径
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
 
-# 从backend导入Flask应用
+# 创建Flask应用
+app = Flask(__name__)
+CORS(app)
+
+# 从backend导入所有路由
 try:
-    from backend.app import app
-except ImportError:
-    print("警告: 无法导入backend.app，使用默认Flask应用")
-    app = Flask(__name__)
-    CORS(app)
-    
-    @app.route('/')
-    def home():
-        return "PixelForge 应用正在运行"
-    
-    @app.route('/health')
+    from backend.app import app as backend_app
+    # 将backend的路由规则复制到当前app
+    import backend.app
+    # 遍历backend应用的所有路由并添加到当前app
+    for rule in backend_app.url_map.iter_rules():
+        func = backend_app.view_functions[rule.endpoint]
+        app.add_url_rule(rule.rule, endpoint=rule.endpoint, view_func=func, methods=rule.methods)
+except ImportError as e:
+    print(f"警告: 无法导入backend.app: {e}")
+    # 定义一些基本的API路由以防导入失败
+    @app.route('/api/v1/health')
     def health():
         return {"status": "healthy", "service": "PixelForge"}
 
-# 配置静态文件服务，用于前端
-# 为所有非API路径提供前端服务
+# 提供前端静态文件服务
 @app.route('/')
 def serve_index():
-    # 检查前端构建文件是否存在
-    frontend_dist = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
-    index_path = os.path.join(frontend_dist, 'index.html')
-    if os.path.exists(index_path):
+    try:
         return send_from_directory('frontend/dist', 'index.html')
-    else:
-        # 如果前端构建文件不存在，返回一个简单的HTML页面提示
+    except:
+        # 如果前端文件不存在，返回一个简单的页面提示
         return '''
         <!DOCTYPE html>
         <html>
@@ -58,30 +58,29 @@ def serve_index():
         </html>
         '''
 
-# 为所有非API路径提供前端服务
 @app.route('/<path:path>')
 def serve_static(path):
-    # 检查路径是否为API相关路径
-    api_paths = ['api/', 'health', 'token', 'game', 'ai', 'user', 'auth', 'upload', 'download']
-    is_api_path = any(path.startswith(api_path) for api_path in api_paths)
-    
-    if is_api_path:
-        # 如果是API路径，让Flask继续处理（会返回404如果路由不存在）
-        # 实际上，后端app已经有这些路由，所以会正常处理
+    # 检查是否为API请求
+    if path.startswith('api/'):
+        # 如果是API路径，应该由上面导入的路由处理
+        # 如果没有匹配的路由，Flask会自动返回404
         pass
-        
-    # 检查文件是否存在
-    frontend_dist = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
-    file_path = os.path.join(frontend_dist, path)
     
-    # 如果是API路径或文件不存在，返回index.html以支持前端路由
-    if is_api_path or not os.path.exists(file_path):
-        # 检查前端构建文件是否存在
-        index_path = os.path.join(frontend_dist, 'index.html')
-        if os.path.exists(index_path):
-            return send_from_directory('frontend/dist', 'index.html')
+    # 尝试提供前端静态文件
+    try:
+        # 检查文件是否存在
+        file_path = os.path.join(os.getcwd(), 'frontend', 'dist', path)
+        if os.path.exists(file_path):
+            return send_from_directory('frontend/dist', path)
         else:
-            # 如果前端构建文件不存在，返回一个简单的HTML页面提示
+            # 如果文件不存在，返回index.html以支持前端路由
+            return send_from_directory('frontend/dist', 'index.html')
+    except:
+        # 如果发生异常，返回index.html
+        try:
+            return send_from_directory('frontend/dist', 'index.html')
+        except:
+            # 如果前端文件不存在，返回简单页面
             return '''
             <!DOCTYPE html>
             <html>
@@ -102,10 +101,6 @@ def serve_static(path):
             </body>
             </html>
             '''
-    else:
-        # 如果文件存在，返回该文件
-        directory = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
-        return send_from_directory(directory, path)
 
 if __name__ == '__main__':
     # 为魔搭创空间设置适当的主机和端口
