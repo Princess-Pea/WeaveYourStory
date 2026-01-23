@@ -1,0 +1,32 @@
+{
+  "name": "pixelforge",
+  "version": "1.0.0",
+  "description": "一个用于团队协作开发的Web应用项目，将部署到魔搭创空间",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s .",
+    "dev": "live-server --port=3000",
+    "build": "echo 'Build process will be configured here'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "web-app",
+    "team-collaboration",
+    "modao",
+    "cloud-deployment"
+  ],
+  "author": "PixelForge Team",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/[your-username]/pixelforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/[your-username]/pixelforge/issues"
+  },
+  "homepage": "https://github.com/[your-username]/pixelforge#readme"
+}
