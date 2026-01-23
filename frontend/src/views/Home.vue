@@ -93,10 +93,10 @@ const navigateTo = (path) => {
   right: 0;
   bottom: 200px; /* 在"指引"字段上方结束 */
   background-image: 
-    linear-gradient(to right, rgba(4, 8, 23, 0.2) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(4, 8, 23, 0.2) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 30px 30px; /* 网格大小介于字号之间 */
-  opacity: 0.3; /* 让网格不太显眼 */
+  opacity: 0.5; /* 提高透明度使网格更明显 */
   z-index: 0; /* 网格在内容后面 */
   pointer-events: none; /* 不影响鼠标交互 */
 }
