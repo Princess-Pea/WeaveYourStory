@@ -290,7 +290,7 @@ const triggerAnimations = () => {
 }
 
 .animate-bounce {
-  animation: bounce-in 0.6s ease-out forwards;
+  animation: bounce-in 1.2s ease-out forwards; /* 放慢动画速度，从0.6s增加到1.2s */
 }
 
 .animate-fade-in-base {
