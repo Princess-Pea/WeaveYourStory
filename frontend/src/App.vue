@@ -4,13 +4,6 @@
       <el-header>
         <div class="header-content">
           <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
-          <nav class="navigation">
-            <router-link to="/">首页</router-link>
-            <router-link to="/manuscript-input">原稿输入</router-link>
-            <router-link to="/visual-editor">可视化编辑</router-link>
-            <router-link to="/pixel-preview">像素风预览</router-link>
-            <router-link to="/profile">个人中心</router-link>
-          </nav>
         </div>
       </el-header>
       <el-main>
@@ -51,28 +44,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-}
-
-.navigation {
-  display: flex;
-  gap: 20px;
-}
-
-.navigation a {
-  color: white;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s;
-  border: 2px solid transparent; /* 初始透明边框，为悬停效果预留空间 */
-}
-
-.navigation a.router-link-exact-active,
-.navigation a:hover {
-  background-color: #383F59; /* 功能块色 */
-  text-decoration: underline;
-  border: 2px solid #E9A33B; /* 悬停高亮色 */
-  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .el-footer {

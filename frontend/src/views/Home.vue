@@ -1,10 +1,21 @@
 <template>
   <div class="home-container">
-    <div class="hero-section">
-      <h2>🎮 欢迎使用像素风情感叙事冒险游戏设计平台</h2>
-      <p>轻松创建属于你的像素风冒险世界，无需编程经验</p>
+    <div class="header-section">
+      <div class="logo-section">
+        <h1 class="pixel-logo">PixelForge</h1>
+        <p class="subtitle">将你的故事打造成可游玩的像素风情感叙事冒险游戏。设计你的专属剧情，让ai为其赋予生命力，再打磨每一处细节</p>
+      </div>
+      <div class="header-right">
+        <router-link to="/profile" class="profile-link">👤 个人中心</router-link>
+      </div>
     </div>
     
+    <div class="actions-section">
+      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn">
+        🆕 创建新游戏
+      </el-button>
+    </div>
+
     <div class="features-section">
       <h3>✨ 平台核心功能</h3>
       <div class="features-grid">
@@ -33,48 +44,6 @@
         </div>
       </div>
     </div>
-    
-    <div class="games-section">
-      <h3>📁 我的游戏作品</h3>
-      <div class="games-list">
-        <div class="game-item">
-          <div class="game-info">
-            <h4>新手村冒险</h4>
-            <p>状态: 已编辑</p>
-          </div>
-          <div class="game-actions">
-            <el-button type="primary" size="small">继续编辑</el-button>
-            <el-button size="small">预览</el-button>
-          </div>
-        </div>
-        <div class="game-item">
-          <div class="game-info">
-            <h4>森林探险记</h4>
-            <p>状态: 生成中</p>
-          </div>
-          <div class="game-actions">
-            <el-button type="primary" size="small">查看进度</el-button>
-            <el-button size="small">重新生成</el-button>
-          </div>
-        </div>
-        <div class="game-item">
-          <div class="game-info">
-            <h4>神秘洞穴之谜</h4>
-            <p>状态: 待生成</p>
-          </div>
-          <div class="game-actions">
-            <el-button type="primary" size="small">开始生成</el-button>
-            <el-button size="small">编辑</el-button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="actions-section">
-      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn">
-        🆕 创建新游戏
-      </el-button>
-    </div>
   </div>
 </template>
 
@@ -98,32 +67,68 @@ const navigateTo = (path) => {
   color: #ecf0f1; /* 浅灰色文字 */
 }
 
-.hero-section {
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 10px 0;
+}
+
+.logo-section {
   text-align: center;
-  margin-bottom: 40px;
-  padding: 30px;
-  background: linear-gradient(135deg, #383F59 0%, #020817 100%); /* 功能块色到背景色渐变 */
-  color: white;
-  border-radius: 10px;
+  flex: 1;
 }
 
-.hero-section h2 {
+.pixel-logo {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #E9A33B; /* 高亮色 */
+  text-shadow: 0 0 10px #E9A33B, 0 0 20px #E9A33B, 0 0 30px #E9A33B; /* 荧光效果 */
   margin: 0 0 10px 0;
-  color: white;
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
 }
 
-.hero-section p {
-  margin: 0;
+.subtitle {
   color: #bdc3c7; /* 浅灰色文字 */
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-link {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.profile-link:hover {
+  background-color: #383F59; /* 功能块色 */
+  text-decoration: underline;
+  border: 2px solid #E9A33B; /* 悬停高亮色 */
+  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .features-section {
-  margin-bottom: 40px;
+  margin-top: 40px;
 }
 
 .features-section h3 {
   color: white;
   margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.8rem;
 }
 
 .features-grid {
@@ -166,50 +171,9 @@ const navigateTo = (path) => {
   font-size: 14px;
 }
 
-.games-section {
-  margin-bottom: 40px;
-}
-
-.games-section h3 {
-  color: white;
-  margin-bottom: 20px;
-}
-
-.games-list {
-  margin-top: 20px;
-}
-
-.game-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border: 1px solid #383F59; /* 功能块色边框 */
-  border-radius: 8px;
-  margin-bottom: 10px;
-  background-color: #383F59; /* 功能块色背景 */
-  color: white;
-}
-
-.game-info h4 {
-  margin: 0 0 5px 0;
-  color: #ecf0f1; /* 浅灰色文字 */
-}
-
-.game-info p {
-  margin: 0;
-  color: #bdc3c7; /* 浅灰色文字 */
-  font-size: 14px;
-}
-
-.game-actions {
-  display: flex;
-  gap: 10px;
-}
-
 .actions-section {
   text-align: center;
-  margin-top: 40px;
+  margin: 40px 0;
 }
 
 .create-btn {
