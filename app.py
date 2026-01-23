@@ -1,94 +1,118 @@
-import gradio as gr
-from pydantic import BaseModel
 import os
-import json
-from typing import Dict, Any
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import datetime
+import jwt
+from backend.utils.ai_wrapper import start_async_ai_task, get_task_status, generate_id
 
-class PixelForgeApp:
+app = Flask(__name__)
+CORS(app)  # 允许跨域请求
+app.config['SECRET_KEY'] = os.environ.get("PIXELFORGE_SECRET_KEY", "pixelforge_secret_key")
+
+# 模拟数据库存储
+projects = [
+    {"id": "1", "title": "我的第一个冒险", "status": "published", "updated_at": "2026-01-20"},
+    {"id": "2", "title": "森林物语", "status": "editing", "updated_at": "2026-01-22"}
+]
+
+# --- 鉴权中间件 ---
+def token_required(f):
+    def decorated(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 401
+        try:
+            # 去掉 Bearer 前缀
+            token = token.split(" ")[1] if " " in token else token
+            jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+        except:
+            return jsonify({'message': 'Token is invalid!'}), 401
+        return f(*args, **kwargs)
+    decorated.__name__ = f.__name__
+    return decorated
+
+# --- 核心接口：用户与鉴权 ---
+@app.route('/api/v1/auth/login', methods=['POST'])
+def login():
+    """模拟登录，返回Token"""
+    data = request.json
+    # 演示目的：任何用户名/密码均可登录
+    token = jwt.encode({
+        'user': data.get('username'),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+    }, app.config['SECRET_KEY'])
+    return jsonify({'token': token, 'username': data.get('username')})
+
+# --- 核心接口：项目管理 ---
+@app.route('/api/v1/projects', methods=['GET'])
+@token_required
+def get_projects():
+    """查询作品列表"""
+    return jsonify({"projects": projects, "requestId": generate_id()})
+
+@app.route('/api/v1/projects', methods=['POST'])
+@token_required
+def create_project():
+    """新建游戏项目"""
+    data = request.json
+    new_project = {
+        "id": generate_id("proj"),
+        "title": data.get("title", "未命名游戏"),
+        "status": "draft",
+        "updated_at": datetime.datetime.now().strftime("%Y-%m-%d")
+    }
+    projects.append(new_project)
+    return jsonify({"project": new_project, "requestId": generate_id()})
+
+# --- 核心接口：AIGC 规范化接口 ---
+@app.route('/api/v1/ai/generate-game', methods=['POST'])
+@token_required
+def ai_generate():
     """
-    PixelForge Web应用的Gradio封装
-    支持团队协作开发的Web应用展示
+    异步生成游戏雏形
+    请求体规范：{content: str, context: dict, params: dict}
     """
+    data = request.json
+    content = data.get('content', '')
+    context = data.get('context', {})
+    params = data.get('params', {})
     
-    def __init__(self):
-        self.app_title = "PixelForge - 团队协作Web应用"
-        self.description = "这是一个用于团队协作开发的Web应用项目，部署到魔搭创空间"
+    req_id, task_id = start_async_ai_task(content, context, params)
     
-    def welcome_message(self, user_input: str = ""):
-        """生成欢迎消息"""
-        if user_input.strip():
-            return f"欢迎来到 PixelForge, {user_input}! 这是一个用于团队协作开发的Web应用。"
-        else:
-            return "欢迎来到 PixelForge! 这是一个用于团队协作开发的Web应用。"
-    
-    def get_project_info(self) -> Dict[str, Any]:
-        """获取项目信息"""
-        info = {
-            "name": "PixelForge",
-            "version": "1.0.0",
-            "description": "团队协作Web应用",
-            "features": [
-                "模块化设计，便于团队协作",
-                "响应式布局，跨设备兼容",
-                "云端部署，一键上线"
+    return jsonify({
+        "requestId": req_id,
+        "taskId": task_id,
+        "message": "AI任务已启动，请轮询状态"
+    }), 202
+
+@app.route('/api/v1/ai/task/<task_id>', methods=['GET'])
+@token_required
+def check_ai_status(task_id):
+    """查询异步任务状态"""
+    status_data = get_task_status(task_id)
+    return jsonify({
+        "requestId": generate_id(),
+        "taskId": task_id,
+        **status_data
+    })
+
+# --- 可视化编辑与预览 ---
+@app.route('/api/v1/projects/<proj_id>/data', methods=['GET'])
+@token_required
+def get_project_data(proj_id):
+    """获取预览或编辑所需的项目详情数据"""
+    # 模拟返回一个固定的游戏结构
+    return jsonify({
+        "game_data": {
+            "title": "森林物语",
+            "scenes": [
+                {"id": "s1", "text": "欢迎来到像素世界！", "options": [{"text": "开始", "next": "s2"}]},
+                {"id": "s2", "text": "你看到一只像素猫。", "options": [{"text": "摸它", "next": "s1"}]}
             ]
-        }
-        return info
-    
-    def run_gradio_app(self):
-        """运行Gradio界面"""
-        with gr.Blocks(title=self.app_title) as demo:
-            gr.Markdown(f"# {self.app_title}")
-            gr.Markdown(self.description)
-            
-            with gr.Row():
-                with gr.Column():
-                    name_input = gr.Textbox(label="输入您的姓名", placeholder="例如：张三")
-                    greet_btn = gr.Button("获取欢迎信息")
-                
-                with gr.Column():
-                    output = gr.Textbox(label="欢迎信息", interactive=False)
-            
-            greet_btn.click(
-                fn=self.welcome_message,
-                inputs=name_input,
-                outputs=output
-            )
-            
-            gr.Markdown("## 项目信息")
-            project_info_btn = gr.Button("获取项目详情")
-            project_output = gr.JSON(label="项目详情")
-            
-            project_info_btn.click(
-                fn=self.get_project_info,
-                inputs=None,
-                outputs=project_output
-            )
-            
-            gr.Markdown("## Web应用预览")
-            gr.HTML("""
-            <div style="border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
-                <h3>PixelForge Web应用</h3>
-                <p>这是一个示例前端页面，展示了团队协作开发的能力。</p>
-                <iframe src="./index.html" width="100%" height="400px" style="border: none;"></iframe>
-            </div>
-            """)
-        
-        return demo
+        },
+        "requestId": generate_id()
+    })
 
-# 创建应用实例
-pixel_forge_app = PixelForgeApp()
-
-# 定义主要函数接口
-def modelscope_quickstart(name: str = ""):
-    return pixel_forge_app.welcome_message(name)
-
-# 创建Gradio界面
-demo = pixel_forge_app.run_gradio_app()
-
-if __name__ == "__main__":
-    demo.launch(
-        server_name="0.0.0.0", 
-        server_port=7860,
-        share=False
-    )
+if __name__ == '__main__':
+    # 启动后端，监听0.0.0.0:7860
+    app.run(debug=True, host='0.0.0.0', port=7860)
