@@ -13,32 +13,32 @@
     
     <div class="actions-section">
       <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn">
-        🆕 创建新游戏
+        🆕 新建项目
       </el-button>
     </div>
 
     <div class="features-section">
-      <h3>✨ 平台核心功能</h3>
+      <h3>指引</h3>
       <div class="features-grid">
-        <div class="feature-card" @click="navigateTo('/manuscript-input')">
+        <div class="feature-card">
           <div class="feature-icon">📝</div>
           <h4>结构化原稿输入</h4>
           <p>通过模板化表单输入剧情、角色和任务线</p>
         </div>
         
-        <div class="feature-card" @click="navigateTo('/generation-progress')">
+        <div class="feature-card">
           <div class="feature-icon">🤖</div>
           <h4>AI生成游戏雏形</h4>
           <p>智能AI根据原稿生成可编辑的游戏雏形</p>
         </div>
         
-        <div class="feature-card" @click="navigateTo('/visual-editor')">
+        <div class="feature-card">
           <div class="feature-icon">✏️</div>
           <h4>可视化编辑</h4>
           <p>直观编辑场景、角色、任务，实时预览效果</p>
         </div>
         
-        <div class="feature-card" @click="navigateTo('/pixel-preview')">
+        <div class="feature-card">
           <div class="feature-icon">🕹️</div>
           <h4>像素风预览</h4>
           <p>实时体验设计的游戏，支持简单交互</p>
@@ -60,7 +60,7 @@ const navigateTo = (path) => {
 
 <style scoped>
 .home-container {
-  padding: 20px;
+  padding: 40px 20px; /* 增加垂直padding使页面更宽松 */
   max-width: 1200px;
   margin: 0 auto;
   background-color: #020817; /* 新的深蓝灰色背景 */
@@ -73,7 +73,7 @@ const navigateTo = (path) => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 30px;
+  margin-bottom: 50px; /* 增加间距 */
   padding: 10px 0;
   position: sticky;
   top: 20px;
@@ -144,12 +144,12 @@ const navigateTo = (path) => {
 }
 
 .features-section {
-  margin-top: 40px;
+  margin-top: 60px; /* 增加间距 */
 }
 
 .features-section h3 {
   color: white;
-  margin-bottom: 20px;
+  margin-bottom: 40px; /* 增加间距 */
   text-align: center;
   font-size: 1.8rem;
 }
@@ -157,16 +157,16 @@ const navigateTo = (path) => {
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: 40px; /* 增加网格间距 */
   margin-top: 20px;
 }
 
 .feature-card {
   border: 1px solid #383F59; /* 功能块色边框 */
   border-radius: 8px;
-  padding: 20px;
+  padding: 30px 20px; /* 增加内边距 */
   text-align: center;
-  cursor: pointer;
+  cursor: default; /* 改为默认光标，因为不再有点击功能 */
   transition: all 0.3s;
   background-color: #383F59; /* 功能块色背景 */
   color: white;
@@ -196,7 +196,7 @@ const navigateTo = (path) => {
 
 .actions-section {
   text-align: center;
-  margin: 40px 0;
+  margin: 60px 0; /* 增加间距 */
 }
 
 .create-btn {
