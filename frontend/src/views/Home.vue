@@ -150,7 +150,7 @@ const triggerAnimations = () => {
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 0; /* 从页面最上方开始 */
+  top: 90px; /* 从90px位置开始 */
   left: 0;
   right: 0;
   bottom: 300px; /* 在"新建项目"按钮下方结束 */
@@ -325,15 +325,22 @@ const triggerAnimations = () => {
     opacity: 0;
     transform: translateY(-40px) scale(0.1);
   }
-  30% {
+  20% {
     opacity: 1;
-    transform: translateY(10px) scale(1.05);
+    transform: translateY(-20px) scale(1.1);
+  }
+  40% {
+    transform: translateY(5px) scale(0.9);
   }
   60% {
-    transform: translateY(-5px) scale(0.95);
+    transform: translateY(-5px) scale(1.05);
+  }
+  80% {
+    transform: translateY(2px) scale(0.98);
   }
   100% {
     transform: translateY(0) scale(1);
+    opacity: 1;
   }
 }
 
@@ -364,7 +371,7 @@ const triggerAnimations = () => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 50px; /* 增加间距 */
-  padding: 150px 10px 10px 10px; /* 增加上内边距 */
+  padding: 60px 10px 10px 10px; /* 调整上内边距 */
   position: relative; /* 相对定位 */
   z-index: 3; /* 提高z-index，确保内容在网格之上 */
 }
