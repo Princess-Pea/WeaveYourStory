@@ -459,15 +459,15 @@ loadDraft()
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #2c3a47; /* 深蓝灰色背景 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   border-radius: 10px;
   color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .module-card {
   margin-bottom: 20px;
-  background-color: #34495e; /* 深蓝灰卡片背景 */
-  border: 1px solid #4a6278; /* 深蓝灰边框 */
+  background-color: #383F59; /* 功能块色 */
+  border: 1px solid #383F59; /* 功能块色边框 */
 }
 
 .card-header {
@@ -478,16 +478,16 @@ loadDraft()
 }
 
 .required {
-  color: #e74c3c; /* 红色星号 */
+  color: #E9A33B; /* 高亮色作为星号颜色 */
 }
 
 .mission-item,
 .character-item {
   margin-bottom: 20px;
   padding: 15px;
-  border: 1px solid #4a6278; /* 深蓝灰边框 */
+  border: 1px solid #383F59; /* 功能块色边框 */
   border-radius: 4px;
-  background-color: #3d566e; /* 较浅的深蓝灰背景 */
+  background-color: #383F59; /* 功能块色背景 */
   color: white;
 }
 
@@ -506,9 +506,17 @@ loadDraft()
 :deep(.el-input__wrapper),
 :deep(.el-textarea__inner),
 :deep(.el-select__wrapper) {
-  background-color: #3d566e !important; /* 深蓝灰输入框背景 */
-  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  background-color: #383F59 !important; /* 功能块色输入框背景 */
+  border: 1px solid #383F59 !important; /* 功能块色边框 */
   color: white !important; /* 白色输入文字 */
+  transition: all 0.3s !important;
+}
+
+:deep(.el-input__wrapper):hover,
+:deep(.el-textarea__inner):hover,
+:deep(.el-select__wrapper):hover {
+  border: 1px solid #E9A33B !important; /* 悬停高亮色 */
+  box-shadow: 0 0 10px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-input__inner),
@@ -517,19 +525,63 @@ loadDraft()
 }
 
 :deep(.el-card__header) {
-  background-color: #2c3a47 !important; /* 深蓝灰卡片头部 */
+  background-color: #383F59 !important; /* 功能块色卡片头部 */
   color: white !important;
-  border-bottom: 1px solid #4a6278 !important;
+  border-bottom: 1px solid #383F59 !important;
 }
 
 :deep(.el-divider__text) {
-  background-color: #2c3a47 !important; /* 深蓝灰分割线文字背景 */
+  background-color: #020817 !important; /* 深蓝灰色分割线文字背景 */
   color: #ecf0f1 !important; /* 浅灰色文字 */
 }
 
 :deep(.el-divider__content) {
-  background-color: #2c3a47 !important; /* 深蓝灰分割线内容背景 */
+  background-color: #020817 !important; /* 深蓝灰色分割线内容背景 */
   color: #ecf0f1 !important; /* 浅灰色文字 */
+}
+
+:deep(.el-button--primary) {
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--primary):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
+}
+
+:deep(.el-button--warning) {
+  --el-button-bg-color: #E9A33B !important; /* 高亮色 */
+  --el-button-border-color: #E9A33B !important;
+  --el-button-hover-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-hover-border-color: #383F59 !important;
+  --el-button-active-bg-color: #383F59 !important;
+  --el-button-active-border-color: #383F59 !important;
+  color: black !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--warning):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
+}
+
+:deep(.el-button) {
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  color: white !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 h2 {

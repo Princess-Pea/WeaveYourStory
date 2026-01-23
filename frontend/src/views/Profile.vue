@@ -243,15 +243,20 @@ function tableRowClassName({ row, rowIndex }) {
 <style scoped>
 .profile-container {
   padding: 20px;
-  background-color: #2c3a47; /* 深蓝灰色背景 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   min-height: calc(100vh - 100px);
 }
 
 .profile-card {
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #34495e !important; /* 深蓝灰卡片背景 */
-  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  background-color: #383F59 !important; /* 功能块色 */
+  border: 1px solid #E9A33B !important; /* 高亮边框 */
+  transition: all 0.3s;
+}
+
+.profile-card:hover {
+  box-shadow: 0 0 20px #E9A33B; /* 氛围荧光效果 */
 }
 
 .profile-card h2 {
@@ -268,7 +273,7 @@ function tableRowClassName({ row, rowIndex }) {
   color: white;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #4a6278; /* 深蓝灰分割线 */
+  border-bottom: 1px solid #E9A33B; /* 高亮分割线 */
 }
 
 .actions {
@@ -284,28 +289,29 @@ function tableRowClassName({ row, rowIndex }) {
 
 /* 表格样式 */
 :deep(.el-table) {
-  background-color: #3d566e !important; /* 深蓝灰表格背景 */
-  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  background-color: #383F59 !important; /* 功能块色表格背景 */
+  border: 1px solid #E9A33B !important; /* 高亮边框 */
 }
 
 :deep(.el-table th),
 :deep(.el-table td) {
-  background-color: #3d566e !important; /* 深蓝灰单元格背景 */
+  background-color: #383F59 !important; /* 功能块色单元格背景 */
   color: #ecf0f1 !important; /* 浅灰色文字 */
-  border-color: #4a6278 !important; /* 深蓝灰边框 */
+  border-color: #E9A33B !important; /* 高亮边框 */
 }
 
 :deep(.el-table__header tr),
 :deep(.el-table__body tr) {
-  background-color: #3d566e !important; /* 深蓝灰行背景 */
+  background-color: #383F59 !important; /* 功能块色行背景 */
 }
 
 :deep(.el-table__body tr:nth-child(even)) {
-  background-color: #405a70 !important; /* 深蓝灰偶数行背景 */
+  background-color: #405a70 !important; /* 功能块色偶数行背景 */
 }
 
 :deep(.el-table__body tr:hover > td) {
-  background-color: #4a6278 !important; /* 悬停行背景 */
+  background-color: #E9A33B !important; /* 悬停行背景 */
+  color: black !important;
 }
 
 /* 成功行样式 */
@@ -327,38 +333,73 @@ function tableRowClassName({ row, rowIndex }) {
 
 /* 按钮样式 */
 :deep(.el-button--primary) {
-  --el-button-bg-color: #3498db !important; /* 主要按钮颜色 */
-  --el-button-border-color: #3498db !important;
-  --el-button-hover-bg-color: #2980b9 !important;
-  --el-button-hover-border-color: #2980b9 !important;
-  --el-button-active-bg-color: #2980b9 !important;
-  --el-button-active-border-color: #2980b9 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--primary):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button--success) {
-  --el-button-bg-color: #2ecc71 !important; /* 成功按钮颜色 */
-  --el-button-border-color: #2ecc71 !important;
-  --el-button-hover-bg-color: #27ae60 !important;
-  --el-button-hover-border-color: #27ae60 !important;
-  --el-button-active-bg-color: #27ae60 !important;
-  --el-button-active-border-color: #27ae60 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--success):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button--danger) {
-  --el-button-bg-color: #e74c3c !important; /* 危险按钮颜色 */
-  --el-button-border-color: #e74c3c !important;
-  --el-button-hover-bg-color: #c0392b !important;
-  --el-button-hover-border-color: #c0392b !important;
-  --el-button-active-bg-color: #c0392b !important;
-  --el-button-active-border-color: #c0392b !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--danger):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button--warning) {
-  --el-button-bg-color: #f39c12 !important; /* 警告按钮颜色 */
-  --el-button-border-color: #f39c12 !important;
-  --el-button-hover-bg-color: #e67e22 !important;
-  --el-button-hover-border-color: #e67e22 !important;
-  --el-button-active-bg-color: #e67e22 !important;
-  --el-button-active-border-color: #e67e22 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--warning):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
+}
+
+:deep(.el-button) {
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  color: white !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 </style>

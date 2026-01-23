@@ -1015,12 +1015,12 @@ function editPosition(row) {
 <style scoped>
 .visual-editor-container {
   height: calc(100vh - 60px);
-  background-color: #2c3a47; /* 深蓝灰色背景 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .editor-header {
-  background-color: #34495e; /* 深蓝灰头部 */
+  background-color: #383F59; /* 功能块色 */
   color: white;
   display: flex;
   justify-content: space-between;
@@ -1033,9 +1033,9 @@ function editPosition(row) {
 }
 
 .editor-sidebar {
-  background-color: #34495e; /* 深蓝灰侧边栏 */
+  background-color: #383F59; /* 功能块色 */
   padding: 15px;
-  border-right: 1px solid #4a6278; /* 深蓝灰边框 */
+  border-right: 1px solid #E9A33B; /* 高亮边框 */
 }
 
 .sidebar-tabs {
@@ -1057,16 +1057,21 @@ function editPosition(row) {
 }
 
 .editor-main {
-  background-color: #2c3a47; /* 深蓝灰主内容区 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   padding: 20px;
   overflow-y: auto;
 }
 
 .editing-panel {
-  background-color: #34495e; /* 深蓝灰编辑面板 */
+  background-color: #383F59; /* 功能块色 */
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid #4a6278; /* 深蓝灰边框 */
+  border: 1px solid #E9A33B; /* 高亮边框 */
+  transition: all 0.3s;
+}
+
+.editing-panel:hover {
+  box-shadow: 0 0 15px #E9A33B; /* 氛围荧光效果 */
 }
 
 .no-selection {
@@ -1079,21 +1084,21 @@ function editPosition(row) {
 .editing-panel h3 {
   color: white;
   margin-bottom: 20px;
-  border-bottom: 1px solid #4a6278; /* 深蓝灰分割线 */
+  border-bottom: 1px solid #E9A33B; /* 高亮分割线 */
   padding-bottom: 10px;
 }
 
 .preview-area {
-  background-color: #34495e; /* 深蓝灰预览区 */
+  background-color: #383F59; /* 功能块色 */
   padding: 15px;
-  border-left: 1px solid #4a6278; /* 深蓝灰边框 */
+  border-left: 1px solid #E9A33B; /* 高亮边框 */
   color: white;
 }
 
 .pixel-preview-container {
   height: calc(100vh - 150px);
   overflow-y: auto;
-  background-color: #2c3a47; /* 深蓝灰容器 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   border-radius: 8px;
   padding: 10px;
 }
@@ -1103,10 +1108,10 @@ function editPosition(row) {
   width: 100%;
   height: 100%;
   min-height: 300px;
-  border: 1px solid #4a6278; /* 深蓝灰边框 */
+  border: 1px solid #E9A33B; /* 高亮边框 */
   border-radius: 4px;
   padding: 10px;
-  background-color: #3d566e; /* 较浅的深蓝灰背景 */
+  background-color: #383F59; /* 功能块色 */
 }
 
 .pixel-scene h4 {
@@ -1155,9 +1160,14 @@ function editPosition(row) {
 .dialog-item {
   margin-bottom: 15px;
   padding: 10px;
-  background-color: #3d566e; /* 较浅的深蓝灰背景 */
+  background-color: #020817; /* 深蓝灰色背景 */
   border-radius: 4px;
-  border: 1px solid #4a6278; /* 深蓝灰边框 */
+  border: 1px solid #E9A33B; /* 高亮边框 */
+  transition: all 0.3s;
+}
+
+.dialog-item:hover {
+  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .dialog-actions {
@@ -1169,33 +1179,42 @@ function editPosition(row) {
 
 /* 表格样式 */
 :deep(.el-table) {
-  background-color: #3d566e !important; /* 深蓝灰表格背景 */
-  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  background-color: #383F59 !important; /* 功能块色表格背景 */
+  border: 1px solid #E9A33B !important; /* 高亮边框 */
 }
 
 :deep(.el-table th),
 :deep(.el-table td) {
-  background-color: #3d566e !important; /* 深蓝灰单元格背景 */
+  background-color: #383F59 !important; /* 功能块色单元格背景 */
   color: #ecf0f1 !important; /* 浅灰色文字 */
-  border-color: #4a6278 !important; /* 深蓝灰边框 */
+  border-color: #E9A33B !important; /* 高亮边框 */
 }
 
 :deep(.el-table__header tr),
 :deep(.el-table__body tr) {
-  background-color: #3d566e !important; /* 深蓝灰行背景 */
+  background-color: #383F59 !important; /* 功能块色行背景 */
 }
 
 :deep(.el-table__body tr:hover > td) {
-  background-color: #4a6278 !important; /* 悬停行背景 */
+  background-color: #E9A33B !important; /* 悬停行背景 */
+  color: black !important;
 }
 
 /* 输入框样式 */
 :deep(.el-input__wrapper),
 :deep(.el-textarea__inner),
 :deep(.el-select__wrapper) {
-  background-color: #3d566e !important; /* 深蓝灰输入框背景 */
-  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  background-color: #383F59 !important; /* 功能块色输入框背景 */
+  border: 1px solid #E9A33B !important; /* 高亮边框 */
   color: white !important; /* 白色输入文字 */
+  transition: all 0.3s !important;
+}
+
+:deep(.el-input__wrapper):hover,
+:deep(.el-textarea__inner):hover,
+:deep(.el-select__wrapper):hover {
+  border: 1px solid #E9A33B !important; /* 高亮边框 */
+  box-shadow: 0 0 10px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-input__inner),
@@ -1211,20 +1230,23 @@ function editPosition(row) {
 
 /* 树形控件样式 */
 :deep(.el-tree) {
-  background-color: transparent !important;
+  background-color: #383F59 !important; /* 功能块色背景 */
+  color: white !important;
 }
 
 :deep(.el-tree-node__content:hover) {
-  background-color: #4a6278 !important; /* 悬停节点背景 */
+  background-color: #E9A33B !important; /* 悬停节点背景 */
+  color: black !important;
 }
 
 :deep(.el-tree-node:focus) > .el-tree-node__content {
-  background-color: #4a6278 !important; /* 选中节点背景 */
+  background-color: #E9A33B !important; /* 选中节点背景 */
+  color: black !important;
 }
 
 /* 卡片样式 */
 :deep(.el-card__body) {
-  background-color: #3d566e !important; /* 深蓝灰卡片背景 */
+  background-color: #383F59 !important; /* 功能块色卡片背景 */
   color: white !important;
 }
 
@@ -1239,57 +1261,82 @@ function editPosition(row) {
 }
 
 :deep(.el-tabs__nav-wrap::after) {
-  background-color: #4a6278 !important; /* 深蓝灰底部边框 */
+  background-color: #E9A33B !important; /* 高亮底部边框 */
 }
 
 /* 按钮样式 */
 :deep(.el-button--primary) {
-  --el-button-bg-color: #3498db !important; /* 主要按钮颜色 */
-  --el-button-border-color: #3498db !important;
-  --el-button-hover-bg-color: #2980b9 !important;
-  --el-button-hover-border-color: #2980b9 !important;
-  --el-button-active-bg-color: #2980b9 !important;
-  --el-button-active-border-color: #2980b9 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--primary):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button--success) {
-  --el-button-bg-color: #2ecc71 !important; /* 成功按钮颜色 */
-  --el-button-border-color: #2ecc71 !important;
-  --el-button-hover-bg-color: #27ae60 !important;
-  --el-button-hover-border-color: #27ae60 !important;
-  --el-button-active-bg-color: #27ae60 !important;
-  --el-button-active-border-color: #27ae60 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--success):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button--info) {
-  --el-button-bg-color: #95a5a6 !important; /* 信息按钮颜色 */
-  --el-button-border-color: #95a5a6 !important;
-  --el-button-hover-bg-color: #7f8c8d !important;
-  --el-button-hover-border-color: #7f8c8d !important;
-  --el-button-active-bg-color: #7f8c8d !important;
-  --el-button-active-border-color: #7f8c8d !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--info):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button--danger) {
-  --el-button-bg-color: #e74c3c !important; /* 危险按钮颜色 */
-  --el-button-border-color: #e74c3c !important;
-  --el-button-hover-bg-color: #c0392b !important;
-  --el-button-hover-border-color: #c0392b !important;
-  --el-button-active-bg-color: #c0392b !important;
-  --el-button-active-border-color: #c0392b !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--danger):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 /* 数字输入框样式 */
 :deep(.el-input-number) {
-  background-color: #3d566e !important; /* 深蓝灰输入框背景 */
-  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  background-color: #383F59 !important; /* 功能块色输入框背景 */
+  border: 1px solid #E9A33B !important; /* 高亮边框 */
   border-radius: 4px !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-input-number):hover {
+  box-shadow: 0 0 10px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-input-number__decrease),
 :deep(.el-input-number__increase) {
-  background-color: #4a6278 !important; /* 按钮背景 */
+  background-color: #E9A33B !important; /* 高亮按钮背景 */
   border: none !important;
-  color: white !important;
+  color: black !important;
 }
 </style>

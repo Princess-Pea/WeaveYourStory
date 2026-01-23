@@ -36,11 +36,11 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   min-height: 100vh;
-  background-color: #2c3a47; /* 深蓝灰色背景 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
 }
 
 .el-header {
-  background-color: #34495e; /* 深蓝灰标题栏 */
+  background-color: #383F59; /* 功能块色 */
   color: #fff;
   display: flex;
   align-items: center;
@@ -63,17 +63,20 @@ export default {
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 4px;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  border: 2px solid transparent; /* 初始透明边框，为悬停效果预留空间 */
 }
 
 .navigation a.router-link-exact-active,
 .navigation a:hover {
-  background-color: #4a6278; /* 深蓝灰悬停背景 */
+  background-color: #383F59; /* 功能块色 */
   text-decoration: underline;
+  border: 2px solid #E9A33B; /* 悬停高亮色 */
+  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .el-footer {
-  background-color: #34495e; /* 深蓝灰页脚 */
+  background-color: #383F59; /* 功能块色 */
   color: #fff;
   text-align: center;
   line-height: 60px;
@@ -86,15 +89,15 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  background: #2c3a47;
+  background: #020817;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #34495e;
+  background: #383F59;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4a6278;
+  background: #E9A33B;
 }
 </style>

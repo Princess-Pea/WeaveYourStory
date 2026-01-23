@@ -522,7 +522,7 @@ function getSceneBackground(scene) {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #2c3a47; /* 深蓝灰色背景 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   color: white;
   font-family: 'Courier New', Courier, monospace;
 }
@@ -532,8 +532,8 @@ function getSceneBackground(scene) {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #34495e; /* 深蓝灰头部 */
-  border-bottom: 4px solid #3498db;
+  background-color: #383F59; /* 功能块色 */
+  border-bottom: 4px solid #E9A33B; /* 高亮边框 */
 }
 
 .control-buttons {
@@ -554,8 +554,8 @@ function getSceneBackground(scene) {
   width: 600px;
   height: 400px;
   position: relative;
-  border: 4px solid #ecf0f1;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  border: 4px solid #E9A33B; /* 高亮边框 */
+  box-shadow: 0 0 20px rgba(233, 163, 59, 0.5); /* 高亮阴影 */
   background-size: 40px 40px;
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
@@ -579,7 +579,7 @@ function getSceneBackground(scene) {
 .boundary-indicator {
   position: absolute;
   font-size: 24px;
-  color: #e74c3c;
+  color: #E9A33B; /* 高亮色 */
   opacity: 0.7;
   cursor: pointer;
   transition: all 0.3s;
@@ -589,6 +589,7 @@ function getSceneBackground(scene) {
 .boundary-indicator:hover {
   opacity: 1;
   transform: scale(1.2);
+  text-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .boundary-indicator.top {
@@ -636,6 +637,7 @@ function getSceneBackground(scene) {
 .pixel-element.near-player {
   transform: scale(1.2);
   filter: brightness(1.3);
+  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .element-icon {
@@ -655,13 +657,13 @@ function getSceneBackground(scene) {
 
 .pixel-dialog-box {
   position: absolute;
-  background: #2c3a47; /* 深蓝灰对话框背景 */
-  border: 4px solid #ecf0f1;
+  background: #383F59; /* 功能块色对话框背景 */
+  border: 4px solid #E9A33B; /* 高亮边框 */
   border-radius: 8px;
   padding: 15px;
   min-width: 250px;
   z-index: 100;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 20px #E9A33B; /* 氛围荧光效果 */
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -671,7 +673,7 @@ function getSceneBackground(scene) {
   align-items: center;
   margin-bottom: 10px;
   padding-bottom: 5px;
-  border-bottom: 2px solid #3498db;
+  border-bottom: 2px solid #E9A33B; /* 高亮分割线 */
   font-weight: bold;
 }
 
@@ -715,12 +717,12 @@ function getSceneBackground(scene) {
 }
 
 .prompt-content {
-  background: #e74c3c;
-  color: white;
+  background: #E9A33B; /* 高亮色 */
+  color: black;
   padding: 15px;
   border-radius: 8px;
-  border: 3px solid #c0392b;
-  box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+  border: 3px solid #383F59; /* 功能块色边框 */
+  box-shadow: 0 0 15px #E9A33B; /* 氛围荧光效果 */
   min-width: 250px;
 }
 
@@ -737,7 +739,7 @@ function getSceneBackground(scene) {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(56, 63, 89, 0.8); /* 功能块色半透明 */
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 12px;
@@ -759,8 +761,8 @@ function getSceneBackground(scene) {
 .control-btn {
   width: 50px;
   height: 50px;
-  background: rgba(52, 152, 219, 0.8);
-  border: 2px solid #ecf0f1;
+  background: #383F59; /* 功能块色 */
+  border: 2px solid #E9A33B; /* 高亮边框 */
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -768,13 +770,19 @@ function getSceneBackground(scene) {
   font-size: 20px;
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 4px 0 #2980b9;
+  box-shadow: 0 4px 0 #E9A33B; /* 高亮阴影 */
   transition: all 0.1s;
 }
 
 .control-btn:active {
   transform: translateY(2px);
-  box-shadow: 0 2px 0 #2980b9;
+  box-shadow: 0 2px 0 #E9A33B; /* 高亮阴影 */
+}
+
+.control-btn:hover {
+  background: #E9A33B; /* 高亮色 */
+  color: black;
+  box-shadow: 0 0 15px #E9A33B; /* 氛围荧光效果 */
 }
 
 /* 响应式设计 */

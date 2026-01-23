@@ -93,7 +93,7 @@ const navigateTo = (path) => {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #2c3a47; /* 深蓝灰色背景 */
+  background-color: #020817; /* 新的深蓝灰色背景 */
   border-radius: 10px;
   color: #ecf0f1; /* 浅灰色文字 */
 }
@@ -102,7 +102,7 @@ const navigateTo = (path) => {
   text-align: center;
   margin-bottom: 40px;
   padding: 30px;
-  background: linear-gradient(135deg, #34495e 0%, #2c3a47 100%); /* 深蓝灰渐变 */
+  background: linear-gradient(135deg, #383F59 0%, #020817 100%); /* 功能块色到背景色渐变 */
   color: white;
   border-radius: 10px;
 }
@@ -134,21 +134,21 @@ const navigateTo = (path) => {
 }
 
 .feature-card {
-  border: 1px solid #34495e; /* 深蓝灰边框 */
+  border: 1px solid #383F59; /* 功能块色边框 */
   border-radius: 8px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
-  background-color: #34495e; /* 深蓝灰卡片背景 */
+  background-color: #383F59; /* 功能块色背景 */
   color: white;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-  border-color: #4a6278;
-  background-color: #4a6278; /* 悬停时更深的蓝灰 */
+  box-shadow: 0 8px 25px rgba(233, 163, 59, 0.5); /* #E9A33B氛围荧光效果 */
+  border: 1px solid #E9A33B; /* 悬停高亮色 */
+  box-shadow: 0 0 20px #E9A33B; /* 氛围荧光效果 */
 }
 
 .feature-icon {
@@ -184,10 +184,10 @@ const navigateTo = (path) => {
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border: 1px solid #34495e; /* 深蓝灰边框 */
+  border: 1px solid #383F59; /* 功能块色边框 */
   border-radius: 8px;
   margin-bottom: 10px;
-  background-color: #34495e; /* 深蓝灰背景 */
+  background-color: #383F59; /* 功能块色背景 */
   color: white;
 }
 
@@ -219,21 +219,31 @@ const navigateTo = (path) => {
 
 /* 按钮样式 */
 :deep(.el-button--primary) {
-  --el-button-bg-color: #3498db !important; /* 主要按钮颜色 */
-  --el-button-border-color: #3498db !important;
-  --el-button-hover-bg-color: #2980b9 !important;
-  --el-button-hover-border-color: #2980b9 !important;
-  --el-button-active-bg-color: #2980b9 !important;
-  --el-button-active-border-color: #2980b9 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button--primary):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 
 :deep(.el-button) {
-  --el-button-bg-color: #4a6278 !important; /* 默认按钮颜色 */
-  --el-button-border-color: #4a6278 !important;
-  --el-button-hover-bg-color: #5a7a92 !important;
-  --el-button-hover-border-color: #5a7a92 !important;
-  --el-button-active-bg-color: #5a7a92 !important;
-  --el-button-active-border-color: #5a7a92 !important;
+  --el-button-bg-color: #383F59 !important; /* 功能块色 */
+  --el-button-border-color: #383F59 !important;
+  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
+  --el-button-hover-border-color: #E9A33B !important;
+  --el-button-active-bg-color: #E9A33B !important;
+  --el-button-active-border-color: #E9A33B !important;
   color: white !important;
+  transition: all 0.3s !important;
+}
+
+:deep(.el-button):hover {
+  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 </style>
