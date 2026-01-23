@@ -1,0 +1,12 @@
+# 魔搭创空间配置文件
+name: PixelForge-Studio
+version: 1.0.0
+runtime: python3.10
+entrypoint: python app.py
+port: 7860
+dependencies:
+  - gradio
+  - pydantic
+env:
+  - name: PYTHONPATH
+    value: /home/user/app
