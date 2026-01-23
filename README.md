@@ -1,6 +1,32 @@
+---
+# 详细文档见https://modelscope.cn/docs/%E5%88%9B%E7%A9%BA%E9%97%B4%E5%8D%A1%E7%89%87
+domain: #领域：cv/nlp/audio/multi-modal/AutoML
+# - cv
+tags: #自定义标签
+-
+datasets: #关联数据集
+  evaluation:
+  #- iic/ICDAR13_HCTR_Dataset
+  test:
+  #- iic/MTWI
+  train:
+  #- iic/SIBR
+models: #关联模型
+#- iic/ofa_ocr-recognition_general_base_zh
+
+## 启动文件(若SDK为Gradio/Streamlit，默认为app.py, 若为Static HTML, 默认为index.html)
+# deployspec:
+#   entry_file: app.py
+license: Apache License 2.0
+---
+#### Clone with HTTP
+```bash
+ git clone https://www.modelscope.cn/studios/Legency/Weave_Your_Story.git
+```
+>>>>>>> 7afb7c5428ee7dbc0b95dc2917c13fbeb0c5deaf
 # PixelForge
 
-这是一个用于Web应用开发的项目，将部署到魔搭创空间，支持团队协作开发。
+这是一个「像素风情感叙事冒险游戏设计平台」项目，将部署到魔搭创空间，支持团队协作开发。
 
 ## 项目设置
 
@@ -40,7 +66,7 @@ npm run dev
 
 ## 开发
 
-项目包含基础的前端模板，包含 HTML、CSS 和 JavaScript 文件，可根据需要扩展功能。
+项目包含完整的前后端分离架构，前端使用 Vue3 + Vite + Element Plus，后端使用 Python + Flask，支持AI辅助功能。
 
 ## 部署到魔搭创空间
 
@@ -64,3 +90,30 @@ npm run dev
    ```
 
 项目将会自动构建并部署到魔搭创空间。
+=======
+---
+# 详细文档见https://modelscope.cn/docs/%E5%88%9B%E7%A9%BA%E9%97%B4%E5%8D%A1%E7%89%87
+domain: #领域：cv/nlp/audio/multi-modal/AutoML
+# - cv
+tags: #自定义标签
+-
+datasets: #关联数据集
+  evaluation:
+  #- iic/ICDAR13_HCTR_Dataset
+  test:
+  #- iic/MTWI
+  train:
+  #- iic/SIBR
+models: #关联模型
+#- iic/ofa_ocr-recognition_general_base_zh
+
+## 启动文件(若SDK为Gradio/Streamlit，默认为app.py, 若为Static HTML, 默认为index.html)
+# deployspec:
+#   entry_file: app.py
+license: Apache License 2.0
+---
+#### Clone with HTTP
+```bash
+ git clone https://www.modelscope.cn/studios/Legency/Weave_Your_Story.git
+```
+>>>>>>> 7afb7c5428ee7dbc0b95dc2917c13fbeb0c5deaf
