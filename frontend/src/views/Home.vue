@@ -150,10 +150,10 @@ const triggerAnimations = () => {
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 80px; /* 从导航栏下方开始 */
+  top: 0; /* 从页面最上方开始 */
   left: 0;
   right: 0;
-  bottom: 600px; /* 在"指引"字段上方结束，增加更多距离 */
+  bottom: 300px; /* 在"新建项目"按钮下方结束 */
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
@@ -162,20 +162,20 @@ const triggerAnimations = () => {
   z-index: 0; /* 网格在内容后面 */
   pointer-events: none; /* 不影响鼠标交互 */
   mask-image: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0) 0%, 
-    rgba(0, 0, 0, 0.2) 10%, 
+    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 1) 10%, 
     rgba(0, 0, 0, 0.8) 30%, 
-    rgba(0, 0, 0, 1) 50%, 
-    rgba(0, 0, 0, 0.8) 70%, 
-    rgba(0, 0, 0, 0.2) 90%, 
+    rgba(0, 0, 0, 0.5) 50%, 
+    rgba(0, 0, 0, 0.2) 70%, 
+    rgba(0, 0, 0, 0) 90%, 
     rgba(0, 0, 0, 0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0) 0%, 
-    rgba(0, 0, 0, 0.2) 10%, 
+    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 1) 10%, 
     rgba(0, 0, 0, 0.8) 30%, 
-    rgba(0, 0, 0, 1) 50%, 
-    rgba(0, 0, 0, 0.8) 70%, 
-    rgba(0, 0, 0, 0.2) 90%, 
+    rgba(0, 0, 0, 0.5) 50%, 
+    rgba(0, 0, 0, 0.2) 70%, 
+    rgba(0, 0, 0, 0) 90%, 
     rgba(0, 0, 0, 0) 100%);
 }
 
@@ -190,8 +190,8 @@ const triggerAnimations = () => {
 }
 
 .particle-1 {
-  top: 15%;
-  left: 10%;
+  top: 25%; /* 调整位置避免被覆盖 */
+  left: 15%;
   animation-delay: 0s;
   background-color: #E9A33B; /* 荧光黄色 */
   width: 10px; /* 略小 */
@@ -199,8 +199,8 @@ const triggerAnimations = () => {
 }
 
 .particle-2 {
-  top: 40%;
-  right: 15%;
+  top: 30%; /* 调整位置避免被覆盖 */
+  right: 20%;
   animation-delay: 2s;
   background-color: #5D8AA8; /* 荧光蓝色 */
   width: 14px; /* 略大 */
@@ -208,8 +208,8 @@ const triggerAnimations = () => {
 }
 
 .particle-3 {
-  bottom: 30%;
-  left: 20%;
+  bottom: 40%; /* 调整位置避免被覆盖 */
+  left: 25%;
   animation-delay: 4s;
   background-color: #FF6B6B; /* 荧光红色 */
   width: 12px; /* 标准大小 */
@@ -217,8 +217,8 @@ const triggerAnimations = () => {
 }
 
 .particle-4 {
-  bottom: 20%;
-  right: 25%;
+  bottom: 35%; /* 调整位置避免被覆盖 */
+  right: 30%;
   animation-delay: 6s;
   background-color: #9C51B6; /* 荧光紫色 */
   width: 11px; /* 略小 */
@@ -323,17 +323,16 @@ const triggerAnimations = () => {
 @keyframes bounce-in {
   0% {
     opacity: 0;
-    transform: translateY(-40px) scale(0.8);
+    transform: translateY(-40px) scale(0.1);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(10px) scale(1.05);
   }
   60% {
-    opacity: 1;
-    transform: translateY(5px) scale(1.05);
-  }
-  80% {
     transform: translateY(-5px) scale(0.95);
   }
   100% {
-    opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
@@ -367,7 +366,7 @@ const triggerAnimations = () => {
   margin-bottom: 50px; /* 增加间距 */
   padding: 150px 10px 10px 10px; /* 增加上内边距 */
   position: relative; /* 相对定位 */
-  z-index: 2; /* 确保内容在网格之上 */
+  z-index: 3; /* 提高z-index，确保内容在网格之上 */
 }
 
 .logo-section {
@@ -435,7 +434,7 @@ const triggerAnimations = () => {
 .features-section {
   margin-top: 240px; /* 大幅增加间距，约为之前距离的三倍 */
   position: relative; /* 相对定位 */
-  z-index: 2; /* 确保内容在网格之上 */
+  z-index: 3; /* 确保内容在网格之上 */
 }
 
 .features-section h3 {
@@ -523,7 +522,7 @@ const triggerAnimations = () => {
   text-align: center;
   margin: 80px 0; /* 增加间距，使页面分为上下两部分 */
   position: relative; /* 相对定位 */
-  z-index: 2; /* 确保内容在网格之上 */
+  z-index: 3; /* 确保内容在网格之上 */
 }
 
 .create-btn {
