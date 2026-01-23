@@ -1,5 +1,14 @@
 <template>
   <div class="home-container">
+    <!-- 网格背景 -->
+    <div class="grid-background"></div>
+    
+    <!-- 粒子效果 -->
+    <div class="particle particle-1"></div>
+    <div class="particle particle-2"></div>
+    <div class="particle particle-3"></div>
+    <div class="particle particle-4"></div>
+    
     <div class="header-section">
       <div class="logo-section">
         <h1 class="pixel-logo">PixelForge</h1>
@@ -72,6 +81,122 @@ const navigateTo = (path) => {
   border-radius: 10px;
   color: #ecf0f1; /* 浅灰色文字 */
   min-height: 100vh;
+  overflow: hidden; /* 防止粒子效果溢出 */
+  position: relative; /* 为绝对定位的元素提供参考 */
+}
+
+/* 网格背景 */
+.grid-background {
+  position: absolute;
+  top: 80px; /* 从导航栏下方开始 */
+  left: 0;
+  right: 0;
+  bottom: 200px; /* 在"指引"字段上方结束 */
+  background-image: 
+    linear-gradient(to right, rgba(4, 8, 23, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(4, 8, 23, 0.2) 1px, transparent 1px);
+  background-size: 30px 30px; /* 网格大小介于字号之间 */
+  opacity: 0.3; /* 让网格不太显眼 */
+  z-index: 0; /* 网格在内容后面 */
+  pointer-events: none; /* 不影响鼠标交互 */
+}
+
+/* 粒子效果 */
+.particle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #E9A33B; /* 荧光黄色 */
+  border-radius: 2px;
+  animation: spin-float 8s infinite ease-in-out;
+  z-index: 1;
+  pointer-events: none; /* 不影响鼠标交互 */
+}
+
+.particle-1 {
+  top: 15%;
+  left: 10%;
+  animation-delay: 0s;
+  background-color: #E9A33B; /* 荧光黄色 */
+}
+
+.particle-2 {
+  top: 40%;
+  right: 15%;
+  animation-delay: 2s;
+  background-color: #5D8AA8; /* 荧光蓝色 */
+}
+
+.particle-3 {
+  bottom: 30%;
+  left: 20%;
+  animation-delay: 4s;
+  background-color: #FF6B6B; /* 荧光红色 */
+}
+
+.particle-4 {
+  bottom: 20%;
+  right: 25%;
+  animation-delay: 6s;
+  background-color: #9C51B6; /* 荧光紫色 */
+}
+
+@keyframes spin-float {
+  0% {
+    transform: rotate(0deg) translateX(0) translateY(0);
+    opacity: 0.8;
+  }
+  15% {
+    transform: rotate(90deg) translateX(10px) translateY(-5px);
+  }
+  20% {
+    transform: rotate(90deg) translateX(10px) translateY(-5px); /* 短暂停顿 */
+  }
+  35% {
+    transform: rotate(180deg) translateX(5px) translateY(10px);
+  }
+  40% {
+    transform: rotate(180deg) translateX(5px) translateY(10px); /* 短暂停顿 */
+  }
+  55% {
+    transform: rotate(270deg) translateX(-10px) translateY(5px);
+  }
+  60% {
+    transform: rotate(270deg) translateX(-10px) translateY(5px); /* 短暂停顿 */
+  }
+  75% {
+    transform: rotate(360deg) translateX(0) translateY(0);
+  }
+  80% {
+    transform: rotate(360deg) translateX(0) translateY(0); /* 短暂停顿 */
+  }
+  100% {
+    transform: rotate(0deg) translateX(0) translateY(0);
+    opacity: 0.8;
+  }
+}
+
+/* 子动画：模拟洒落的小粒子 */
+.particle::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: currentColor;
+  border-radius: 1px;
+  opacity: 0;
+  animation: sprinkle 8s infinite;
+}
+
+@keyframes sprinkle {
+  20%, 40%, 60%, 80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25%, 45%, 65%, 85% {
+    opacity: 0;
+    transform: scale(0) rotate(180deg);
+  }
 }
 
 .header-section {
@@ -80,10 +205,8 @@ const navigateTo = (path) => {
   align-items: flex-start;
   margin-bottom: 50px; /* 增加间距 */
   padding: 10px 0;
-  position: sticky;
-  top: 20px;
-  z-index: 100;
-  background-color: #020817; /* 背景色与页面一致 */
+  position: relative; /* 相对定位 */
+  z-index: 2; /* 确保内容在网格之上 */
 }
 
 .logo-section {
@@ -150,6 +273,8 @@ const navigateTo = (path) => {
 
 .features-section {
   margin-top: 100px; /* 大幅增加间距，使页面分为上下两部分 */
+  position: relative; /* 相对定位 */
+  z-index: 2; /* 确保内容在网格之上 */
 }
 
 .features-section h3 {
@@ -236,6 +361,8 @@ const navigateTo = (path) => {
 .actions-section {
   text-align: center;
   margin: 80px 0; /* 增加间距，使页面分为上下两部分 */
+  position: relative; /* 相对定位 */
+  z-index: 2; /* 确保内容在网格之上 */
 }
 
 .create-btn {
