@@ -325,18 +325,15 @@ const triggerAnimations = () => {
     opacity: 0;
     transform: translateY(-40px) scale(0.1);
   }
-  30% {
+  50% {
     opacity: 1;
-    transform: translateY(-10px) scale(1.05);
+    transform: translateY(10px) scale(1.1); /* 第一次触地并轻微压缩/拉伸 */
   }
-  60% {
-    transform: translateY(5px) scale(0.95);
-  }
-  80% {
-    transform: translateY(-2px) scale(1.02);
+  75% {
+    transform: translateY(-10px) scale(0.95); /* 回弹至半空 */
   }
   100% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1); /* 最终平稳落地 */
     opacity: 1;
   }
 }
