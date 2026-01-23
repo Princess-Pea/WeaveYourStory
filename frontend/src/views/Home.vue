@@ -21,7 +21,7 @@
     </div>
     
     <div class="actions-section">
-      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-block-text-base">
+      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-fade-in-base">
         🆕 新建项目
       </el-button>
     </div>
@@ -30,28 +30,28 @@
       <h3 class="animate-fade-in-base">指引</h3>
       <p class="subtitle animate-fade-in-base">4步让你的故事从想象转变为现实：</p>
       <div class="features-grid">
-        <div class="feature-card animate-block-text-base">
+        <div class="feature-card animate-fade-in-base">
           <div class="feature-number">01</div>
           <div class="feature-icon">📝</div>
           <h4>结构化原稿输入</h4>
           <p>通过模板化表单输入剧情、角色和任务线</p>
         </div>
         
-        <div class="feature-card animate-block-text-base">
+        <div class="feature-card animate-fade-in-base">
           <div class="feature-number">02</div>
           <div class="feature-icon">🤖</div>
           <h4>AI生成游戏雏形</h4>
           <p>智能AI根据原稿生成可编辑的游戏雏形</p>
         </div>
         
-        <div class="feature-card animate-block-text-base">
+        <div class="feature-card animate-fade-in-base">
           <div class="feature-number">03</div>
           <div class="feature-icon">✏️</div>
           <h4>可视化编辑</h4>
           <p>直观编辑场景、角色、任务，实时预览效果</p>
         </div>
         
-        <div class="feature-card animate-block-text-base">
+        <div class="feature-card animate-fade-in-base">
           <div class="feature-number">04</div>
           <div class="feature-icon">🕹️</div>
           <h4>像素风预览</h4>
@@ -121,7 +121,7 @@ const triggerAnimations = () => {
       logo.classList.add('animate-bounce');
     }
     
-    // 然后触发文字渐显动画
+    // 然后触发所有元素的渐显动画
     setTimeout(() => {
       const fadeElements = document.querySelectorAll('.animate-fade-in-base');
       fadeElements.forEach(el => {
@@ -129,16 +129,6 @@ const triggerAnimations = () => {
         void el.offsetWidth; // 强制重排
         el.classList.add('animate-fade-in');
       });
-      
-      // 最后触发块状显示动画
-      setTimeout(() => {
-        const blockElements = document.querySelectorAll('.animate-block-text-base');
-        blockElements.forEach(el => {
-          el.classList.remove('animate-block-text');
-          void el.offsetWidth; // 强制重排
-          el.classList.add('animate-block-text');
-        });
-      }, 300);
     }, 300);
   }, 10);
 };
@@ -375,7 +365,7 @@ const triggerAnimations = () => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 50px; /* 增加间距 */
-  padding: 100px 10px 10px 10px; /* 增加上内边距 */
+  padding: 150px 10px 10px 10px; /* 增加上内边距 */
   position: relative; /* 相对定位 */
   z-index: 2; /* 确保内容在网格之上 */
 }
