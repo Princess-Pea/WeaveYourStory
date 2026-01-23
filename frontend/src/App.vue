@@ -3,7 +3,9 @@
     <el-container>
       <el-header>
         <div class="header-content">
-          <h1 class="app-title">PixelForge</h1>
+          <router-link to="/" class="app-title-link">
+            <h1 class="app-title">PixelForge</h1>
+          </router-link>
           <nav class="navigation">
             <router-link to="/">首页</router-link>
             <router-link to="/manuscript-input">原稿输入</router-link>
@@ -53,10 +55,27 @@ export default {
   width: 100%;
 }
 
+.app-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .app-title {
   font-family: 'Times New Roman', Times, serif; /* 使用Times New Roman字体 */
   font-size: 1.5rem;
   margin: 0;
+  color: white;
+  transition: all 0.3s;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+}
+
+.app-title:hover {
+  background-color: #383F59; /* 功能块色 */
+  text-decoration: underline;
+  border: 2px solid #E9A33B; /* 悬停高亮色 */
+  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
 }
 
 .navigation {

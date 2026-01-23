@@ -149,7 +149,7 @@ const navigateTo = (path) => {
 }
 
 .features-section {
-  margin-top: 60px; /* 增加间距 */
+  margin-top: 100px; /* 大幅增加间距，使页面分为上下两部分 */
 }
 
 .features-section h3 {
@@ -191,8 +191,8 @@ const navigateTo = (path) => {
   position: absolute;
   top: -12px;
   left: -12px;
-  background-color: #E9A33B; /* 高亮色背景 */
-  color: #020817; /* 深色文字 */
+  background-color: #383F59; /* 灰色背景 */
+  color: white; /* 白色文字 */
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -203,6 +203,12 @@ const navigateTo = (path) => {
   font-size: 0.9rem;
   border: 2px solid #E9A33B;
   z-index: 10;
+  transition: all 0.3s ease; /* 添加过渡效果 */
+}
+
+.feature-card:hover .feature-number {
+  background-color: #E9A33B; /* 黄色背景 */
+  color: #020817; /* 黑色文字 */
 }
 
 .feature-card:hover {
@@ -229,7 +235,7 @@ const navigateTo = (path) => {
 
 .actions-section {
   text-align: center;
-  margin: 60px 0; /* 增加间距 */
+  margin: 80px 0; /* 增加间距，使页面分为上下两部分 */
 }
 
 .create-btn {
