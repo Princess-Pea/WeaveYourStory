@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import datetime
 import jwt
+import json
 from utils.ai_wrapper import start_async_ai_task, get_task_status, generate_id
 
 app = Flask(__name__)
@@ -65,6 +66,62 @@ def create_project():
     return jsonify({"project": new_project, "requestId": generate_id()})
 
 # --- 核心接口：AIGC 规范化接口 ---
+@app.route('/api/v1/ai/game/submit', methods=['POST'])
+@token_required
+def ai_submit_game():
+    """
+    异步提交游戏原稿，生成游戏雏形
+    请求体规范：{content: str, context: dict, params: dict}
+    """
+    data = request.json
+    content = data.get('content', '')
+    context = data.get('context', {})
+    params = data.get('params', {})
+    
+    # 解析结构化的原稿内容
+    try:
+        manuscript_data = json.loads(content)
+    except json.JSONDecodeError:
+        return jsonify({"code": 400, "msg": "content格式错误，应为JSON字符串", "requestId": generate_id()}), 400
+    
+    # 生成任务ID和游戏ID
+    task_id = generate_id("task")
+    game_id = generate_id("game")
+    
+    # 存储原稿数据到本地文件（模拟数据库存储）
+    import os
+    import json
+    
+    # 确保数据目录存在
+    data_dir = "data"
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    
+    # 保存原稿到JSON文件
+    manuscript_file_path = os.path.join(data_dir, f"manuscript_{game_id}.json")
+    with open(manuscript_file_path, 'w', encoding='utf-8') as f:
+        json.dump({
+            "gameId": game_id,
+            "manuscript": manuscript_data,
+            "context": context,
+            "params": params,
+            "createdAt": datetime.datetime.now().isoformat()
+        }, f, ensure_ascii=False, indent=2)
+    
+    # 开始异步AI生成任务
+    req_id = generate_id("req")
+    start_async_ai_task(content, context, params, task_id)  # 传递task_id给后台任务
+    
+    return jsonify({
+        "code": 200,
+        "msg": "task_submitted",
+        "requestId": req_id,
+        "data": {
+            "taskId": task_id,
+            "gameId": game_id
+        }
+    })
+
 @app.route('/api/v1/ai/generate-game', methods=['POST'])
 @token_required
 def ai_generate():

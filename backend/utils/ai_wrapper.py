@@ -32,8 +32,9 @@ def simulate_ai_generation(task_id, content, context, params):
         "style": params.get("style", "classic_pixel")
     }
 
-def start_async_ai_task(content, context, params):
-    task_id = generate_id("task")
+def start_async_ai_task(content, context, params, task_id=None):
+    if task_id is None:
+        task_id = generate_id("task")
     request_id = generate_id("req")
     
     # 开启后台线程模拟AI
