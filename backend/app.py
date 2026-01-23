@@ -306,6 +306,71 @@ def save_game():
         "data": {"gameId": game_id}
     })
 
+# --- 预览数据接口 ---
+@app.route('/api/v1/game/preview/<game_id>', methods=['GET'])
+@token_required
+def get_game_preview(game_id):
+    """
+    根据gameId返回最新的游戏结构化数据
+    """
+    import os
+    import json
+    
+    # 构造游戏数据文件路径
+    game_file_path = os.path.join("data", f"game_{game_id}.json")
+    
+    if not os.path.exists(game_file_path):
+        return jsonify({"code": 404, "msg": "游戏数据不存在", "requestId": generate_id()}), 404
+    
+    try:
+        with open(game_file_path, 'r', encoding='utf-8') as f:
+            game_data = json.load(f)
+        
+        return jsonify({
+            "code": 200,
+            "msg": "success",
+            "requestId": generate_id(),
+            "data": game_data
+        })
+    except Exception as e:
+        return jsonify({
+            "code": 500,
+            "msg": f"读取游戏数据失败: {str(e)}",
+            "requestId": generate_id()
+        }), 500
+
+@app.route('/api/v1/asset/pixel', methods=['GET'])
+@token_required
+def get_pixel_assets():
+    """
+    返回像素风素材信息（预留接口）
+    """
+    # 这里返回可用的像素风素材列表
+    assets = {
+        "characters": [
+            {"id": "player", "name": "玩家", "url": "/assets/pixel/player.png"},
+            {"id": "npc1", "name": "村民", "url": "/assets/pixel/npc1.png"},
+            {"id": "npc2", "name": "商人", "url": "/assets/pixel/npc2.png"}
+        ],
+        "objects": [
+            {"id": "chest", "name": "宝箱", "url": "/assets/pixel/chest.png"},
+            {"id": "door", "name": "门", "url": "/assets/pixel/door.png"},
+            {"id": "tree", "name": "树", "url": "/assets/pixel/tree.png"}
+        ],
+        "backgrounds": [
+            {"id": "grassland", "name": "草地", "url": "/assets/pixel/grassland.png"},
+            {"id": "forest", "name": "森林", "url": "/assets/pixel/forest.png"},
+            {"id": "village", "name": "村庄", "url": "/assets/pixel/village.png"}
+        ]
+    }
+    
+    return jsonify({
+        "code": 200,
+        "msg": "success",
+        "requestId": generate_id(),
+        "data": assets
+    })
+
 @app.route('/api/v1/ai/generate-game', methods=['POST'])
 @token_required
 def ai_generate():
