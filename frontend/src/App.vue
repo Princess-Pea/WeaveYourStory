@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header>
+      <el-header v-if="$route.path !== '/'">
         <div class="header-content">
           <router-link to="/" class="app-title-link">
             <h1 class="app-title">PixelForge</h1>
@@ -15,7 +15,7 @@
           </nav>
         </div>
       </el-header>
-      <el-main>
+      <el-main :class="{ 'no-header': $route.path === '/' }">
         <router-view />
       </el-main>
       <el-footer>
@@ -25,10 +25,9 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App'
-}
+<script setup>
+import { useRoute } from 'vue-router'
+const route = useRoute()
 </script>
 
 <style>
@@ -46,6 +45,7 @@ export default {
   color: #fff;
   display: flex;
   align-items: center;
+  height: 60px;
 }
 
 .header-content {
@@ -53,6 +53,10 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.no-header {
+  padding: 0 !important;
 }
 
 .app-title-link {

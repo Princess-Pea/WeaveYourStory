@@ -11,9 +11,9 @@
     
     <div class="header-section">
       <div class="logo-section">
-        <h1 class="pixel-logo">PixelForge</h1>
-        <h2 class="subheading">像素风情感叙事冒险游戏设计平台</h2>
-        <p class="subtitle">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情，让ai为其赋予生命力，再打磨每一处细节。</p>
+        <h1 class="pixel-logo animate-bounce-base">PixelForge</h1>
+        <h2 class="subheading animate-fade-in-base">像素风情感叙事冒险游戏设计平台</h2>
+        <p class="subtitle animate-fade-in-base">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情，让ai为其赋予生命力，再打磨每一处细节。</p>
       </div>
       <div class="header-right">
         <router-link to="/profile" class="profile-link">👤 个人中心</router-link>
@@ -21,37 +21,37 @@
     </div>
     
     <div class="actions-section">
-      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn">
+      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-block-text-base">
         🆕 新建项目
       </el-button>
     </div>
 
     <div class="features-section">
-      <h3>指引</h3>
-      <p class="subtitle">4步让你的故事从想象转变为现实：</p>
+      <h3 class="animate-fade-in-base">指引</h3>
+      <p class="subtitle animate-fade-in-base">4步让你的故事从想象转变为现实：</p>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card animate-block-text-base">
           <div class="feature-number">01</div>
           <div class="feature-icon">📝</div>
           <h4>结构化原稿输入</h4>
           <p>通过模板化表单输入剧情、角色和任务线</p>
         </div>
         
-        <div class="feature-card">
+        <div class="feature-card animate-block-text-base">
           <div class="feature-number">02</div>
           <div class="feature-icon">🤖</div>
           <h4>AI生成游戏雏形</h4>
           <p>智能AI根据原稿生成可编辑的游戏雏形</p>
         </div>
         
-        <div class="feature-card">
+        <div class="feature-card animate-block-text-base">
           <div class="feature-number">03</div>
           <div class="feature-icon">✏️</div>
           <h4>可视化编辑</h4>
           <p>直观编辑场景、角色、任务，实时预览效果</p>
         </div>
         
-        <div class="feature-card">
+        <div class="feature-card animate-block-text-base">
           <div class="feature-number">04</div>
           <div class="feature-icon">🕹️</div>
           <h4>像素风预览</h4>
@@ -67,12 +67,61 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { onMounted, nextTick } from 'vue'
 
 const router = useRouter()
 
 const navigateTo = (path) => {
   router.push(path)
 }
+
+// 每次进入页面时重置动画
+onMounted(async () => {
+  // 确保DOM完全渲染
+  await nextTick();
+  
+  // 重新触发动画序列
+  triggerAnimations();
+});
+
+// 重新触发动画的函数
+const triggerAnimations = () => {
+  // 移除所有动画类
+  const animatedElements = document.querySelectorAll('[class*="animate-"]');
+  animatedElements.forEach(el => {
+    const classes = Array.from(el.classList);
+    classes.forEach(className => {
+      if (className.includes('animate-')) {
+        el.classList.remove(className);
+      }
+    });
+  });
+  
+  // 强制重排
+  void document.body.offsetWidth;
+  
+  // 重新添加动画类
+  setTimeout(() => {
+    const bounceElements = document.querySelectorAll('.animate-bounce-base');
+    bounceElements.forEach(el => {
+      el.classList.add('animate-bounce');
+    });
+    
+    setTimeout(() => {
+      const fadeInElements = document.querySelectorAll('.animate-fade-in-base');
+      fadeInElements.forEach(el => {
+        el.classList.add('animate-fade-in');
+      });
+      
+      setTimeout(() => {
+        const blockTextElements = document.querySelectorAll('.animate-block-text-base');
+        blockTextElements.forEach(el => {
+          el.classList.add('animate-block-text');
+        });
+      }, 300);
+    }, 300);
+  }, 10);
+};
 </script>
 
 <style scoped>
@@ -224,12 +273,89 @@ const navigateTo = (path) => {
   }
 }
 
+/* 动画样式 */
+.animate-bounce-base {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.animate-bounce {
+  animation: bounce-in 0.6s ease-out forwards;
+}
+
+.animate-fade-in-base {
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out 0.3s forwards;
+}
+
+.animate-block-text-base {
+  position: relative;
+}
+
+.animate-block-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #383F59;
+  z-index: 5;
+}
+
+.animate-block-text {
+  animation: reveal-text 1s ease-out 0.6s forwards;
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(5px) scale(1.05);
+  }
+  80% {
+    transform: translateY(-5px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-text {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 50px; /* 增加间距 */
-  padding: 10px 0;
+  padding: 60px 10px 10px 10px; /* 增加上内边距 */
   position: relative; /* 相对定位 */
   z-index: 2; /* 确保内容在网格之上 */
 }
