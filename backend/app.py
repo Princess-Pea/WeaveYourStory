@@ -4,7 +4,9 @@ from flask_cors import CORS
 import datetime
 import jwt
 import json
+import time
 from utils.ai_wrapper import start_async_ai_task, get_task_status, generate_id
+from utils.ai_adapter import ai_adapter
 
 app = Flask(__name__)
 CORS(app) # 允许跨域请求
@@ -154,6 +156,155 @@ def get_task_status_api(task_id):
     }
     
     return jsonify(response_data)
+
+# --- AI辅助接口 ---
+@app.route('/api/v1/ai/assist/scene', methods=['POST'])
+@token_required
+def ai_assist_scene():
+    """
+    AI辅助生成场景
+    请求体规范：{content: str, context: dict, params: dict}
+    响应体规范：{code:200, msg:"success", requestId:"xxx", cost:0.5, data: {result: "AI生成的内容"}}
+    """
+    start_time = time.time()
+    data = request.json
+    content = data.get('content', '')
+    context = data.get('context', {})
+    params = data.get('params', {})
+    
+    try:
+        result = ai_adapter.assist_with_scene(content, context, params)
+        
+        response_data = {
+            "code": 200,
+            "msg": "success",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": result
+            }
+        }
+        return jsonify(response_data)
+    except Exception as e:
+        return jsonify({
+            "code": 500,
+            "msg": f"AI辅助生成场景失败: {str(e)}",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": ""
+            }
+        }), 500
+
+@app.route('/api/v1/ai/assist/dialog', methods=['POST'])
+@token_required
+def ai_assist_dialog():
+    """
+    AI辅助生成对话
+    请求体规范：{content: str, context: dict, params: dict}
+    响应体规范：{code:200, msg:"success", requestId:"xxx", cost:0.5, data: {result: "AI生成的内容"}}
+    """
+    start_time = time.time()
+    data = request.json
+    content = data.get('content', '')
+    context = data.get('context', {})
+    params = data.get('params', {})
+    
+    try:
+        result = ai_adapter.assist_with_dialog(content, context, params)
+        
+        response_data = {
+            "code": 200,
+            "msg": "success",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": result
+            }
+        }
+        return jsonify(response_data)
+    except Exception as e:
+        return jsonify({
+            "code": 500,
+            "msg": f"AI辅助生成对话失败: {str(e)}",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": ""
+            }
+        }), 500
+
+@app.route('/api/v1/ai/assist/task', methods=['POST'])
+@token_required
+def ai_assist_task():
+    """
+    AI辅助设计任务
+    请求体规范：{content: str, context: dict, params: dict}
+    响应体规范：{code:200, msg:"success", requestId:"xxx", cost:0.5, data: {result: "AI生成的内容"}}
+    """
+    start_time = time.time()
+    data = request.json
+    content = data.get('content', '')
+    context = data.get('context', {})
+    params = data.get('params', {})
+    
+    try:
+        result = ai_adapter.assist_with_task(content, context, params)
+        
+        response_data = {
+            "code": 200,
+            "msg": "success",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": result
+            }
+        }
+        return jsonify(response_data)
+    except Exception as e:
+        return jsonify({
+            "code": 500,
+            "msg": f"AI辅助设计任务失败: {str(e)}",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": ""
+            }
+        }), 500
+
+@app.route('/api/v1/game/save', methods=['POST'])
+@token_required
+def save_game():
+    """
+    保存编辑后的游戏数据
+    """
+    data = request.json
+    game_id = data.get('gameId', '')
+    game_data = data.get('gameData', {})
+    
+    if not game_id or not game_data:
+        return jsonify({"code": 400, "msg": "缺少必要参数", "requestId": generate_id()}), 400
+    
+    # 保存到本地文件
+    import os
+    import json
+    
+    # 确保数据目录存在
+    data_dir = "data"
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    
+    # 保存游戏数据到JSON文件
+    game_file_path = os.path.join(data_dir, f"game_{game_id}.json")
+    with open(game_file_path, 'w', encoding='utf-8') as f:
+        json.dump(game_data, f, ensure_ascii=False, indent=2)
+    
+    return jsonify({
+        "code": 200,
+        "msg": "保存成功",
+        "requestId": generate_id(),
+        "data": {"gameId": game_id}
+    })
 
 @app.route('/api/v1/ai/generate-game', methods=['POST'])
 @token_required

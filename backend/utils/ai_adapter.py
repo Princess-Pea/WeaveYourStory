@@ -21,6 +21,39 @@ class BaseAIAdapter(ABC):
         :return: 生成的游戏原型数据
         """
         pass
+    
+    @abstractmethod
+    def assist_with_scene(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助生成场景
+        :param content: 现有内容
+        :param context: 上下文信息
+        :param params: 生成参数
+        :return: 生成的场景内容
+        """
+        pass
+    
+    @abstractmethod
+    def assist_with_dialog(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助生成对话
+        :param content: 现有内容
+        :param context: 上下文信息
+        :param params: 生成参数
+        :return: 生成的对话内容
+        """
+        pass
+    
+    @abstractmethod
+    def assist_with_task(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助设计任务
+        :param content: 现有内容
+        :param context: 上下文信息
+        :param params: 生成参数
+        :return: 生成的任务内容
+        """
+        pass
 
 class OpenAIAIAdapter(BaseAIAdapter):
     """
@@ -53,6 +86,45 @@ class OpenAIAIAdapter(BaseAIAdapter):
         
         # 返回模拟结果
         return self._generate_mock_prototype(manuscript_data, params)
+    
+    def assist_with_scene(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助生成场景
+        """
+        if not self.api_key:
+            print("使用模拟数据AI辅助生成场景...")
+            return self._generate_mock_scene(content, context, params)
+        
+        # 实际API调用逻辑（模拟）
+        print(f"AI辅助生成场景，内容: {content}")
+        time.sleep(2)
+        return self._generate_mock_scene(content, context, params)
+    
+    def assist_with_dialog(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助生成对话
+        """
+        if not self.api_key:
+            print("使用模拟数据AI辅助生成对话...")
+            return self._generate_mock_dialog(content, context, params)
+        
+        # 实际API调用逻辑（模拟）
+        print(f"AI辅助生成对话，内容: {content}")
+        time.sleep(2)
+        return self._generate_mock_dialog(content, context, params)
+    
+    def assist_with_task(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助设计任务
+        """
+        if not self.api_key:
+            print("使用模拟数据AI辅助设计任务...")
+            return self._generate_mock_task(content, context, params)
+        
+        # 实际API调用逻辑（模拟）
+        print(f"AI辅助设计任务，内容: {content}")
+        time.sleep(2)
+        return self._generate_mock_task(content, context, params)
     
     def _generate_mock_prototype(self, manuscript_data: Dict[str, Any], params: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -248,6 +320,37 @@ class OpenAIAIAdapter(BaseAIAdapter):
                 "key": "E"       # 按E键互动
             }
         }
+    
+    def _generate_mock_scene(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        生成模拟场景内容
+        """
+        scene_name = context.get("sceneName", "新场景")
+        style = params.get("style", "像素风")
+        emotion = params.get("emotion", "治愈")
+        
+        return f"像素风格的{scene_name}，具有{emotion}氛围。背景包含树木、小径和远处的山丘。有可互动元素：神秘宝箱、友善NPC、隐藏通道。场景跳转关系：通往森林、村庄、洞穴。"
+    
+    def _generate_mock_dialog(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        生成模拟对话内容
+        """
+        character_name = context.get("characterName", "NPC")
+        style = params.get("style", "像素风")
+        emotion = params.get("emotion", "治愈")
+        
+        return f"{character_name}：\n- 你好，旅行者！\n- 这里最近有些奇怪的事情发生。\n- 也许你可以去问问村长。\n- 祝你好运！"
+    
+    def _generate_mock_task(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        生成模拟任务内容
+        """
+        task_name = context.get("taskName", "新任务")
+        style = params.get("style", "像素风")
+        emotion = params.get("emotion", "治愈")
+        
+        return f"任务名称：{task_name}\n触发条件：与村长对话\n完成条件：找到丢失的物品\n奖励：50经验值，10金币\n后续任务：解锁新区域\n任务描述：帮助村民找回丢失的重要物品，途中可能会遇到一些小挑战。"
+
 
 class WenxinAIAdapter(BaseAIAdapter):
     """
@@ -272,8 +375,35 @@ class WenxinAIAdapter(BaseAIAdapter):
         time.sleep(5)
         
         # 使用相同的方法生成模拟数据
-        adapter = OpenAIAAdapter()
+        adapter = OpenAIAIAdapter()
         return adapter._generate_mock_prototype(manuscript_data, params)
+    
+    def assist_with_scene(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助生成场景（文心一言模拟）
+        """
+        print(f"调用文心一言AI辅助生成场景，内容: {content}")
+        time.sleep(2)
+        adapter = OpenAIAIAdapter()
+        return adapter._generate_mock_scene(content, context, params)
+    
+    def assist_with_dialog(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助生成对话（文心一言模拟）
+        """
+        print(f"调用文心一言AI辅助生成对话，内容: {content}")
+        time.sleep(2)
+        adapter = OpenAIAIAdapter()
+        return adapter._generate_mock_dialog(content, context, params)
+    
+    def assist_with_task(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助设计任务（文心一言模拟）
+        """
+        print(f"调用文心一言AI辅助设计任务，内容: {content}")
+        time.sleep(2)
+        adapter = OpenAIAIAdapter()
+        return adapter._generate_mock_task(content, context, params)
 
 class AIAdapterFactory:
     """
