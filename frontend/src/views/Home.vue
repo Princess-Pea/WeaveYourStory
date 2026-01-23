@@ -91,7 +91,7 @@ const navigateTo = (path) => {
   top: 80px; /* 从导航栏下方开始 */
   left: 0;
   right: 0;
-  bottom: 200px; /* 在"指引"字段上方结束 */
+  bottom: 400px; /* 在"指引"字段上方结束，增加距离 */
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
@@ -288,7 +288,7 @@ const navigateTo = (path) => {
 }
 
 .features-section {
-  margin-top: 100px; /* 大幅增加间距，使页面分为上下两部分 */
+  margin-top: 240px; /* 大幅增加间距，约为之前距离的三倍 */
   position: relative; /* 相对定位 */
   z-index: 2; /* 确保内容在网格之上 */
 }
