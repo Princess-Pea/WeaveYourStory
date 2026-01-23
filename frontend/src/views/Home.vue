@@ -325,18 +325,15 @@ const triggerAnimations = () => {
     opacity: 0;
     transform: translateY(-40px) scale(0.1);
   }
-  20% {
+  30% {
     opacity: 1;
-    transform: translateY(-20px) scale(1.1);
-  }
-  40% {
-    transform: translateY(5px) scale(0.9);
+    transform: translateY(-10px) scale(1.05);
   }
   60% {
-    transform: translateY(-5px) scale(1.05);
+    transform: translateY(5px) scale(0.95);
   }
   80% {
-    transform: translateY(2px) scale(0.98);
+    transform: translateY(-2px) scale(1.02);
   }
   100% {
     transform: translateY(0) scale(1);
