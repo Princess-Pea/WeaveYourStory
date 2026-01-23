@@ -59,6 +59,9 @@
         </div>
       </div>
     </div>
+    
+    <!-- 底部空白区域 -->
+    <div class="bottom-spacer"></div>
   </div>
 </template>
 
@@ -91,7 +94,7 @@ const navigateTo = (path) => {
   top: 80px; /* 从导航栏下方开始 */
   left: 0;
   right: 0;
-  bottom: 400px; /* 在"指引"字段上方结束，增加距离 */
+  bottom: 600px; /* 在"指引"字段上方结束，增加更多距离 */
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
@@ -120,8 +123,6 @@ const navigateTo = (path) => {
 /* 粒子效果 */
 .particle {
   position: absolute;
-  width: 12px;
-  height: 12px;
   background-color: #E9A33B; /* 荧光黄色 */
   border-radius: 2px;
   animation: spin-float 8s infinite ease-in-out;
@@ -134,6 +135,8 @@ const navigateTo = (path) => {
   left: 10%;
   animation-delay: 0s;
   background-color: #E9A33B; /* 荧光黄色 */
+  width: 10px; /* 略小 */
+  height: 10px;
 }
 
 .particle-2 {
@@ -141,6 +144,8 @@ const navigateTo = (path) => {
   right: 15%;
   animation-delay: 2s;
   background-color: #5D8AA8; /* 荧光蓝色 */
+  width: 14px; /* 略大 */
+  height: 14px;
 }
 
 .particle-3 {
@@ -148,6 +153,8 @@ const navigateTo = (path) => {
   left: 20%;
   animation-delay: 4s;
   background-color: #FF6B6B; /* 荧光红色 */
+  width: 12px; /* 标准大小 */
+  height: 12px;
 }
 
 .particle-4 {
@@ -155,6 +162,8 @@ const navigateTo = (path) => {
   right: 25%;
   animation-delay: 6s;
   background-color: #9C51B6; /* 荧光紫色 */
+  width: 11px; /* 略小 */
+  height: 11px;
 }
 
 @keyframes spin-float {
@@ -196,8 +205,8 @@ const navigateTo = (path) => {
 .particle::before {
   content: '';
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 3px; /* 小粒子尺寸 */
+  height: 3px;
   background-color: currentColor;
   border-radius: 1px;
   opacity: 0;
@@ -384,6 +393,11 @@ const navigateTo = (path) => {
 .create-btn {
   padding: 15px 30px;
   font-size: 18px;
+}
+
+.bottom-spacer {
+  height: 200px; /* 添加底部空白区域 */
+  margin-top: 40px;
 }
 
 /* 按钮样式 */
