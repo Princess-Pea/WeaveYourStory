@@ -19,26 +19,31 @@
 
     <div class="features-section">
       <h3>指引</h3>
+      <p class="subtitle">4步让你的故事从想象转变为现实：</p>
       <div class="features-grid">
         <div class="feature-card">
+          <div class="feature-number">01</div>
           <div class="feature-icon">📝</div>
           <h4>结构化原稿输入</h4>
           <p>通过模板化表单输入剧情、角色和任务线</p>
         </div>
         
         <div class="feature-card">
+          <div class="feature-number">02</div>
           <div class="feature-icon">🤖</div>
           <h4>AI生成游戏雏形</h4>
           <p>智能AI根据原稿生成可编辑的游戏雏形</p>
         </div>
         
         <div class="feature-card">
+          <div class="feature-number">03</div>
           <div class="feature-icon">✏️</div>
           <h4>可视化编辑</h4>
           <p>直观编辑场景、角色、任务，实时预览效果</p>
         </div>
         
         <div class="feature-card">
+          <div class="feature-number">04</div>
           <div class="feature-icon">🕹️</div>
           <h4>像素风预览</h4>
           <p>实时体验设计的游戏，支持简单交互</p>
@@ -87,7 +92,7 @@ const navigateTo = (path) => {
 }
 
 .pixel-logo {
-  font-size: 4rem; /* 增大字号 */
+  font-size: 5rem; /* 再次增大字号 */
   font-weight: bold;
   color: #E9A33B; /* 高亮色 */
   text-shadow: 0 0 5px #E9A33B, 0 0 10px #E9A33B; /* 减弱的荧光效果 */
@@ -149,9 +154,18 @@ const navigateTo = (path) => {
 
 .features-section h3 {
   color: white;
-  margin-bottom: 40px; /* 增加间距 */
+  margin-bottom: 20px; /* 调整间距 */
   text-align: center;
   font-size: 1.8rem;
+}
+
+.features-section > .subtitle {
+  color: #bdc3c7; /* 浅灰色文字 */
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto 40px; /* 增加下方间距 */
+  line-height: 1.6;
+  text-align: center;
 }
 
 .features-grid {
@@ -170,6 +184,25 @@ const navigateTo = (path) => {
   transition: all 0.3s;
   background-color: #383F59; /* 功能块色背景 */
   color: white;
+  position: relative; /* 为序号定位做准备 */
+}
+
+.feature-number {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  background-color: #E9A33B; /* 高亮色背景 */
+  color: #020817; /* 深色文字 */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: 2px solid #E9A33B;
+  z-index: 10;
 }
 
 .feature-card:hover {

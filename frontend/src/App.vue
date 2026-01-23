@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div class="header-content">
-          <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+          <h1 class="app-title">PixelForge</h1>
           <nav class="navigation">
             <router-link to="/">首页</router-link>
             <router-link to="/manuscript-input">原稿输入</router-link>
@@ -51,6 +51,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.app-title {
+  font-family: 'Times New Roman', Times, serif; /* 使用Times New Roman字体 */
+  font-size: 1.5rem;
+  margin: 0;
 }
 
 .navigation {
