@@ -4,7 +4,7 @@
 """
 import os
 import sys
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 from flask_cors import CORS
 import threading
 import subprocess
@@ -34,21 +34,74 @@ else:
     app = backend_app
 
 # 配置静态文件服务，用于前端
-@app.route('/')
-def serve_index():
-    return send_from_directory('frontend/dist', 'index.html')
-
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_static(path):
-    if path.startswith('api/'):
-        # API请求，让后端处理
-        return backend_app.full_dispatch_request()
+    # 如果是API请求，交给后端处理
+    if path.startswith('api/') or '/api/' in path or path.startswith('health') or path.startswith('token') or path.startswith('game') or path.startswith('ai'):
+        # 为API请求，使用当前应用处理
+        return app.handle_request(request)
     else:
-        # 静态文件请求，从前端dist目录提供
+        # 非API请求，尝试返回前端静态文件
         try:
-            return send_from_directory('frontend/dist', path)
-        except FileNotFoundError:
-            return send_from_directory('frontend/dist', 'index.html')
+            # 如果请求的是根路径或前端路由，返回index.html
+            if path == '' or path == '/' or not '.' in path.split('/')[-1]:
+                # 检查前端构建文件是否存在
+                frontend_dist = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
+                index_path = os.path.join(frontend_dist, 'index.html')
+                if os.path.exists(index_path):
+                    return send_from_directory('frontend/dist', 'index.html')
+                else:
+                    # 如果前端构建文件不存在，返回一个简单的HTML页面提示
+                    return '''
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>PixelForge - 像素风情感叙事冒险游戏设计平台</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                            .container { max-width: 600px; margin: 0 auto; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+                            <p>后端服务正常运行中...</p>
+                            <p>正在等待前端构建完成...</p>
+                        </div>
+                    </body>
+                    </html>
+                    '''
+            # 如果请求的是静态资源文件，返回对应文件
+            else:
+                return send_from_directory('frontend/dist', path)
+        except Exception as e:
+            # 如果文件不存在，返回index.html以支持前端路由
+            frontend_dist = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
+            index_path = os.path.join(frontend_dist, 'index.html')
+            if os.path.exists(index_path):
+                return send_from_directory('frontend/dist', 'index.html')
+            else:
+                # 如果前端构建文件不存在，返回一个简单的HTML页面提示
+                return '''
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>PixelForge - 像素风情感叙事冒险游戏设计平台</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                        .container { max-width: 600px; margin: 0 auto; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+                        <p>后端服务正常运行中...</p>
+                        <p>正在等待前端构建完成...</p>
+                    </div>
+                </body>
+                </html>
+                '''
 
 if __name__ == '__main__':
     # 为魔搭创空间设置适当的主机和端口
