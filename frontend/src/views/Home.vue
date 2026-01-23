@@ -3,7 +3,7 @@
     <div class="header-section">
       <div class="logo-section">
         <h1 class="pixel-logo">PixelForge</h1>
-        <p class="subtitle">将你的故事打造成可游玩的像素风情感叙事冒险游戏。设计你的专属剧情，让ai为其赋予生命力，再打磨每一处细节</p>
+        <p class="subtitle">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情，让ai为其赋予生命力，再打磨每一处细节。</p>
       </div>
       <div class="header-right">
         <router-link to="/profile" class="profile-link">👤 个人中心</router-link>
@@ -65,14 +65,19 @@ const navigateTo = (path) => {
   background-color: #020817; /* 新的深蓝灰色背景 */
   border-radius: 10px;
   color: #ecf0f1; /* 浅灰色文字 */
+  min-height: 100vh;
 }
 
 .header-section {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 30px;
   padding: 10px 0;
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+  background-color: #020817; /* 背景色与页面一致 */
 }
 
 .logo-section {
@@ -84,10 +89,12 @@ const navigateTo = (path) => {
   font-size: 3rem;
   font-weight: bold;
   color: #E9A33B; /* 高亮色 */
-  text-shadow: 0 0 10px #E9A33B, 0 0 20px #E9A33B, 0 0 30px #E9A33B; /* 荧光效果 */
+  text-shadow: 0 0 5px #E9A33B, 0 0 10px #E9A33B; /* 减弱的荧光效果 */
   margin: 0 0 10px 0;
   letter-spacing: 3px;
-  font-family: 'Courier New', monospace;
+  font-family: 'Courier New', 'monospace', sans-serif; /* 像素风字体 */
+  font-variant: small-caps; /* 小型大写字母效果 */
+  text-transform: uppercase; /* 全部大写 */
 }
 
 .subtitle {
@@ -96,12 +103,17 @@ const navigateTo = (path) => {
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
+  text-align: center;
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 20px;
+  position: fixed; /* 固定定位，不随滚动变化 */
+  right: 20px;
+  top: 20px;
+  z-index: 1000;
 }
 
 .profile-link {
@@ -111,10 +123,12 @@ const navigateTo = (path) => {
   border-radius: 4px;
   transition: all 0.3s;
   border: 2px solid transparent;
+  background-color: #383F59; /* 功能块色背景 */
 }
 
 .profile-link:hover {
-  background-color: #383F59; /* 功能块色 */
+  background-color: #E9A33B; /* 悬停高亮色 */
+  color: black;
   text-decoration: underline;
   border: 2px solid #E9A33B; /* 悬停高亮色 */
   box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */

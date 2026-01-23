@@ -3,7 +3,6 @@
     <el-container>
       <el-header>
         <div class="header-content">
-          <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
         </div>
       </el-header>
       <el-main>
@@ -33,10 +32,11 @@ export default {
 }
 
 .el-header {
-  background-color: #383F59; /* 功能块色 */
+  background-color: #020817; /* 与背景同色，使其隐形 */
   color: #fff;
   display: flex;
   align-items: center;
+  border-bottom: none; /* 移除底部边框 */
 }
 
 .header-content {
