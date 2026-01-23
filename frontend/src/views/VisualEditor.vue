@@ -1001,41 +1001,30 @@ function getElementIcon(type) {
   }
 }
 
-// 编辑位置（简化版）
-function editPosition(element) {
-  // 这里可以弹出一个对话框让用户编辑坐标
-  ElMessageBox.prompt('请输入新的位置坐标 (x,y)', '编辑位置', {
-    inputValue: `${element.position[0]},${element.position[1]}`,
-    inputPattern: /^\d+,\d+$/,
-    inputErrorMessage: '格式为 x,y，例如：100,200'
-  }).then(({ value }) => {
-    const [x, y] = value.split(',').map(Number)
-    if (!isNaN(x) && !isNaN(y)) {
-      element.position = [x, y]
-      ElMessage.success('位置已更新')
-    } else {
-      ElMessage.error('输入的坐标无效')
-    }
-  }).catch(() => {
-    // 用户取消操作
-  })
+function editPosition(row) {
+  // 简单的位置编辑功能，实际应用中可能需要更复杂的界面
+  const x = prompt('X坐标:', row.position[0])
+  const y = prompt('Y坐标:', row.position[1])
+  if (x !== null && y !== null) {
+    row.position[0] = parseInt(x) || 0
+    row.position[1] = parseInt(y) || 0
+  }
 }
 </script>
 
 <style scoped>
 .visual-editor-container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  height: calc(100vh - 60px);
+  background-color: #2c3a47; /* 深蓝灰色背景 */
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .editor-header {
+  background-color: #34495e; /* 深蓝灰头部 */
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #409EFF;
-  color: white;
-  padding: 0 20px;
 }
 
 .header-actions {
@@ -1044,9 +1033,9 @@ function editPosition(element) {
 }
 
 .editor-sidebar {
-  background-color: #f5f5f5;
+  background-color: #34495e; /* 深蓝灰侧边栏 */
   padding: 15px;
-  height: calc(100vh - 60px);
+  border-right: 1px solid #4a6278; /* 深蓝灰边框 */
 }
 
 .sidebar-tabs {
@@ -1061,23 +1050,23 @@ function editPosition(element) {
 .custom-tree-node {
   flex: 1;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   font-size: 14px;
   padding-right: 8px;
 }
 
 .editor-main {
+  background-color: #2c3a47; /* 深蓝灰主内容区 */
   padding: 20px;
-  background-color: #fafafa;
+  overflow-y: auto;
 }
 
 .editing-panel {
-  background: white;
+  background-color: #34495e; /* 深蓝灰编辑面板 */
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  height: 100%;
+  border: 1px solid #4a6278; /* 深蓝灰边框 */
 }
 
 .no-selection {
@@ -1087,46 +1076,47 @@ function editPosition(element) {
   height: 100%;
 }
 
-.dialogs-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dialog-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.dialog-actions {
-  display: flex;
-  gap: 5px;
-  justify-content: flex-end;
+.editing-panel h3 {
+  color: white;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #4a6278; /* 深蓝灰分割线 */
+  padding-bottom: 10px;
 }
 
 .preview-area {
-  background-color: #f0f0f0;
-  padding: 20px;
-  border-left: 1px solid #e6e6e6;
-  display: flex;
-  flex-direction: column;
+  background-color: #34495e; /* 深蓝灰预览区 */
+  padding: 15px;
+  border-left: 1px solid #4a6278; /* 深蓝灰边框 */
+  color: white;
 }
 
 .pixel-preview-container {
-  flex: 1;
+  height: calc(100vh - 150px);
   overflow-y: auto;
+  background-color: #2c3a47; /* 深蓝灰容器 */
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .pixel-scene {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 15px;
-  min-height: 300px;
   position: relative;
-  background-size: 20px 20px;
-  background-image: linear-gradient(to right, #ccc 1px, transparent 1px),
-                    linear-gradient(to bottom, #ccc 1px, transparent 1px);
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  border: 1px solid #4a6278; /* 深蓝灰边框 */
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #3d566e; /* 较浅的深蓝灰背景 */
+}
+
+.pixel-scene h4 {
+  color: white;
+  margin-top: 0;
+}
+
+.pixel-scene p {
+  color: #bdc3c7; /* 浅灰色文字 */
+  font-size: 14px;
 }
 
 .pixel-element {
@@ -1138,36 +1128,168 @@ function editPosition(element) {
 
 .element-icon {
   font-size: 24px;
-  margin-bottom: 5px;
 }
 
 .element-label {
   font-size: 12px;
-  background: rgba(0,0,0,0.7);
   color: white;
+  background-color: rgba(0, 0, 0, 0.5);
   padding: 2px 4px;
-  border-radius: 3px;
+  border-radius: 4px;
+  margin-top: 2px;
 }
 
 .pixel-character {
   position: absolute;
-  font-size: 30px;
+  font-size: 32px;
 }
 
 .no-scene-selected {
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 300px;
-  color: #999;
+  align-items: center;
+  height: 100%;
+  color: #bdc3c7; /* 浅灰色文字 */
 }
 
-:deep(.el-table) {
+.dialog-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #3d566e; /* 较浅的深蓝灰背景 */
   border-radius: 4px;
-  overflow: hidden;
+  border: 1px solid #4a6278; /* 深蓝灰边框 */
 }
 
-:deep(.el-tree-node__content) {
-  height: 36px;
+.dialog-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
+}
+
+/* 表格样式 */
+:deep(.el-table) {
+  background-color: #3d566e !important; /* 深蓝灰表格背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+}
+
+:deep(.el-table th),
+:deep(.el-table td) {
+  background-color: #3d566e !important; /* 深蓝灰单元格背景 */
+  color: #ecf0f1 !important; /* 浅灰色文字 */
+  border-color: #4a6278 !important; /* 深蓝灰边框 */
+}
+
+:deep(.el-table__header tr),
+:deep(.el-table__body tr) {
+  background-color: #3d566e !important; /* 深蓝灰行背景 */
+}
+
+:deep(.el-table__body tr:hover > td) {
+  background-color: #4a6278 !important; /* 悬停行背景 */
+}
+
+/* 输入框样式 */
+:deep(.el-input__wrapper),
+:deep(.el-textarea__inner),
+:deep(.el-select__wrapper) {
+  background-color: #3d566e !important; /* 深蓝灰输入框背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  color: white !important; /* 白色输入文字 */
+}
+
+:deep(.el-input__inner),
+:deep(.el-textarea__inner) {
+  color: white !important;
+}
+
+/* 标签样式 */
+:deep(.el-form-item__label) {
+  color: #ecf0f1 !important; /* 浅灰色标签文字 */
+  font-weight: bold;
+}
+
+/* 树形控件样式 */
+:deep(.el-tree) {
+  background-color: transparent !important;
+}
+
+:deep(.el-tree-node__content:hover) {
+  background-color: #4a6278 !important; /* 悬停节点背景 */
+}
+
+:deep(.el-tree-node:focus) > .el-tree-node__content {
+  background-color: #4a6278 !important; /* 选中节点背景 */
+}
+
+/* 卡片样式 */
+:deep(.el-card__body) {
+  background-color: #3d566e !important; /* 深蓝灰卡片背景 */
+  color: white !important;
+}
+
+/* 空状态样式 */
+:deep(.el-empty__description span) {
+  color: #bdc3c7 !important; /* 浅灰色空状态文字 */
+}
+
+/* Tab标签页样式 */
+:deep(.el-tabs__item) {
+  color: #ecf0f1 !important; /* 浅灰色标签文字 */
+}
+
+:deep(.el-tabs__nav-wrap::after) {
+  background-color: #4a6278 !important; /* 深蓝灰底部边框 */
+}
+
+/* 按钮样式 */
+:deep(.el-button--primary) {
+  --el-button-bg-color: #3498db !important; /* 主要按钮颜色 */
+  --el-button-border-color: #3498db !important;
+  --el-button-hover-bg-color: #2980b9 !important;
+  --el-button-hover-border-color: #2980b9 !important;
+  --el-button-active-bg-color: #2980b9 !important;
+  --el-button-active-border-color: #2980b9 !important;
+}
+
+:deep(.el-button--success) {
+  --el-button-bg-color: #2ecc71 !important; /* 成功按钮颜色 */
+  --el-button-border-color: #2ecc71 !important;
+  --el-button-hover-bg-color: #27ae60 !important;
+  --el-button-hover-border-color: #27ae60 !important;
+  --el-button-active-bg-color: #27ae60 !important;
+  --el-button-active-border-color: #27ae60 !important;
+}
+
+:deep(.el-button--info) {
+  --el-button-bg-color: #95a5a6 !important; /* 信息按钮颜色 */
+  --el-button-border-color: #95a5a6 !important;
+  --el-button-hover-bg-color: #7f8c8d !important;
+  --el-button-hover-border-color: #7f8c8d !important;
+  --el-button-active-bg-color: #7f8c8d !important;
+  --el-button-active-border-color: #7f8c8d !important;
+}
+
+:deep(.el-button--danger) {
+  --el-button-bg-color: #e74c3c !important; /* 危险按钮颜色 */
+  --el-button-border-color: #e74c3c !important;
+  --el-button-hover-bg-color: #c0392b !important;
+  --el-button-hover-border-color: #c0392b !important;
+  --el-button-active-bg-color: #c0392b !important;
+  --el-button-active-border-color: #c0392b !important;
+}
+
+/* 数字输入框样式 */
+:deep(.el-input-number) {
+  background-color: #3d566e !important; /* 深蓝灰输入框背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  border-radius: 4px !important;
+}
+
+:deep(.el-input-number__decrease),
+:deep(.el-input-number__increase) {
+  background-color: #4a6278 !important; /* 按钮背景 */
+  border: none !important;
+  color: white !important;
 }
 </style>

@@ -4,6 +4,7 @@ import ManuscriptInput from '../views/ManuscriptInput.vue'
 import GenerationProgress from '../views/GenerationProgress.vue'
 import PixelPreview from '../views/PixelPreview.vue'
 import VisualEditor from '../views/VisualEditor.vue'
+import Profile from '../views/Profile.vue'
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
     path: '/visual-editor',
     name: 'VisualEditor',
     component: VisualEditor
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
   }
 ]
 

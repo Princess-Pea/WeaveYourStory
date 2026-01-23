@@ -459,29 +459,36 @@ loadDraft()
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  background-color: #2c3a47; /* 深蓝灰色背景 */
+  border-radius: 10px;
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .module-card {
   margin-bottom: 20px;
+  background-color: #34495e; /* 深蓝灰卡片背景 */
+  border: 1px solid #4a6278; /* 深蓝灰边框 */
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: white;
 }
 
 .required {
-  color: var(--el-color-danger);
+  color: #e74c3c; /* 红色星号 */
 }
 
 .mission-item,
 .character-item {
   margin-bottom: 20px;
   padding: 15px;
-  border: 1px solid #e4e7ed;
+  border: 1px solid #4a6278; /* 深蓝灰边框 */
   border-radius: 4px;
-  background-color: #fafafa;
+  background-color: #3d566e; /* 较浅的深蓝灰背景 */
+  color: white;
 }
 
 .form-actions {
@@ -493,5 +500,46 @@ loadDraft()
 
 :deep(.el-form-item__label) {
   font-weight: bold;
+  color: #ecf0f1 !important; /* 浅灰色标签文字 */
+}
+
+:deep(.el-input__wrapper),
+:deep(.el-textarea__inner),
+:deep(.el-select__wrapper) {
+  background-color: #3d566e !important; /* 深蓝灰输入框背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+  color: white !important; /* 白色输入文字 */
+}
+
+:deep(.el-input__inner),
+:deep(.el-textarea__inner) {
+  color: white !important;
+}
+
+:deep(.el-card__header) {
+  background-color: #2c3a47 !important; /* 深蓝灰卡片头部 */
+  color: white !important;
+  border-bottom: 1px solid #4a6278 !important;
+}
+
+:deep(.el-divider__text) {
+  background-color: #2c3a47 !important; /* 深蓝灰分割线文字背景 */
+  color: #ecf0f1 !important; /* 浅灰色文字 */
+}
+
+:deep(.el-divider__content) {
+  background-color: #2c3a47 !important; /* 深蓝灰分割线内容背景 */
+  color: #ecf0f1 !important; /* 浅灰色文字 */
+}
+
+h2 {
+  color: white;
+  text-align: center;
+}
+
+p {
+  color: #bdc3c7; /* 浅灰色描述文字 */
+  text-align: center;
+  margin-bottom: 30px;
 }
 </style>

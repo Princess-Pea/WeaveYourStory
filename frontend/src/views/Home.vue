@@ -93,23 +93,37 @@ const navigateTo = (path) => {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: #2c3a47; /* 深蓝灰色背景 */
+  border-radius: 10px;
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .hero-section {
   text-align: center;
   margin-bottom: 40px;
   padding: 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #34495e 0%, #2c3a47 100%); /* 深蓝灰渐变 */
   color: white;
   border-radius: 10px;
 }
 
 .hero-section h2 {
   margin: 0 0 10px 0;
+  color: white;
+}
+
+.hero-section p {
+  margin: 0;
+  color: #bdc3c7; /* 浅灰色文字 */
 }
 
 .features-section {
   margin-bottom: 40px;
+}
+
+.features-section h3 {
+  color: white;
+  margin-bottom: 20px;
 }
 
 .features-grid {
@@ -120,18 +134,21 @@ const navigateTo = (path) => {
 }
 
 .feature-card {
-  border: 1px solid #e4e7ed;
+  border: 1px solid #34495e; /* 深蓝灰边框 */
   border-radius: 8px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
+  background-color: #34495e; /* 深蓝灰卡片背景 */
+  color: white;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-  border-color: #409eff;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  border-color: #4a6278;
+  background-color: #4a6278; /* 悬停时更深的蓝灰 */
 }
 
 .feature-icon {
@@ -141,16 +158,21 @@ const navigateTo = (path) => {
 
 .feature-card h4 {
   margin: 10px 0;
-  color: #303133;
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .feature-card p {
-  color: #909399;
+  color: #bdc3c7; /* 浅灰色文字 */
   font-size: 14px;
 }
 
 .games-section {
   margin-bottom: 40px;
+}
+
+.games-section h3 {
+  color: white;
+  margin-bottom: 20px;
 }
 
 .games-list {
@@ -162,19 +184,21 @@ const navigateTo = (path) => {
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border: 1px solid #e4e7ed;
+  border: 1px solid #34495e; /* 深蓝灰边框 */
   border-radius: 8px;
   margin-bottom: 10px;
+  background-color: #34495e; /* 深蓝灰背景 */
+  color: white;
 }
 
 .game-info h4 {
   margin: 0 0 5px 0;
-  color: #303133;
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .game-info p {
   margin: 0;
-  color: #909399;
+  color: #bdc3c7; /* 浅灰色文字 */
   font-size: 14px;
 }
 
@@ -191,5 +215,25 @@ const navigateTo = (path) => {
 .create-btn {
   padding: 15px 30px;
   font-size: 18px;
+}
+
+/* 按钮样式 */
+:deep(.el-button--primary) {
+  --el-button-bg-color: #3498db !important; /* 主要按钮颜色 */
+  --el-button-border-color: #3498db !important;
+  --el-button-hover-bg-color: #2980b9 !important;
+  --el-button-hover-border-color: #2980b9 !important;
+  --el-button-active-bg-color: #2980b9 !important;
+  --el-button-active-border-color: #2980b9 !important;
+}
+
+:deep(.el-button) {
+  --el-button-bg-color: #4a6278 !important; /* 默认按钮颜色 */
+  --el-button-border-color: #4a6278 !important;
+  --el-button-hover-bg-color: #5a7a92 !important;
+  --el-button-hover-border-color: #5a7a92 !important;
+  --el-button-active-bg-color: #5a7a92 !important;
+  --el-button-active-border-color: #5a7a92 !important;
+  color: white !important;
 }
 </style>

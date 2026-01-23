@@ -522,7 +522,7 @@ function getSceneBackground(scene) {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #2c3e50;
+  background-color: #2c3a47; /* 深蓝灰色背景 */
   color: white;
   font-family: 'Courier New', Courier, monospace;
 }
@@ -532,7 +532,7 @@ function getSceneBackground(scene) {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #34495e;
+  background-color: #34495e; /* 深蓝灰头部 */
   border-bottom: 4px solid #3498db;
 }
 
@@ -655,7 +655,7 @@ function getSceneBackground(scene) {
 
 .pixel-dialog-box {
   position: absolute;
-  background: #2c3e50;
+  background: #2c3a47; /* 深蓝灰对话框背景 */
   border: 4px solid #ecf0f1;
   border-radius: 8px;
   padding: 15px;
@@ -686,6 +686,7 @@ function getSceneBackground(scene) {
 .dialog-content p {
   margin: 0;
   line-height: 1.5;
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .dialog-controls {

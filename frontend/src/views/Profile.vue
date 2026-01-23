@@ -1,0 +1,364 @@
+<template>
+  <div class="profile-container">
+    <el-card class="profile-card">
+      <h2>👤 个人中心</h2>
+      
+      <div class="profile-section">
+        <h3>📋 我的作品管理</h3>
+        
+        <div class="actions">
+          <el-button type="primary" @click="saveCurrentGame">💾 保存当前游戏</el-button>
+          <el-button type="success" @click="exportGameConfig">📤 导出游戏配置</el-button>
+          <el-button type="danger" @click="clearAllGames">🗑️ 清空所有游戏</el-button>
+        </div>
+        
+        <div class="games-list">
+          <el-table 
+            :data="gamesList" 
+            style="width: 100%"
+            :row-class-name="tableRowClassName"
+          >
+            <el-table-column prop="id" label="ID" width="100" />
+            <el-table-column prop="name" label="游戏名称" width="200" />
+            <el-table-column prop="createTime" label="创建时间" width="180" />
+            <el-table-column prop="lastModified" label="最后修改" width="180" />
+            <el-table-column prop="status" label="状态" width="100">
+              <template #default="{ row }">
+                <el-tag 
+                  :type="getStatusType(row.status)"
+                  disable-transitions
+                >
+                  {{ getStatusText(row.status) }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="200">
+              <template #default="{ row }">
+                <el-button 
+                  size="small" 
+                  @click="loadGame(row)"
+                >
+                  加载
+                </el-button>
+                <el-button 
+                  size="small" 
+                  type="primary"
+                  @click="editGame(row)"
+                >
+                  编辑
+                </el-button>
+                <el-button 
+                  size="small" 
+                  type="danger"
+                  @click="deleteGame(row)"
+                >
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </el-card>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// 游戏列表
+const gamesList = ref([])
+
+// 初始化
+onMounted(() => {
+  loadGamesList()
+})
+
+// 加载游戏列表
+function loadGamesList() {
+  // 从localStorage加载游戏列表
+  const savedGames = localStorage.getItem('games_list')
+  if (savedGames) {
+    try {
+      gamesList.value = JSON.parse(savedGames)
+    } catch (error) {
+      console.error('加载游戏列表失败:', error)
+      gamesList.value = []
+    }
+  } else {
+    // 默认展示一些示例数据
+    gamesList.value = [
+      {
+        id: 'game_1',
+        name: '新手村冒险',
+        createTime: '2023-10-01 10:30:00',
+        lastModified: '2023-10-01 15:45:00',
+        status: 'completed'
+      },
+      {
+        id: 'game_2',
+        name: '森林探险记',
+        createTime: '2023-10-02 14:20:00',
+        lastModified: '2023-10-02 18:30:00',
+        status: 'in_progress'
+      },
+      {
+        id: 'game_3',
+        name: '神秘洞穴之谜',
+        createTime: '2023-10-03 09:15:00',
+        lastModified: '2023-10-03 09:15:00',
+        status: 'draft'
+      }
+    ]
+  }
+}
+
+// 保存当前游戏
+function saveCurrentGame() {
+  ElMessage.success('当前游戏已保存')
+  // 这里可以实现保存当前游戏的逻辑
+}
+
+// 导出游戏配置
+function exportGameConfig() {
+  // 创建一个包含游戏配置的JSON对象
+  const gameConfig = {
+    games: gamesList.value,
+    exportTime: new Date().toISOString(),
+    version: '1.0'
+  }
+  
+  // 创建并下载文件
+  const dataStr = JSON.stringify(gameConfig, null, 2)
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
+  
+  const exportFileDefaultName = 'game_config.json'
+  
+  const linkElement = document.createElement('a')
+  linkElement.setAttribute('href', dataUri)
+  linkElement.setAttribute('download', exportFileDefaultName)
+  linkElement.click()
+  
+  ElMessage.success('游戏配置已导出')
+}
+
+// 清空所有游戏
+async function clearAllGames() {
+  try {
+    await ElMessageBox.confirm(
+      '此操作将永久删除所有游戏数据，是否继续？',
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    )
+    
+    // 清空localStorage中的游戏数据
+    localStorage.removeItem('games_list')
+    gamesList.value = []
+    ElMessage.success('所有游戏已清空')
+  } catch (error) {
+    // 用户取消操作
+  }
+}
+
+// 加载游戏
+function loadGame(game) {
+  ElMessage.success(`已加载游戏: ${game.name}`)
+  // 这里可以实现加载游戏的逻辑
+}
+
+// 编辑游戏
+function editGame(game) {
+  router.push(`/visual-editor?gameId=${game.id}`)
+}
+
+// 删除游戏
+async function deleteGame(game) {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除游戏 "${game.name}" 吗？`,
+      '删除游戏',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    )
+    
+    // 从列表中删除该游戏
+    const index = gamesList.value.findIndex(item => item.id === game.id)
+    if (index !== -1) {
+      gamesList.value.splice(index, 1)
+      
+      // 更新localStorage
+      localStorage.setItem('games_list', JSON.stringify(gamesList.value))
+      
+      ElMessage.success('游戏已删除')
+    }
+  } catch (error) {
+    // 用户取消操作
+  }
+}
+
+// 获取状态类型
+function getStatusType(status) {
+  switch(status) {
+    case 'completed': return 'success'
+    case 'in_progress': return 'warning'
+    case 'draft': return 'info'
+    case 'failed': return 'danger'
+    default: return 'info'
+  }
+}
+
+// 获取状态文本
+function getStatusText(status) {
+  switch(status) {
+    case 'completed': return '已完成'
+    case 'in_progress': return '进行中'
+    case 'draft': return '草稿'
+    case 'failed': return '失败'
+    default: return '未知'
+  }
+}
+
+// 表格行样式
+function tableRowClassName({ row, rowIndex }) {
+  if (row.status === 'completed') {
+    return 'success-row'
+  } else if (row.status === 'failed') {
+    return 'error-row'
+  }
+  return ''
+}
+</script>
+
+<style scoped>
+.profile-container {
+  padding: 20px;
+  background-color: #2c3a47; /* 深蓝灰色背景 */
+  min-height: calc(100vh - 100px);
+}
+
+.profile-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #34495e !important; /* 深蓝灰卡片背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+}
+
+.profile-card h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-section {
+  margin-bottom: 30px;
+}
+
+.profile-section h3 {
+  color: white;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #4a6278; /* 深蓝灰分割线 */
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.games-list {
+  margin-top: 20px;
+}
+
+/* 表格样式 */
+:deep(.el-table) {
+  background-color: #3d566e !important; /* 深蓝灰表格背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+}
+
+:deep(.el-table th),
+:deep(.el-table td) {
+  background-color: #3d566e !important; /* 深蓝灰单元格背景 */
+  color: #ecf0f1 !important; /* 浅灰色文字 */
+  border-color: #4a6278 !important; /* 深蓝灰边框 */
+}
+
+:deep(.el-table__header tr),
+:deep(.el-table__body tr) {
+  background-color: #3d566e !important; /* 深蓝灰行背景 */
+}
+
+:deep(.el-table__body tr:nth-child(even)) {
+  background-color: #405a70 !important; /* 深蓝灰偶数行背景 */
+}
+
+:deep(.el-table__body tr:hover > td) {
+  background-color: #4a6278 !important; /* 悬停行背景 */
+}
+
+/* 成功行样式 */
+:deep(.el-table .success-row) {
+  background-color: #2ecc71 !important; /* 绿色成功行 */
+  color: white !important;
+}
+
+/* 错误行样式 */
+:deep(.el-table .error-row) {
+  background-color: #e74c3c !important; /* 红色错误行 */
+  color: white !important;
+}
+
+/* 标签样式 */
+:deep(.el-tag) {
+  border: none;
+}
+
+/* 按钮样式 */
+:deep(.el-button--primary) {
+  --el-button-bg-color: #3498db !important; /* 主要按钮颜色 */
+  --el-button-border-color: #3498db !important;
+  --el-button-hover-bg-color: #2980b9 !important;
+  --el-button-hover-border-color: #2980b9 !important;
+  --el-button-active-bg-color: #2980b9 !important;
+  --el-button-active-border-color: #2980b9 !important;
+}
+
+:deep(.el-button--success) {
+  --el-button-bg-color: #2ecc71 !important; /* 成功按钮颜色 */
+  --el-button-border-color: #2ecc71 !important;
+  --el-button-hover-bg-color: #27ae60 !important;
+  --el-button-hover-border-color: #27ae60 !important;
+  --el-button-active-bg-color: #27ae60 !important;
+  --el-button-active-border-color: #27ae60 !important;
+}
+
+:deep(.el-button--danger) {
+  --el-button-bg-color: #e74c3c !important; /* 危险按钮颜色 */
+  --el-button-border-color: #e74c3c !important;
+  --el-button-hover-bg-color: #c0392b !important;
+  --el-button-hover-border-color: #c0392b !important;
+  --el-button-active-bg-color: #c0392b !important;
+  --el-button-active-border-color: #c0392b !important;
+}
+
+:deep(.el-button--warning) {
+  --el-button-bg-color: #f39c12 !important; /* 警告按钮颜色 */
+  --el-button-border-color: #f39c12 !important;
+  --el-button-hover-bg-color: #e67e22 !important;
+  --el-button-hover-border-color: #e67e22 !important;
+  --el-button-active-bg-color: #e67e22 !important;
+  --el-button-active-border-color: #e67e22 !important;
+}
+</style>

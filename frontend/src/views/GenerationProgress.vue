@@ -137,7 +137,7 @@ const retryGeneration = () => {
   justify-content: center;
   align-items: center;
   height: 80vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #2c3a47; /* 深蓝灰色背景 */
   padding: 20px;
 }
 
@@ -147,6 +147,16 @@ const retryGeneration = () => {
   text-align: center;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  background-color: #34495e !important; /* 深蓝灰卡片背景 */
+  border: 1px solid #4a6278 !important; /* 深蓝灰边框 */
+}
+
+.el-card h2 {
+  color: white;
+}
+
+.el-card p {
+  color: #ecf0f1; /* 浅灰色文字 */
 }
 
 .progress-section {
@@ -158,7 +168,7 @@ const retryGeneration = () => {
 .status-text {
   margin-top: 20px;
   font-size: 18px;
-  color: #333;
+  color: #ecf0f1; /* 浅灰色文字 */
   font-weight: bold;
 }
 
@@ -182,7 +192,7 @@ const retryGeneration = () => {
 .pixel-block {
   width: 15px;
   height: 15px;
-  background-color: #409EFF;
+  background-color: #3498db; /* 深蓝灰主题色 */
   margin: 0 3px;
   animation: pixelBounce 1.5s infinite ease-in-out;
 }
