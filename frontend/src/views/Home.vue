@@ -3,6 +3,7 @@
     <div class="header-section">
       <div class="logo-section">
         <h1 class="pixel-logo">PixelForge</h1>
+        <h2 class="subheading">像素风情感叙事冒险游戏设计平台</h2>
         <p class="subtitle">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情，让ai为其赋予生命力，再打磨每一处细节。</p>
       </div>
       <div class="header-right">
@@ -86,15 +87,23 @@ const navigateTo = (path) => {
 }
 
 .pixel-logo {
-  font-size: 3rem;
+  font-size: 4rem; /* 增大字号 */
   font-weight: bold;
   color: #E9A33B; /* 高亮色 */
   text-shadow: 0 0 5px #E9A33B, 0 0 10px #E9A33B; /* 减弱的荧光效果 */
   margin: 0 0 10px 0;
   letter-spacing: 3px;
-  font-family: 'Courier New', 'monospace', sans-serif; /* 像素风字体 */
+  font-family: 'Unifont Medium', 'Courier New', 'monospace', sans-serif; /* 使用Unifont Medium字体 */
   font-variant: small-caps; /* 小型大写字母效果 */
-  text-transform: uppercase; /* 全部大写 */
+  text-transform: capitalize; /* 保持首字母大写 */
+}
+
+.subheading {
+  font-size: 1.8rem; /* 介于主标题和副标题之间的字号 */
+  color: white;
+  margin: 10px 0 15px;
+  font-family: 'Courier New', 'monospace', sans-serif;
+  letter-spacing: 1px;
 }
 
 .subtitle {
