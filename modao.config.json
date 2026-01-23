@@ -1,0 +1,26 @@
+{
+  "name": "PixelForge",
+  "description": "团队协作Web应用",
+  "version": "1.0.0",
+  "engine": {
+    "type": "static",
+    "version": "latest"
+  },
+  "build": {
+    "script": "npm install"
+  },
+  "deploy": {
+    "public": true,
+    "region": "china"
+  },
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "routes": {
+    "public": "/"
+  },
+  "resources": {
+    "cpu": "0.5",
+    "memory": "512MB"
+  }
+}
