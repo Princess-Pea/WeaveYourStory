@@ -67,7 +67,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { onMounted, nextTick } from 'vue'
+import { onMounted, nextTick, onUnmounted } from 'vue'
 
 const router = useRouter()
 
@@ -75,47 +75,67 @@ const navigateTo = (path) => {
   router.push(path)
 }
 
+let animationObserver = null;
+
 // 每次进入页面时重置动画
 onMounted(async () => {
   // 确保DOM完全渲染
   await nextTick();
   
-  // 重新触发动画序列
+  // 立即触发动画序列
   triggerAnimations();
+  
+  // 使用Intersection Observer监听页面是否可见，以便在页面重新进入时再次触发
+  animationObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.classList.contains('home-container')) {
+        // 当页面重新进入视窗时，再次触发动画
+        setTimeout(() => {
+          triggerAnimations();
+        }, 100);
+      }
+    });
+  }, {
+    threshold: 0.1
+  });
+  
+  animationObserver.observe(document.querySelector('.home-container'));
+});
+
+// 组件卸载时断开观察器
+onUnmounted(() => {
+  if (animationObserver) {
+    animationObserver.disconnect();
+  }
 });
 
 // 重新触发动画的函数
 const triggerAnimations = () => {
-  // 移除所有动画类
-  const animatedElements = document.querySelectorAll('[class*="animate-"]');
-  animatedElements.forEach(el => {
-    const classes = Array.from(el.classList);
-    classes.forEach(className => {
-      if (className.includes('animate-')) {
-        el.classList.remove(className);
-      }
-    });
-  });
-  
-  // 强制重排
-  void document.body.offsetWidth;
-  
-  // 重新添加动画类
+  // 为所有动画元素添加动画类
   setTimeout(() => {
-    const bounceElements = document.querySelectorAll('.animate-bounce-base');
-    bounceElements.forEach(el => {
-      el.classList.add('animate-bounce');
-    });
+    // 首先触发PixelForge logo的弹跳动画
+    const logo = document.querySelector('.pixel-logo');
+    if (logo) {
+      logo.classList.remove('animate-bounce');
+      void logo.offsetWidth; // 强制重排
+      logo.classList.add('animate-bounce');
+    }
     
+    // 然后触发文字渐显动画
     setTimeout(() => {
-      const fadeInElements = document.querySelectorAll('.animate-fade-in-base');
-      fadeInElements.forEach(el => {
+      const fadeElements = document.querySelectorAll('.animate-fade-in-base');
+      fadeElements.forEach(el => {
+        el.classList.remove('animate-fade-in');
+        void el.offsetWidth; // 强制重排
         el.classList.add('animate-fade-in');
       });
       
+      // 最后触发块状显示动画
       setTimeout(() => {
-        const blockTextElements = document.querySelectorAll('.animate-block-text-base');
-        blockTextElements.forEach(el => {
+        const blockElements = document.querySelectorAll('.animate-block-text-base');
+        blockElements.forEach(el => {
+          el.classList.remove('animate-block-text');
+          void el.offsetWidth; // 强制重排
           el.classList.add('animate-block-text');
         });
       }, 300);
@@ -355,7 +375,7 @@ const triggerAnimations = () => {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 50px; /* 增加间距 */
-  padding: 60px 10px 10px 10px; /* 增加上内边距 */
+  padding: 100px 10px 10px 10px; /* 增加上内边距 */
   position: relative; /* 相对定位 */
   z-index: 2; /* 确保内容在网格之上 */
 }
