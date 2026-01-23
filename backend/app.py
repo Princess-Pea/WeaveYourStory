@@ -90,7 +90,6 @@ def ai_submit_game():
     
     # 存储原稿数据到本地文件（模拟数据库存储）
     import os
-    import json
     
     # 确保数据目录存在
     data_dir = "data"
@@ -121,6 +120,40 @@ def ai_submit_game():
             "gameId": game_id
         }
     })
+
+@app.route('/api/v1/ai/task/<task_id>', methods=['GET'])
+@token_required
+def get_task_status_api(task_id):
+    """
+    查询异步任务状态
+    响应体规范：{code:200, msg:"success", data: {taskId:"xxx", status:"completed/failed/pending", progress:80, result:{...}, errorMsg:""}}
+    """
+    task_data = get_task_status(task_id)
+    
+    # 根据内部状态映射到规范状态
+    status_mapping = {
+        "not_found": "pending",
+        "processing": "pending",
+        "completed": "completed",
+        "failed": "failed"
+    }
+    
+    normalized_status = status_mapping.get(task_data.get("status", "not_found"), "pending")
+    
+    response_data = {
+        "code": 200,
+        "msg": "success",
+        "requestId": generate_id(),
+        "data": {
+            "taskId": task_id,
+            "status": normalized_status,
+            "progress": task_data.get("progress", 0),
+            "result": task_data.get("result", None),
+            "errorMsg": task_data.get("errorMsg", "")
+        }
+    }
+    
+    return jsonify(response_data)
 
 @app.route('/api/v1/ai/generate-game', methods=['POST'])
 @token_required

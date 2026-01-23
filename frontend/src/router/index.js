@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ManuscriptInput from '../views/ManuscriptInput.vue'
 import GenerationProgress from '../views/GenerationProgress.vue'
 import PixelPreview from '../views/PixelPreview.vue'
+import VisualEditor from '../views/VisualEditor.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/pixel-preview',
     name: 'PixelPreview',
     component: PixelPreview
+  },
+  {
+    path: '/visual-editor',
+    name: 'VisualEditor',
+    component: VisualEditor
   }
 ]
 
