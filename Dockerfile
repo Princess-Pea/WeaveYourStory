@@ -11,13 +11,13 @@ RUN pip install flask flask-cors pyjwt python-dotenv
 # 安装Node.js依赖
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
 
-# 构建前端
+# 前端已经构建，直接使用
+# 如果前端尚未构建，则构建前端（可选）
 WORKDIR /home/user/app/frontend
-RUN npm install
-RUN npx vite build
+RUN if [ ! -d "dist" ]; then npm install && npx vite build; fi
 
 # 返回到项目根目录
 WORKDIR /home/user/app
 
 # 启动应用
-ENTRYPOINT ["python", "-u", "modelscope_app.py"]
+ENTRYPOINT ["python", "-u", "modelspace_app.py"]
