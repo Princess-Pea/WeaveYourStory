@@ -65,6 +65,7 @@ def init_auth_middleware(app):
         '/api/v1/auth/register',
         '/api/v1/auth/login',
         '/api/v1/auth/refresh',
+        '/api/v1/auth/guest',  # 游客登录接口无需鉴权
         '/swagger',
         '/api/v1/game/preview/'  # 预览接口无需鉴权
     ]
