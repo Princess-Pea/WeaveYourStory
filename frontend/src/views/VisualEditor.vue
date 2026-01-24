@@ -477,6 +477,8 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../utils/request'
+import { saveProject } from '@/api/projects'
+import { useAuth } from '@/stores/auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -856,22 +858,47 @@ function removeDialog(character, index) {
 // 保存修改
 async function saveChanges() {
   try {
-    // 调用后端API保存修改
-    const response = await request.post('/game/save', {
-      gameId: gameData.value.gameId,
-      gameData: gameData.value
-    })
+    // 检查是否为游客模式
+    const { userInfo } = useAuth();
+    if (userInfo.value?.is_guest) {
+      ElMessage.warning('游客模式不支持保存功能，请注册登录后使用');
+      return;
+    }
+    
+    // 构造项目数据
+    const projectData = {
+      title: gameData.value.title || '未命名游戏',
+      game_data: gameData.value,
+      status: 'editing'
+    };
+    
+    // 如果有项目ID，则更新现有项目，否则创建新项目
+    if (gameData.value.projectId) {
+      projectData.project_id = gameData.value.projectId;
+    }
+    
+    // 调用后端API保存项目
+    const response = await saveProject(projectData);
     
     if (response.code === 200) {
-      // 同时保存到本地存储
-      localStorage.setItem(`game_${gameData.value.gameId}`, JSON.stringify(gameData.value))
-      ElMessage.success('修改已保存！')
+      // 更新本地存储的游戏数据
+      if (response.data.project_id) {
+        gameData.value.projectId = response.data.project_id;
+      }
+      localStorage.setItem(`game_${gameData.value.gameId}`, JSON.stringify(gameData.value));
+      ElMessage.success('修改已保存！');
     } else {
-      throw new Error(response.msg || '保存失败')
+      throw new Error(response.msg || '保存失败');
     }
   } catch (error) {
-    console.error('保存游戏数据失败:', error)
-    ElMessage.error(error.message || '保存失败，请重试')
+    console.error('保存游戏数据失败:', error);
+    
+    // 检查是否为游客模式限制
+    if (error.response?.data?.code === 403 && error.response.data.data?.guest_mode) {
+      ElMessage.warning('游客模式不支持保存功能，请注册登录后使用');
+    } else {
+      ElMessage.error(error.message || '保存失败，请重试');
+    }
   }
 }
 

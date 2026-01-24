@@ -67,6 +67,8 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { saveProject } from '@/api/projects'
+import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
 
@@ -118,9 +120,77 @@ function loadGamesList() {
 }
 
 // 保存当前游戏
-function saveCurrentGame() {
-  ElMessage.success('当前游戏已保存')
-  // 这里可以实现保存当前游戏的逻辑
+async function saveCurrentGame() {
+  try {
+    // 检查是否为游客模式
+    const { userInfo } = useAuth();
+    if (userInfo.value?.is_guest) {
+      ElMessage.warning('游客模式不支持保存功能，请注册登录后使用');
+      return;
+    }
+    
+    // 获取当前编辑的游戏数据（从localStorage或其他来源）
+    const currentGameId = localStorage.getItem('currentGameId');
+    if (!currentGameId) {
+      ElMessage.warning('没有检测到当前正在编辑的游戏');
+      return;
+    }
+    
+    const currentGameData = localStorage.getItem(`game_${currentGameId}`);
+    if (!currentGameData) {
+      ElMessage.warning('未找到当前游戏数据');
+      return;
+    }
+    
+    const gameDataObj = JSON.parse(currentGameData);
+    
+    // 构造项目数据
+    const projectData = {
+      title: gameDataObj.gameName || '未命名游戏',
+      game_data: gameDataObj,
+      status: 'published'  // 保存当前游戏通常意味着发布
+    };
+    
+    // 调用后端API保存项目
+    const response = await saveProject(projectData);
+    
+    if (response.code === 200) {
+      // 更新本地游戏列表
+      const gameEntry = {
+        id: response.data.project_id,
+        name: gameDataObj.gameName || '未命名游戏',
+        createTime: new Date().toLocaleString(),
+        lastModified: new Date().toLocaleString(),
+        status: 'published'
+      };
+      
+      // 检查是否已存在于列表中
+      const existingIndex = gamesList.value.findIndex(game => game.id === response.data.project_id);
+      if (existingIndex >= 0) {
+        // 更新现有游戏
+        gamesList.value[existingIndex] = gameEntry;
+      } else {
+        // 添加新游戏到列表
+        gamesList.value.unshift(gameEntry);
+      }
+      
+      // 保存列表到localStorage
+      localStorage.setItem('games_list', JSON.stringify(gamesList.value));
+      
+      ElMessage.success('当前游戏已保存！');
+    } else {
+      throw new Error(response.msg || '保存失败');
+    }
+  } catch (error) {
+    console.error('保存当前游戏失败:', error);
+    
+    // 检查是否为游客模式限制
+    if (error.response?.data?.code === 403 && error.response.data.data?.guest_mode) {
+      ElMessage.warning('游客模式不支持保存功能，请注册登录后使用');
+    } else {
+      ElMessage.error(error.message || '保存失败，请重试');
+    }
+  }
 }
 
 // 导出游戏配置

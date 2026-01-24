@@ -285,6 +285,8 @@ import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import request from '../utils/request'
+import { saveDraft, getDraftDetail } from '@/api/projects'
+import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
 
@@ -371,11 +373,45 @@ const removeCharacter = (index) => {
 // 暂存原稿
 const saveDraft = async () => {
   try {
-    // 暂存逻辑 - 这里可以调用保存接口或本地存储
-    localStorage.setItem('manuscriptDraft', JSON.stringify(form))
-    ElMessage.success('原稿已暂存')
+    // 验证表单
+    const valid = await formRef.value.validateField(['storyTitle', 'emotionalTone', 'storyOutline', 'gameBackground']).catch(() => true)
+    if (!valid) {
+      ElMessage.warning('请先填写基本的原稿信息')
+      return
+    }
+    
+    // 构造草稿数据
+    const draftData = {
+      title: form.storyTitle || '未命名原稿',
+      manuscript: {
+        storyTitle: form.storyTitle,
+        emotionalTone: form.emotionalTone,
+        storyOutline: form.storyOutline,
+        gameBackground: form.gameBackground,
+        missions: form.missions,
+        characters: form.characters
+      }
+    }
+    
+    // 调用后端API保存草稿
+    const response = await saveDraft(draftData)
+    
+    if (response.code === 200) {
+      ElMessage.success('原稿已暂存')
+      // 可以选择性地保存草稿ID到本地以便后续访问
+      localStorage.setItem('currentDraftId', response.data.draft_id)
+    } else {
+      throw new Error(response.msg || '暂存失败')
+    }
   } catch (error) {
-    ElMessage.error('暂存失败')
+    console.error('暂存原稿失败:', error)
+    
+    // 检查是否为游客模式限制
+    if (error.response?.data?.code === 403 && error.response.data.data?.guest_mode) {
+      ElMessage.warning('游客模式不支持保存功能，请注册登录后使用')
+    } else {
+      ElMessage.error(error.message || '暂存失败')
+    }
   }
 }
 

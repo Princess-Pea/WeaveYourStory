@@ -15,6 +15,14 @@
       "email": "",
       "created_at": "2026-01-24T11:59:31.894829",
       "updated_at": "2026-01-24T11:59:31.894839"
+    },
+    {
+      "user_id": "0a677576-577b-44ca-8a40-3c63c214dfb4",
+      "username": "admin",
+      "password": "$2b$12$14.xf0wFLg0v467.JyJdJeu8fkjDRtfxEqqVgL37owDONI/6c6bKC",
+      "email": "",
+      "created_at": "2026-01-24T12:15:39.067490",
+      "updated_at": "2026-01-24T12:15:39.067504"
     }
   ]
 }
