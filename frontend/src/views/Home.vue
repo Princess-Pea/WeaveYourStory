@@ -13,7 +13,7 @@
       <div class="logo-section">
         <h1 class="pixel-logo animate-bounce-base">PixelForge</h1>
         <h2 class="subheading animate-fade-in-base">像素风情感叙事冒险游戏设计平台</h2>
-        <p class="subtitle animate-fade-in-base">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情，让ai为其赋予生命力，再打磨每一处细节。</p>
+        <p class="subtitle animate-fade-in-base">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情,让ai为其赋予生命力,再打磨每一处细节。</p>
       </div>
       <div class="header-right">
         <router-link to="/profile" class="profile-link">👤 个人中心</router-link>
@@ -22,40 +22,124 @@
     
     <div class="actions-section">
       <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-fade-in-base">
-        🆕 新建项目
+        EXPLORE
       </el-button>
+      <p class="button-subtext animate-fade-in-base">start your own game.</p>
+    </div>
+
+    <!-- 像素小人动画 -->
+    <div class="character-animation-container">
+      <div class="pixel-character girl-with-sword"></div>
+      <div class="pixel-character boy-with-staff"></div>
     </div>
 
     <div class="features-section">
       <h3 class="animate-fade-in-base">指引</h3>
       <p class="subtitle animate-fade-in-base">4步让你的故事从想象转变为现实：</p>
       <div class="features-grid">
-        <div class="feature-card animate-fade-in-base">
+        <div class="feature-card animate-fade-in-base" @click="onCardClick">
           <div class="feature-number">01</div>
-          <div class="feature-icon">📝</div>
+          <div class="feature-icon">
+            <!-- 像素小房子 -->
+            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <!-- 屋顶 -->
+              <rect x="20" y="8" width="8" height="4" fill="#8B4513"/>
+              <rect x="16" y="12" width="16" height="4" fill="#8B4513"/>
+              <rect x="12" y="16" width="24" height="4" fill="#D2691E"/>
+              <!-- 房子主体 -->
+              <rect x="12" y="20" width="24" height="20" fill="#FFD4A3" stroke="#000"/>
+              <!-- 门 -->
+              <rect x="18" y="28" width="8" height="12" fill="#8B4513"/>
+              <rect x="20" y="32" width="2" height="2" fill="#FFD700"/>
+              <!-- 窗户 -->
+              <rect x="28" y="24" width="6" height="6" fill="#87CEEB" stroke="#000"/>
+              <rect x="30" y="24" width="2" height="6" fill="#000"/>
+              <rect x="28" y="27" width="6" height="2" fill="#000"/>
+            </svg>
+          </div>
           <h4>结构化原稿输入</h4>
           <p>通过模板化表单输入剧情、角色和任务线</p>
         </div>
         
-        <div class="feature-card animate-fade-in-base">
+        <div class="feature-card animate-fade-in-base" @click="onCardClick">
           <div class="feature-number">02</div>
-          <div class="feature-icon">🤖</div>
+          <div class="feature-icon">
+            <!-- 两个手牵手的像素小人 -->
+            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <!-- 左边小人 -->
+              <rect x="8" y="12" width="6" height="6" fill="#FFD4A3"/>
+              <rect x="8" y="18" width="6" height="8" fill="#FF6B6B"/>
+              <rect x="14" y="20" width="4" height="4" fill="#FFD4A3"/>
+              <rect x="8" y="26" width="3" height="8" fill="#4A4A4A"/>
+              <rect x="11" y="26" width="3" height="8" fill="#4A4A4A"/>
+              <!-- 右边小人 -->
+              <rect x="34" y="12" width="6" height="6" fill="#FFD4A3"/>
+              <rect x="34" y="18" width="6" height="8" fill="#4ECDC4"/>
+              <rect x="30" y="20" width="4" height="4" fill="#FFD4A3"/>
+              <rect x="34" y="26" width="3" height="8" fill="#2C3E50"/>
+              <rect x="37" y="26" width="3" height="8" fill="#2C3E50"/>
+              <!-- 手牵手 -->
+              <rect x="18" y="20" width="12" height="4" fill="#FFD4A3"/>
+              <!-- 爱心 -->
+              <rect x="22" y="6" width="4" height="2" fill="#FF6B6B"/>
+              <rect x="20" y="8" width="8" height="4" fill="#FF6B6B"/>
+              <rect x="22" y="12" width="4" height="2" fill="#FF6B6B"/>
+            </svg>
+          </div>
           <h4>AI生成游戏雏形</h4>
           <p>智能AI根据原稿生成可编辑的游戏雏形</p>
         </div>
         
-        <div class="feature-card animate-fade-in-base">
+        <div class="feature-card animate-fade-in-base" @click="onCardClick">
           <div class="feature-number">03</div>
-          <div class="feature-icon">✏️</div>
+          <div class="feature-icon">
+            <!-- 风景像素图案 -->
+            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <!-- 太阳 -->
+              <rect x="36" y="8" width="6" height="6" fill="#FFD700"/>
+              <rect x="34" y="10" width="2" height="2" fill="#FFD700"/>
+              <rect x="42" y="10" width="2" height="2" fill="#FFD700"/>
+              <!-- 云朵 -->
+              <rect x="10" y="10" width="12" height="4" fill="#FFF"/>
+              <rect x="12" y="8" width="8" height="2" fill="#FFF"/>
+              <!-- 山 -->
+              <rect x="20" y="28" width="4" height="4" fill="#8B7355"/>
+              <rect x="16" y="32" width="12" height="4" fill="#A0826D"/>
+              <!-- 树 -->
+              <rect x="8" y="28" width="4" height="8" fill="#8B4513"/>
+              <rect x="6" y="24" width="8" height="4" fill="#228B22"/>
+              <rect x="8" y="20" width="4" height="4" fill="#228B22"/>
+              <!-- 草地 -->
+              <rect x="4" y="36" width="40" height="8" fill="#7CFC00"/>
+            </svg>
+          </div>
           <h4>可视化编辑</h4>
-          <p>直观编辑场景、角色、任务，实时预览效果</p>
+          <p>直观编辑场景、角色、任务,实时预览效果</p>
         </div>
         
-        <div class="feature-card animate-fade-in-base">
+        <div class="feature-card animate-fade-in-base" @click="onCardClick">
           <div class="feature-number">04</div>
-          <div class="feature-icon">🕹️</div>
+          <div class="feature-icon">
+            <!-- 像素小车 -->
+            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <!-- 车身 -->
+              <rect x="8" y="24" width="32" height="8" fill="#FF6B6B" stroke="#000"/>
+              <!-- 车顶 -->
+              <rect x="14" y="16" width="20" height="8" fill="#FF6B6B" stroke="#000"/>
+              <!-- 窗户 -->
+              <rect x="16" y="18" width="8" height="6" fill="#87CEEB"/>
+              <rect x="26" y="18" width="6" height="6" fill="#87CEEB"/>
+              <!-- 车轮 -->
+              <rect x="12" y="32" width="8" height="8" fill="#2C3E50" stroke="#000"/>
+              <rect x="14" y="34" width="4" height="4" fill="#696969"/>
+              <rect x="28" y="32" width="8" height="8" fill="#2C3E50" stroke="#000"/>
+              <rect x="30" y="34" width="4" height="4" fill="#696969"/>
+              <!-- 车灯 -->
+              <rect x="38" y="26" width="2" height="4" fill="#FFD700"/>
+            </svg>
+          </div>
           <h4>像素风预览</h4>
-          <p>实时体验设计的游戏，支持简单交互</p>
+          <p>实时体验设计的游戏,支持简单交互</p>
         </div>
       </div>
     </div>
@@ -72,7 +156,28 @@ import { onMounted, nextTick, onUnmounted } from 'vue'
 const router = useRouter()
 
 const navigateTo = (path) => {
-  router.push(path)
+  // 触发粒子爆炸效果
+  const btn = document.querySelector('.create-btn')
+  if (btn) {
+    btn.classList.add('particle-burst')
+  }
+  
+  // 粒子效果后跳转
+  setTimeout(() => {
+    router.push(path)
+  }, 600)
+}
+
+const onCardClick = (event) => {
+  // 触发卡片粒子爆炸效果
+  const card = event.currentTarget
+  if (card && !card.classList.contains('card-burst')) {
+    card.classList.add('card-burst')
+    // 1秒后移除效果类，允许再次触发
+    setTimeout(() => {
+      card.classList.remove('card-burst')
+    }, 1000)
+  }
 }
 
 let animationObserver = null;
@@ -85,11 +190,11 @@ onMounted(async () => {
   // 立即触发动画序列
   triggerAnimations();
   
-  // 使用Intersection Observer监听页面是否可见，以便在页面重新进入时再次触发
+  // 使用Intersection Observer监听页面是否可见,以便在页面重新进入时再次触发
   animationObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && entry.target.classList.contains('home-container')) {
-        // 当页面重新进入视窗时，再次触发动画
+        // 当页面重新进入视窗时,再次触发动画
         setTimeout(() => {
           triggerAnimations();
         }, 100);
@@ -136,40 +241,33 @@ const triggerAnimations = () => {
 
 <style scoped>
 .home-container {
-  padding: 40px 20px; /* 增加垂直padding使页面更宽松 */
+  padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #020817; /* 新的深蓝灰色背景 */
+  background-color: #020817;
   border-radius: 10px;
-  color: #ecf0f1; /* 浅灰色文字 */
+  color: #ecf0f1;
   min-height: 100vh;
-  overflow: hidden; /* 防止粒子效果溢出 */
-  position: relative; /* 为绝对定位的元素提供参考 */
+  overflow: hidden;
+  position: relative;
 }
 
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 90px; /* 从90px位置开始 */
+  top: 90px;
   left: 0;
   right: 0;
-  bottom: 300px; /* 在"新建项目"按钮下方结束 */
+  bottom: 300px;
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 30px 30px; /* 网格大小介于字号之间 */
-  opacity: 0.6; /* 进一步提高透明度使网格更明显 */
-  z-index: 0; /* 网格在内容后面 */
-  pointer-events: none; /* 不影响鼠标交互 */
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: 30px 30px, auto;
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
   mask-image: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 1) 0%, 
-    rgba(0, 0, 0, 1) 10%, 
-    rgba(0, 0, 0, 0.8) 30%, 
-    rgba(0, 0, 0, 0.5) 50%, 
-    rgba(0, 0, 0, 0.2) 70%, 
-    rgba(0, 0, 0, 0) 90%, 
-    rgba(0, 0, 0, 0) 100%);
-  -webkit-mask-image: linear-gradient(to bottom, 
     rgba(0, 0, 0, 1) 0%, 
     rgba(0, 0, 0, 1) 10%, 
     rgba(0, 0, 0, 0.8) 30%, 
@@ -182,104 +280,65 @@ const triggerAnimations = () => {
 /* 粒子效果 */
 .particle {
   position: absolute;
-  background-color: #E9A33B; /* 荧光黄色 */
+  background-color: #E9A33B;
   border-radius: 2px;
   animation: spin-float 8s infinite ease-in-out;
   z-index: 1;
-  pointer-events: none; /* 不影响鼠标交互 */
+  pointer-events: none;
 }
 
 .particle-1 {
-  top: 25%; /* 调整位置避免被覆盖 */
+  top: 25%;
   left: 15%;
   animation-delay: 0s;
-  background-color: #E9A33B; /* 荧光黄色 */
-  width: 10px; /* 略小 */
+  background-color: #E9A33B;
+  width: 10px;
   height: 10px;
 }
 
 .particle-2 {
-  top: 30%; /* 调整位置避免被覆盖 */
+  top: 30%;
   right: 20%;
   animation-delay: 2s;
-  background-color: #5D8AA8; /* 荧光蓝色 */
-  width: 14px; /* 略大 */
+  background-color: #5D8AA8;
+  width: 14px;
   height: 14px;
 }
 
 .particle-3 {
-  bottom: 40%; /* 调整位置避免被覆盖 */
+  bottom: 40%;
   left: 25%;
   animation-delay: 4s;
-  background-color: #FF6B6B; /* 荧光红色 */
-  width: 12px; /* 标准大小 */
+  background-color: #FF6B6B;
+  width: 12px;
   height: 12px;
 }
 
 .particle-4 {
-  bottom: 35%; /* 调整位置避免被覆盖 */
+  bottom: 35%;
   right: 30%;
   animation-delay: 6s;
-  background-color: #9C51B6; /* 荧光紫色 */
-  width: 11px; /* 略小 */
+  background-color: #9C51B6;
+  width: 11px;
   height: 11px;
 }
 
 @keyframes spin-float {
-  0% {
-    transform: rotate(0deg) translateX(0) translateY(0);
+  0%, 100% {
+    transform: rotate(0deg) translate(0, 0);
     opacity: 0.8;
   }
   15% {
-    transform: rotate(90deg) translateX(10px) translateY(-5px);
-  }
-  20% {
-    transform: rotate(90deg) translateX(10px) translateY(-5px); /* 短暂停顿 */
+    transform: rotate(90deg) translate(10px, -5px);
   }
   35% {
-    transform: rotate(180deg) translateX(5px) translateY(10px);
-  }
-  40% {
-    transform: rotate(180deg) translateX(5px) translateY(10px); /* 短暂停顿 */
+    transform: rotate(180deg) translate(5px, 10px);
   }
   55% {
-    transform: rotate(270deg) translateX(-10px) translateY(5px);
-  }
-  60% {
-    transform: rotate(270deg) translateX(-10px) translateY(5px); /* 短暂停顿 */
+    transform: rotate(270deg) translate(-10px, 5px);
   }
   75% {
-    transform: rotate(360deg) translateX(0) translateY(0);
-  }
-  80% {
-    transform: rotate(360deg) translateX(0) translateY(0); /* 短暂停顿 */
-  }
-  100% {
-    transform: rotate(0deg) translateX(0) translateY(0);
-    opacity: 0.8;
-  }
-}
-
-/* 子动画：模拟洒落的小粒子 */
-.particle::before {
-  content: '';
-  position: absolute;
-  width: 3px; /* 小粒子尺寸 */
-  height: 3px;
-  background-color: currentColor;
-  border-radius: 1px;
-  opacity: 0;
-  animation: sprinkle 8s infinite;
-}
-
-@keyframes sprinkle {
-  20%, 40%, 60%, 80% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  25%, 45%, 65%, 85% {
-    opacity: 0;
-    transform: scale(0) rotate(180deg);
+    transform: rotate(360deg) translate(0, 0);
   }
 }
 
@@ -290,7 +349,7 @@ const triggerAnimations = () => {
 }
 
 .animate-bounce {
-  animation: bounce-in 1.2s ease-out forwards; /* 放慢动画速度，从0.6s增加到1.2s */
+  animation: bounce-in 1.2s ease-out forwards;
 }
 
 .animate-fade-in-base {
@@ -301,25 +360,6 @@ const triggerAnimations = () => {
   animation: fade-in 0.8s ease-out 0.3s forwards;
 }
 
-.animate-block-text-base {
-  position: relative;
-}
-
-.animate-block-text::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #383F59;
-  z-index: 5;
-}
-
-.animate-block-text {
-  animation: reveal-text 1s ease-out 0.6s forwards;
-}
-
 @keyframes bounce-in {
   0% {
     opacity: 0;
@@ -327,13 +367,13 @@ const triggerAnimations = () => {
   }
   50% {
     opacity: 1;
-    transform: translateY(10px) scale(1.1); /* 第一次触地并轻微压缩/拉伸 */
+    transform: translateY(10px) scale(1.1);
   }
   75% {
-    transform: translateY(-10px) scale(0.95); /* 回弹至半空 */
+    transform: translateY(-10px) scale(0.95);
   }
   100% {
-    transform: translateY(0) scale(1); /* 最终平稳落地 */
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
@@ -349,25 +389,14 @@ const triggerAnimations = () => {
   }
 }
 
-@keyframes reveal-text {
-  0% {
-    opacity: 1;
-    clip-path: inset(0 100% 0 0);
-  }
-  100% {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 50px; /* 增加间距 */
-  padding: 60px 10px 10px 10px; /* 调整上内边距 */
-  position: relative; /* 相对定位 */
-  z-index: 3; /* 提高z-index，确保内容在网格之上 */
+  margin-bottom: 64px;
+  padding: 60px 10px 10px 10px;
+  position: relative;
+  z-index: 3;
 }
 
 .logo-section {
@@ -376,39 +405,40 @@ const triggerAnimations = () => {
 }
 
 .pixel-logo {
-  font-size: 5rem; /* 再次增大字号 */
+  font-size: 5rem;
   font-weight: bold;
-  color: #E9A33B; /* 高亮色 */
-  text-shadow: 0 0 5px #E9A33B, 0 0 10px #E9A33B; /* 减弱的荧光效果 */
+  color: #E9A33B;
+  text-shadow: 0 0 5px #E9A33B, 0 0 10px #E9A33B;
   margin: 0 0 10px 0;
   letter-spacing: 3px;
-  font-family: 'Unifont Medium', 'Courier New', 'monospace', sans-serif; /* 使用Unifont Medium字体 */
-  font-variant: small-caps; /* 小型大写字母效果 */
-  text-transform: capitalize; /* 保持首字母大写 */
+  font-family: 'Unifont Medium', 'Courier New', 'monospace', sans-serif;
+  font-variant: small-caps;
+  text-transform: capitalize;
 }
 
 .subheading {
-  font-size: 1.8rem; /* 介于主标题和副标题之间的字号 */
+  font-size: 24px;
   color: white;
-  margin: 10px 0 15px;
+  margin: 16px 0;
   font-family: 'Courier New', 'monospace', sans-serif;
   letter-spacing: 1px;
 }
 
 .subtitle {
-  color: #bdc3c7; /* 浅灰色文字 */
-  font-size: 1.1rem;
+  color: white;
+  font-size: 14px;
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
   text-align: center;
+  font-family: 'Courier New', 'monospace', sans-serif;
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 20px;
-  position: fixed; /* 固定定位，不随滚动变化 */
+  position: fixed;
   right: 20px;
   top: 20px;
   z-index: 1000;
@@ -421,148 +451,301 @@ const triggerAnimations = () => {
   border-radius: 4px;
   transition: all 0.3s;
   border: 2px solid transparent;
-  background-color: #383F59; /* 功能块色背景 */
+  background-color: #383F59;
 }
 
 .profile-link:hover {
-  background-color: #E9A33B; /* 悬停高亮色 */
+  background-color: #E9A33B;
   color: black;
   text-decoration: underline;
-  border: 2px solid #E9A33B; /* 悬停高亮色 */
-  box-shadow: 0 0 10px #E9A33B; /* 氛围荧光效果 */
+  border: 2px solid #E9A33B;
+  box-shadow: 0 0 10px #E9A33B;
+}
+
+.actions-section {
+  text-align: center;
+  margin: 64px 0 48px;
+  position: relative;
+  z-index: 3;
+}
+
+.create-btn {
+  width: 128px;
+  height: 48px;
+  padding: 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  background-color: #8a2be2 !important;
+  border: 1px solid black !important;
+  color: white !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: all 0.1s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+
+.create-btn:hover {
+  transform: translateY(-1px);
+  border-color: #ff8c00 !important;
+  background-color: #8a2be2 !important;
+}
+
+/* 粒子爆炸效果 */
+.create-btn.particle-burst::before,
+.create-btn.particle-burst::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #ff8c00;
+  left: 50%;
+  top: 50%;
+  animation: burst-particle 0.6s ease-out;
+}
+
+.create-btn.particle-burst::before {
+  animation-name: burst-particle-1;
+}
+
+.create-btn.particle-burst::after {
+  animation-name: burst-particle-2;
+}
+
+@keyframes burst-particle-1 {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  25% {
+    box-shadow: -16px -16px 0 2px #ff8c00, 16px -16px 0 2px #ff8c00, -16px 16px 0 2px #8a2be2, 16px 16px 0 2px #8a2be2;
+  }
+  100% {
+    box-shadow: -48px -48px 0 2px transparent, 48px -48px 0 2px transparent, -48px 48px 0 2px transparent, 48px 48px 0 2px transparent;
+    opacity: 0;
+  }
+}
+
+@keyframes burst-particle-2 {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  25% {
+    box-shadow: 0 -16px 0 2px #8a2be2, 16px 0 0 2px #ff8c00, 0 16px 0 2px #8a2be2, -16px 0 0 2px #ff8c00;
+  }
+  100% {
+    box-shadow: 0 -64px 0 2px transparent, 64px 0 0 2px transparent, 0 64px 0 2px transparent, -64px 0 0 2px transparent;
+    opacity: 0;
+  }
+}
+
+.button-subtext {
+  font-family: 'Courier New', 'monospace', sans-serif;
+  font-size: 14px;
+  color: white;
+  margin-top: 16px;
+  opacity: 0.8;
+}
+
+/* 像素小人动画样式 */
+.character-animation-container {
+  position: relative;
+  width: 100%;
+  height: 96px;
+  margin: 32px auto 0;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+}
+
+.pixel-character {
+  width: 72px;
+  height: 72px;
+  background-size: 288px 72px;
+  image-rendering: pixelated;
+  animation: sprite-walk 0.8s steps(4) infinite;
+}
+
+.girl-with-sword {
+  background-image: url('/girl-sword-sprite.svg');
+}
+
+.boy-with-staff {
+  background-image: url('/boy-staff-sprite.svg');
+}
+
+@keyframes sprite-walk {
+  from { background-position: 0 0; }
+  to { background-position: -288px 0; }
 }
 
 .features-section {
-  margin-top: 240px; /* 大幅增加间距，约为之前距离的三倍 */
-  position: relative; /* 相对定位 */
-  z-index: 3; /* 确保内容在网格之上 */
+  margin-top: 240px;
+  position: relative;
+  z-index: 3;
 }
 
 .features-section h3 {
   color: white;
-  margin-bottom: 20px; /* 调整间距 */
+  margin-bottom: 32px;
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 32px;
+  font-family: 'Courier New', 'monospace', sans-serif;
 }
 
 .features-section > .subtitle {
-  color: #bdc3c7; /* 浅灰色文字 */
-  font-size: 1.1rem;
+  color: white;
+  font-size: 14px;
   max-width: 800px;
-  margin: 0 auto 40px; /* 增加下方间距 */
+  margin: 0 auto 48px;
   line-height: 1.6;
   text-align: center;
+  font-family: 'Courier New', 'monospace', sans-serif;
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px; /* 增加网格间距 */
-  margin-top: 20px;
+  gap: 48px;
+  margin-top: 64px;
+  padding: 32px;
 }
 
 .feature-card {
-  border: 1px solid #383F59; /* 功能块色边框 */
-  border-radius: 8px;
-  padding: 30px 20px; /* 增加内边距 */
+  border: none;
+  padding: 32px;
   text-align: center;
-  cursor: default; /* 改为默认光标，因为不再有点击功能 */
-  transition: all 0.3s;
-  background-color: #383F59; /* 功能块色背景 */
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: transparent;
   color: white;
-  position: relative; /* 为序号定位做准备 */
+  position: relative;
+  overflow: visible;
+}
+
+/* 使用伪元素创建像素圆角，避免clip-path裁剪序号 */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #383F59;
+  border: 1px solid black;
+  z-index: -1;
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
+  transition: all 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+}
+
+.feature-card:hover::before {
+  border: 1px solid #ff8c00;
+  box-shadow: 0 0 16px rgba(255, 140, 0, 0.3);
+}
+
+/* 卡片粒子爆炸效果 */
+.feature-card.card-burst::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+  left: 50%;
+  top: 50%;
+  animation: card-burst-particles 0.8s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes card-burst-particles {
+  0% {
+    box-shadow: 
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2;
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 
+      -48px -48px 0 2px transparent,
+      48px -48px 0 2px transparent,
+      -48px 48px 0 2px transparent,
+      48px 48px 0 2px transparent,
+      0 -64px 0 2px transparent,
+      64px 0 0 2px transparent,
+      0 64px 0 2px transparent,
+      -64px 0 0 2px transparent;
+    opacity: 0;
+  }
 }
 
 .feature-number {
   position: absolute;
-  top: -12px;
-  left: -12px;
-  background-color: #383F59; /* 灰色背景 */
-  color: white; /* 白色文字 */
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  top: -24px;
+  left: -24px;
+  background-color: #ff8c00;
+  color: white;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 0.9rem;
-  border: 2px solid #E9A33B;
-  z-index: 10;
-  transition: all 0.3s ease; /* 添加过渡效果 */
-}
-
-.feature-card:hover .feature-number {
-  background-color: #E9A33B; /* 黄色背景 */
-  color: #020817; /* 黑色文字 */
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(233, 163, 59, 0.5); /* #E9A33B氛围荧光效果 */
-  border: 1px solid #E9A33B; /* 悬停高亮色 */
-  box-shadow: 0 0 20px #E9A33B; /* 氛围荧光效果 */
+  font-size: 14px;
+  font-family: 'Press Start 2P', cursive;
+  border: 1px solid black;
+  z-index: 100;
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .feature-icon {
-  font-size: 48px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
 }
 
 .feature-card h4 {
-  margin: 10px 0;
-  color: #ecf0f1; /* 浅灰色文字 */
+  margin: 16px 0;
+  color: white;
+  font-family: 'Courier New', 'monospace', sans-serif;
+  font-size: 16px;
 }
 
 .feature-card p {
-  color: #bdc3c7; /* 浅灰色文字 */
+  color: white;
   font-size: 14px;
-}
-
-.actions-section {
-  text-align: center;
-  margin: 80px 0; /* 增加间距，使页面分为上下两部分 */
-  position: relative; /* 相对定位 */
-  z-index: 3; /* 确保内容在网格之上 */
-}
-
-.create-btn {
-  padding: 15px 30px;
-  font-size: 18px;
+  font-family: 'Courier New', 'monospace', sans-serif;
+  line-height: 1.4;
 }
 
 .bottom-spacer {
-  height: 200px; /* 添加底部空白区域 */
+  height: 200px;
   margin-top: 40px;
-}
-
-/* 按钮样式 */
-:deep(.el-button--primary) {
-  --el-button-bg-color: #383F59 !important; /* 功能块色 */
-  --el-button-border-color: #383F59 !important;
-  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
-  --el-button-hover-border-color: #E9A33B !important;
-  --el-button-active-bg-color: #E9A33B !important;
-  --el-button-active-border-color: #E9A33B !important;
-  transition: all 0.3s !important;
-}
-
-:deep(.el-button--primary):hover {
-  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
-}
-
-:deep(.el-button) {
-  --el-button-bg-color: #383F59 !important; /* 功能块色 */
-  --el-button-border-color: #383F59 !important;
-  --el-button-hover-bg-color: #E9A33B !important; /* 悬停高亮色 */
-  --el-button-hover-border-color: #E9A33B !important;
-  --el-button-active-bg-color: #E9A33B !important;
-  --el-button-active-border-color: #E9A33B !important;
-  color: white !important;
-  transition: all 0.3s !important;
-}
-
-:deep(.el-button):hover {
-  box-shadow: 0 0 15px #E9A33B !important; /* 氛围荧光效果 */
 }
 </style>
