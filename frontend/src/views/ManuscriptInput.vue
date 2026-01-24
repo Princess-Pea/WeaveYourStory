@@ -264,7 +264,7 @@
       <div class="form-actions">
         <el-button 
           type="warning" 
-          @click="saveDraft"
+          @click="handleSaveDraft"
         >
           💾 暂存原稿
         </el-button>
@@ -371,7 +371,7 @@ const removeCharacter = (index) => {
 }
 
 // 暂存原稿
-const saveDraft = async () => {
+const handleSaveDraft = async () => {
   try {
     // 验证表单
     const valid = await formRef.value.validateField(['storyTitle', 'emotionalTone', 'storyOutline', 'gameBackground']).catch(() => true)
