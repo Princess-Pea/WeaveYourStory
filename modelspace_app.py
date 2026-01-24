@@ -48,24 +48,53 @@ except ImportError as e:
 @app.route('/')
 def serve_index():
     try:
-        return send_from_directory('frontend/dist', 'index.html')
+        # 使用绝对路径确保能找到文件
+        frontend_dist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'dist')
+        if os.path.exists(frontend_dist_path):
+            return send_from_directory(frontend_dist_path, 'index.html')
+        else:
+            # 如果前端构建目录不存在，返回错误提示
+            return '''
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>PixelForge - 部署错误</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .container { max-width: 600px; margin: 0 auto; }
+                    .error { color: red; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+                    <p class="error">错误：前端构建文件不存在</p>
+                    <p>请确保 frontend/dist 目录存在并包含构建文件</p>
+                    <p>后端服务正常运行中...</p>
+                    <p><a href="/api/v1/health">检查API状态</a></p>
+                </div>
+            </body>
+            </html>
+            '''
     except FileNotFoundError:
         # 如果前端文件不存在，返回一个简单的页面提示
         return '''
         <!DOCTYPE html>
         <html>
         <head>
-            <title>PixelForge - 像素风情感叙事冒险游戏设计平台</title>
+            <title>PixelForge - 部署错误</title>
             <style>
                 body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
                 .container { max-width: 600px; margin: 0 auto; }
+                .error { color: red; }
             </style>
         </head>
         <body>
             <div class="container">
                 <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+                <p class="error">错误：前端构建文件不存在</p>
+                <p>请确保 frontend/dist 目录存在并包含构建文件</p>
                 <p>后端服务正常运行中...</p>
-                <p>正在等待前端构建完成...</p>
                 <p><a href="/api/v1/health">检查API状态</a></p>
             </div>
         </body>
@@ -76,39 +105,71 @@ def serve_index():
 def serve_static(path):
     # 尝试提供前端静态文件
     try:
-        # 检查文件是否存在
-        file_path = os.path.join(os.getcwd(), 'frontend', 'dist', path)
-        if os.path.exists(file_path):
-            return send_from_directory('frontend/dist', path)
+        # 使用绝对路径确保能找到文件
+        frontend_dist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'dist')
+        if os.path.exists(frontend_dist_path):
+            # 检查文件是否存在
+            file_path = os.path.join(frontend_dist_path, path)
+            if os.path.exists(file_path):
+                return send_from_directory(frontend_dist_path, path)
+            else:
+                # 如果文件不存在，返回index.html以支持前端路由
+                return send_from_directory(frontend_dist_path, 'index.html')
         else:
-            # 如果文件不存在，返回index.html以支持前端路由
-            return send_from_directory('frontend/dist', 'index.html')
-    except:
-        # 如果发生异常，返回index.html
-        try:
-            return send_from_directory('frontend/dist', 'index.html')
-        except:
-            # 如果前端文件不存在，返回简单页面
+            # 如果前端构建目录不存在，返回错误提示
             return '''
             <!DOCTYPE html>
             <html>
             <head>
-                <title>PixelForge - 像素风情感叙事冒险游戏设计平台</title>
+                <title>PixelForge - 部署错误</title>
                 <style>
                     body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
                     .container { max-width: 600px; margin: 0 auto; }
+                    .error { color: red; }
                 </style>
             </head>
             <body>
                 <div class="container">
                     <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+                    <p class="error">错误：前端构建文件不存在</p>
+                    <p>请确保 frontend/dist 目录存在并包含构建文件</p>
                     <p>后端服务正常运行中...</p>
-                    <p>正在等待前端构建完成...</p>
                     <p><a href="/api/v1/health">检查API状态</a></p>
                 </div>
             </body>
             </html>
             '''
+    except Exception as e:
+        # 如果发生异常，返回index.html
+        frontend_dist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'dist')
+        if os.path.exists(frontend_dist_path):
+            try:
+                return send_from_directory(frontend_dist_path, 'index.html')
+            except:
+                pass  # 如果发送index.html也失败，继续执行后面的错误页面
+        # 如果前端文件不存在，返回简单页面
+        return '''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>PixelForge - 部署错误</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                .container { max-width: 600px; margin: 0 auto; }
+                .error { color: red; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🎮 像素风情感叙事冒险游戏设计平台</h1>
+                <p class="error">错误：前端构建文件不存在</p>
+                <p>请确保 frontend/dist 目录存在并包含构建文件</p>
+                <p>后端服务正常运行中...</p>
+                <p><a href="/api/v1/health">检查API状态</a></p>
+            </div>
+        </body>
+        </html>
+        '''
 
 if __name__ == '__main__':
     # 为魔搭创空间设置适当的主机和端口
