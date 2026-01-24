@@ -67,7 +67,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { saveProject } from '@/api/projects'
+import { saveProject, getProjectList, deleteProject } from '@/api/projects'
 import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
@@ -81,41 +81,86 @@ onMounted(() => {
 })
 
 // 加载游戏列表
-function loadGamesList() {
-  // 从localStorage加载游戏列表
-  const savedGames = localStorage.getItem('games_list')
-  if (savedGames) {
-    try {
-      gamesList.value = JSON.parse(savedGames)
-    } catch (error) {
-      console.error('加载游戏列表失败:', error)
-      gamesList.value = []
-    }
-  } else {
-    // 默认展示一些示例数据
-    gamesList.value = [
-      {
-        id: 'game_1',
-        name: '新手村冒险',
-        createTime: '2023-10-01 10:30:00',
-        lastModified: '2023-10-01 15:45:00',
-        status: 'completed'
-      },
-      {
-        id: 'game_2',
-        name: '森林探险记',
-        createTime: '2023-10-02 14:20:00',
-        lastModified: '2023-10-02 18:30:00',
-        status: 'in_progress'
-      },
-      {
-        id: 'game_3',
-        name: '神秘洞穴之谜',
-        createTime: '2023-10-03 09:15:00',
-        lastModified: '2023-10-03 09:15:00',
-        status: 'draft'
+async function loadGamesList() {
+  try {
+    // 检查认证状态
+    const { userInfo, getToken } = useAuth();
+    const token = getToken();
+    
+    if (!token || userInfo.value?.is_guest) {
+      // 如果未登录或为游客，尝试从localStorage加载
+      const savedGames = localStorage.getItem('games_list');
+      if (savedGames) {
+        try {
+          gamesList.value = JSON.parse(savedGames);
+          ElMessage.info('已加载本地游戏列表');
+        } catch (error) {
+          console.error('加载本地游戏列表失败:', error);
+          gamesList.value = [];
+        }
+      } else {
+        // 默认展示一些示例数据
+        gamesList.value = [
+          {
+            id: 'game_1',
+            name: '新手村冒险',
+            createTime: '2023-10-01 10:30:00',
+            lastModified: '2023-10-01 15:45:00',
+            status: 'completed'
+          },
+          {
+            id: 'game_2',
+            name: '森林探险记',
+            createTime: '2023-10-02 14:20:00',
+            lastModified: '2023-10-02 18:30:00',
+            status: 'in_progress'
+          },
+          {
+            id: 'game_3',
+            name: '神秘洞穴之谜',
+            createTime: '2023-10-03 09:15:00',
+            lastModified: '2023-10-03 09:15:00',
+            status: 'draft'
+          }
+        ];
       }
-    ]
+      return;
+    }
+    
+    // 已登录用户，从后端获取项目列表
+    const response = await getProjectList();
+    
+    if (response.code === 200) {
+      // 将后端返回的项目数据格式化为表格所需格式
+      gamesList.value = response.data.projects.map(project => ({
+        id: project.project_id,
+        name: project.title,
+        createTime: project.created_at,
+        lastModified: project.updated_at,
+        status: project.status
+      }));
+      
+      // 同步到localStorage以备不时之需
+      localStorage.setItem('games_list', JSON.stringify(gamesList.value));
+    } else {
+      throw new Error(response.msg || '获取游戏列表失败');
+    }
+  } catch (error) {
+    console.error('加载游戏列表失败:', error);
+    
+    // 尝试从localStorage加载备份数据
+    const savedGames = localStorage.getItem('games_list');
+    if (savedGames) {
+      try {
+        gamesList.value = JSON.parse(savedGames);
+        ElMessage.warning('已从本地加载备份数据');
+      } catch (parseError) {
+        console.error('解析本地游戏列表失败:', parseError);
+        gamesList.value = [];
+      }
+    } else {
+      gamesList.value = [];
+    }
   }
 }
 
@@ -262,18 +307,50 @@ async function deleteGame(game) {
       }
     )
     
-    // 从列表中删除该游戏
-    const index = gamesList.value.findIndex(item => item.id === game.id)
-    if (index !== -1) {
-      gamesList.value.splice(index, 1)
-      
-      // 更新localStorage
-      localStorage.setItem('games_list', JSON.stringify(gamesList.value))
-      
-      ElMessage.success('游戏已删除')
+    // 检查是否为游客模式
+    const { userInfo } = useAuth();
+    if (userInfo.value?.is_guest) {
+      ElMessage.warning('游客模式不支持删除功能，请注册登录后使用');
+      return;
+    }
+    
+    // 如果有有效的认证，尝试从后端删除项目
+    const response = await deleteProject(game.id);
+    if (response.code === 200) {
+      // 从列表中删除该游戏
+      const index = gamesList.value.findIndex(item => item.id === game.id);
+      if (index !== -1) {
+        gamesList.value.splice(index, 1);
+        
+        // 更新localStorage
+        localStorage.setItem('games_list', JSON.stringify(gamesList.value));
+        
+        ElMessage.success('游戏已删除');
+      }
+    } else {
+      throw new Error(response.msg || '删除失败');
     }
   } catch (error) {
-    // 用户取消操作
+    if (error === 'cancel') {
+      // 用户取消操作
+      return;
+    }
+    
+    console.error('删除游戏失败:', error);
+    
+    // 检查是否为游客模式限制
+    if (error.response?.data?.code === 403 && error.response.data.data?.guest_mode) {
+      ElMessage.warning('游客模式不支持删除功能，请注册登录后使用');
+    } else {
+      // 降级到本地删除
+      const index = gamesList.value.findIndex(item => item.id === game.id);
+      if (index !== -1) {
+        gamesList.value.splice(index, 1);
+        localStorage.setItem('games_list', JSON.stringify(gamesList.value));
+        ElMessage.success('游戏已从本地删除');
+      }
+      ElMessage.error(error.message || '删除失败，请重试');
+    }
   }
 }
 

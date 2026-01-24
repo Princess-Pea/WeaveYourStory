@@ -1,0 +1,96 @@
+{
+  "project_id": "proj_4390240eb51240f1",
+  "user_id": "e027dff7-9f11-4753-a0bf-74d76d0114c5",
+  "title": "未命名游戏",
+  "game_data": {
+    "gameId": "default",
+    "gameName": "新像素风游戏",
+    "emotionalTone": "治愈",
+    "style": "pixel_art",
+    "scenes": [
+      {
+        "id": "scene_start",
+        "name": "起点",
+        "backgroundDescription": "像素风格的宁静村庄",
+        "interactiveElements": [
+          {
+            "type": "npc",
+            "name": "向导",
+            "position": [
+              50,
+              100
+            ],
+            "dialogue": [
+              "欢迎来到这个世界！"
+            ]
+          },
+          {
+            "type": "item",
+            "name": "神秘宝箱",
+            "position": [
+              200,
+              150
+            ],
+            "description": "似乎藏着重要物品"
+          }
+        ],
+        "transitions": [
+          {
+            "targetSceneId": "scene_forest",
+            "condition": "start_game",
+            "description": "进入森林"
+          }
+        ]
+      }
+    ],
+    "characters": [
+      {
+        "id": "player",
+        "name": "玩家",
+        "appearance": "像素风格的冒险者",
+        "personality": "勇敢好奇",
+        "initialPosition": "scene_start",
+        "dialogues": [
+          "我将探索这个奇妙的世界！"
+        ]
+      }
+    ],
+    "missions": [
+      {
+        "id": "mission_1",
+        "name": "新手教程",
+        "triggerScene": "scene_start",
+        "triggerCondition": "与向导对话",
+        "completionCondition": "了解基本操作",
+        "dialogueContent": "欢迎来到游戏世界！",
+        "reward": {
+          "xp": 50,
+          "items": [
+            "铜币"
+          ]
+        },
+        "nextMissionId": null
+      }
+    ],
+    "interactionRules": {
+      "movement": {
+        "up": "向上移动",
+        "down": "向下移动",
+        "left": "向左移动",
+        "right": "向右移动"
+      },
+      "dialogueTrigger": {
+        "distance": 30,
+        "key": "SPACE"
+      },
+      "itemInteraction": {
+        "distance": 20,
+        "key": "E"
+      }
+    },
+    "projectId": "proj_4390240eb51240f1"
+  },
+  "status": "editing",
+  "created_at": "2026-01-24T18:39:11.492518",
+  "updated_at": "2026-01-24T18:39:17.410087"
+}
