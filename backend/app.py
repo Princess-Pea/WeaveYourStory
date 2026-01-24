@@ -66,27 +66,6 @@ def login():
     }, app.config['SECRET_KEY'])
     return jsonify({'token': token, 'username': data.get('username')})
 
-# --- 核心接口：项目管理 ---
-@app.route('/api/v1/projects', methods=['GET'])
-@token_required
-def get_projects():
-    """查询作品列表"""
-    return jsonify({"projects": projects, "requestId": generate_id()})
-
-@app.route('/api/v1/projects', methods=['POST'])
-@token_required
-def create_project():
-    """新建游戏项目"""
-    data = request.json
-    new_project = {
-        "id": generate_id("proj"),
-        "title": data.get("title", "未命名游戏"),
-        "status": "draft",
-        "updated_at": datetime.datetime.now().strftime("%Y-%m-%d")
-    }
-    projects.append(new_project)
-    return jsonify({"project": new_project, "requestId": generate_id()})
-
 # --- 核心接口：AIGC 规范化接口 ---
 @app.route('/api/v1/ai/game/submit', methods=['POST'])
 @token_required
