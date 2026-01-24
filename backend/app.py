@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 import datetime
 import jwt
@@ -8,9 +8,25 @@ import time
 from utils.ai_wrapper import start_async_ai_task, get_task_status, generate_id
 from utils.ai_adapter import ai_adapter
 
+# 【新增】导入认证模块
+from config.settings import Config
+from api.auth import auth_bp
+from middleware.auth_middleware import init_auth_middleware
+
 app = Flask(__name__)
 CORS(app) # 允许跨域请求
-app.config['SECRET_KEY'] = os.environ.get("PIXELFORGE_SECRET_KEY", "pixelforge_secret_key")
+
+# 【魔搭适配点】从环境变量读取配置
+app.config['SECRET_KEY'] = Config.SECRET_KEY
+
+# 【新增】初始化数据目录
+Config.init_directories()
+
+# 【新增】注册认证蓝图
+app.register_blueprint(auth_bp)
+
+# 【新增】初始化认证中间件
+init_auth_middleware(app)
 
 # 模拟数据库存储
 projects = [
@@ -420,5 +436,11 @@ def get_project_data(proj_id):
     })
 
 if __name__ == '__main__':
-    # 启动后端，端口5000
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # 【魔搭适配点】使用配置中的端口
+    # 魔搭创空间默认端口8888，本地开发可使用5000
+    port = Config.SERVER_PORT if Config.SERVER_PORT != 8888 else 5000
+    print(f"\n服务启动中...监听端口: {port}")
+    print(f"JWT_SECRET: {'*' * 10 + Config.JWT_SECRET[-10:] if len(Config.JWT_SECRET) > 10 else '已设置'}")
+    print(f"数据存储路径: {Config.DATA_DIR}\n")
+    
+    app.run(debug=Config.DEBUG, host='0.0.0.0', port=port)

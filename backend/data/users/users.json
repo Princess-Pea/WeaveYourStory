@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "user_id": "d13313a9-ee33-427f-9d00-0a8b054686c8",
+      "username": "testuser1",
+      "password": "$2b$12$yf6JR4H6dTgaOHLTTJVDh.SNHRcoQ6yb.eNxtipx0ZcEgUHUS2uKC",
+      "email": "test@example.com",
+      "created_at": "2026-01-24T11:05:50.641099",
+      "updated_at": "2026-01-24T11:05:50.641159"
+    }
+  ]
+}
