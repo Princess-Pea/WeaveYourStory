@@ -76,8 +76,13 @@ def init_auth_middleware(app):
         请求前置拦截器
         对需要鉴权的接口进行token验证
         """
-        # 获取请求路径
+        # 获取请求路径和方法
         path = request.path
+        method = request.method
+        
+        # 跳过OPTIONS请求（CORS预检请求）
+        if method == 'OPTIONS':
+            return None
         
         # 检查是否为公开路径
         for public_path in PUBLIC_PATHS:
