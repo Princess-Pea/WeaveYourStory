@@ -28,17 +28,23 @@
               <span class="user-info">
                 <el-icon class="user-icon"><User /></el-icon>
                 <span class="username">{{ userInfo?.username }}</span>
+                <el-tag v-if="userInfo?.is_guest" type="warning" size="small" class="guest-tag">游客</el-tag>
                 <el-icon class="arrow-icon"><ArrowDown /></el-icon>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="profile">
+                  <el-dropdown-item command="profile" :disabled="userInfo?.is_guest">
                     <el-icon><User /></el-icon>
                     个人中心
+                    <el-tag v-if="userInfo?.is_guest" type="info" size="small" style="margin-left: 8px;">需登录</el-tag>
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="userInfo?.is_guest" command="register" divided>
+                    <el-icon><Edit /></el-icon>
+                    注册账号保存数据
                   </el-dropdown-item>
                   <el-dropdown-item command="logout" divided>
                     <el-icon><SwitchButton /></el-icon>
-                    退出登录
+                    {{ userInfo?.is_guest ? '退出游客模式' : '退出登录' }}
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -60,7 +66,7 @@
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { User, ArrowDown, SwitchButton } from '@element-plus/icons-vue'
+import { User, ArrowDown, SwitchButton, Edit } from '@element-plus/icons-vue'
 import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
@@ -72,7 +78,15 @@ const { isLoggedIn, userInfo, clearAuth } = useAuth()
  */
 const handleCommand = (command) => {
   if (command === 'profile') {
+    // 游客无法访问个人中心
+    if (userInfo.value?.is_guest) {
+      ElMessage.warning('游客模式不支持此功能，请注册登录后使用')
+      return
+    }
     router.push('/profile')
+  } else if (command === 'register') {
+    // 跳转到注册页
+    router.push('/register')
   } else if (command === 'logout') {
     handleLogout()
   }
@@ -272,5 +286,10 @@ const handleLogout = async () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.guest-tag {
+  margin-left: 8px;
+  font-size: 12px;
 }
 </style>

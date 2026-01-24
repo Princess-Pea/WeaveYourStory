@@ -7,6 +7,14 @@
       "email": "test@example.com",
       "created_at": "2026-01-24T11:05:50.641099",
       "updated_at": "2026-01-24T11:05:50.641159"
+    },
+    {
+      "user_id": "e027dff7-9f11-4753-a0bf-74d76d0114c5",
+      "username": "user",
+      "password": "$2b$12$Y4aeT4.mlB7pCgBLtZeOAubHRjsdb4kthY6t41VGBA92yefzh7fFW",
+      "email": "",
+      "created_at": "2026-01-24T11:59:31.894829",
+      "updated_at": "2026-01-24T11:59:31.894839"
     }
   ]
 }

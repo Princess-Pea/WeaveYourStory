@@ -58,6 +58,20 @@
           <span>还没有账号？</span>
           <router-link to="/register">立即注册</router-link>
         </div>
+        
+        <!-- 游客模式提示 -->
+        <div class="guest-mode">
+          <el-divider>或</el-divider>
+          <el-button
+            type="info"
+            size="large"
+            plain
+            class="guest-button"
+            @click="handleGuestLogin"
+          >
+            游客模式体验（数据不保存）
+          </el-button>
+        </div>
       </el-form>
     </div>
   </div>
@@ -67,7 +81,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { login } from '@/api/auth'
+import { login, guestLogin } from '@/api/auth'
 import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
@@ -133,6 +147,41 @@ const handleLogin = async () => {
     }
   } catch (error) {
     console.error('登录失败:', error)
+    // 错误已在 axios 拦截器中处理
+  } finally {
+    loading.value = false
+  }
+}
+
+/**
+ * 处理游客登录
+ */
+const handleGuestLogin = async () => {
+  loading.value = true
+
+  try {
+    // 调用游客登录 API
+    const response = await guestLogin()
+
+    // 检查响应状态
+    if (response.code === 200 && response.data) {
+      // 存储 Token 和用户信息
+      setAuth(response.data.token, {
+        user_id: response.data.user_id,
+        username: response.data.username,
+        is_guest: true
+      })
+
+      ElMessage.success('欢迎使用游客模式！')
+
+      // 跳转到目标页面或首页
+      const redirectPath = route.query.redirect || '/manuscript-input'
+      router.push(redirectPath)
+    } else {
+      ElMessage.error(response.msg || '游客登录失败，请重试')
+    }
+  } catch (error) {
+    console.error('游客登录失败:', error)
     // 错误已在 axios 拦截器中处理
   } finally {
     loading.value = false
@@ -243,6 +292,29 @@ const handleLogin = async () => {
 .register-link a:hover {
   text-decoration: underline;
   color: #d89327;
+}
+
+/* 游客模式 */
+.guest-mode {
+  margin-top: 30px;
+}
+
+.guest-button {
+  width: 100%;
+  border-color: rgba(233, 163, 59, 0.5);
+  color: rgba(233, 163, 59, 0.8);
+  transition: all 0.3s;
+}
+
+.guest-button:hover {
+  border-color: #E9A33B;
+  color: #E9A33B;
+  background-color: rgba(233, 163, 59, 0.1);
+}
+
+:deep(.el-divider__text) {
+  background-color: rgba(56, 63, 89, 0.9);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Element Plus 组件样式覆盖 */

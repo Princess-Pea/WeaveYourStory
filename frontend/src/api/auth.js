@@ -58,3 +58,14 @@ export function refreshToken(token) {
     data: { token }
   })
 }
+
+/**
+ * 游客登录
+ * @returns {Promise}
+ */
+export function guestLogin() {
+  return request({
+    url: '/api/v1/auth/guest',
+    method: 'post'
+  })
+}

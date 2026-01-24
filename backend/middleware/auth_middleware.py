@@ -117,5 +117,6 @@ def init_auth_middleware(app):
             # 将用户信息存入请求上下文
             g.user_id = payload.get('user_id')
             g.username = payload.get('username')
+            g.is_guest = payload.get('is_guest', False)  # 游客标记
         
         return None  # 放行

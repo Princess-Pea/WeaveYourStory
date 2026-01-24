@@ -51,6 +51,7 @@ def save_draft():
     try:
         # 从请求上下文获取用户ID
         user_id = g.get('user_id')
+        is_guest = g.get('is_guest', False)
         
         if not user_id:
             return jsonify({
@@ -58,6 +59,17 @@ def save_draft():
                 "msg": "未登录或token无效",
                 "requestId": request_id
             }), 401
+        
+        # 检查是否为游客
+        if is_guest:
+            return jsonify({
+                "code": 403,
+                "msg": "游客模式不支持保存功能，请注册登录后使用",
+                "requestId": request_id,
+                "data": {
+                    "guest_mode": True
+                }
+            }), 403
         
         data = request.json
         draft_id = data.get('draft_id')
@@ -306,6 +318,7 @@ def save_project():
     try:
         # 从请求上下文获取用户ID
         user_id = g.get('user_id')
+        is_guest = g.get('is_guest', False)
         
         if not user_id:
             return jsonify({
@@ -313,6 +326,17 @@ def save_project():
                 "msg": "未登录或token无效",
                 "requestId": request_id
             }), 401
+        
+        # 检查是否为游客
+        if is_guest:
+            return jsonify({
+                "code": 403,
+                "msg": "游客模式不支持保存功能，请注册登录后使用",
+                "requestId": request_id,
+                "data": {
+                    "guest_mode": True
+                }
+            }), 403
         
         data = request.json
         project_id = data.get('project_id')

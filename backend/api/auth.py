@@ -302,3 +302,53 @@ def get_user_info():
             "msg": f"获取用户信息失败: {str(e)}",
             "requestId": request_id
         }), 500
+
+@auth_bp.route('/guest', methods=['POST'])
+def guest_login():
+    """
+    游客登录接口
+    无需注册，生成临时游客Token
+    
+    响应体:
+        {
+            "code": 200,
+            "msg": "游客登录成功",
+            "requestId": "req_xxx",
+            "data": {
+                "token": "xxx",
+                "expires_in": 86400,
+                "user_id": "guest_xxx",
+                "username": "游客",
+                "is_guest": true
+            }
+        }
+    """
+    request_id = generate_request_id()
+    
+    try:
+        # 生成游客ID
+        guest_id = f"guest_{uuid.uuid4().hex[:12]}"
+        guest_name = "游客"
+        
+        # 生成游客Token（标记为游客身份）
+        token = JWTUtil.generate_token(guest_id, guest_name, is_guest=True)
+        
+        return jsonify({
+            "code": 200,
+            "msg": "游客登录成功",
+            "requestId": request_id,
+            "data": {
+                "token": token,
+                "expires_in": Config.JWT_EXPIRATION,
+                "user_id": guest_id,
+                "username": guest_name,
+                "is_guest": True
+            }
+        })
+    
+    except Exception as e:
+        return jsonify({
+            "code": 500,
+            "msg": f"游客登录失败: {str(e)}",
+            "requestId": request_id
+        }), 500

@@ -13,7 +13,7 @@ class JWTUtil:
     """
     
     @staticmethod
-    def generate_token(user_id, username, expires_in=None):
+    def generate_token(user_id, username, expires_in=None, is_guest=False):
         """
         生成JWT Token
         
@@ -21,6 +21,7 @@ class JWTUtil:
             user_id (str): 用户ID
             username (str): 用户名
             expires_in (int): 过期时间（秒），默认使用配置中的JWT_EXPIRATION
+            is_guest (bool): 是否为游客身份
             
         返回:
             str: JWT Token字符串
@@ -36,7 +37,8 @@ class JWTUtil:
             'user_id': user_id,
             'username': username,
             'exp': exp_time,
-            'iat': datetime.datetime.utcnow()  # 签发时间
+            'iat': datetime.datetime.utcnow(),  # 签发时间
+            'is_guest': is_guest  # 游客标记
         }
         
         # 生成token
@@ -100,5 +102,6 @@ class JWTUtil:
         # 使用旧token中的用户信息生成新token
         user_id = payload.get('user_id')
         username = payload.get('username')
+        is_guest = payload.get('is_guest', False)
         
-        return JWTUtil.generate_token(user_id, username)
+        return JWTUtil.generate_token(user_id, username, is_guest=is_guest)
