@@ -11,6 +11,7 @@ from utils.ai_adapter import ai_adapter
 # 【新增】导入认证模块
 from config.settings import Config
 from api.auth import auth_bp
+from api.projects import projects_bp
 from middleware.auth_middleware import init_auth_middleware
 
 app = Flask(__name__)
@@ -24,6 +25,9 @@ Config.init_directories()
 
 # 【新增】注册认证蓝图
 app.register_blueprint(auth_bp)
+
+# 【新增】注册项目管理蓝图
+app.register_blueprint(projects_bp)
 
 # 【新增】初始化认证中间件
 init_auth_middleware(app)
