@@ -10,7 +10,7 @@
             <router-link to="/">首页</router-link>
             <router-link to="/manuscript-input">原稿输入</router-link>
             <router-link to="/visual-editor">可视化编辑</router-link>
-            <router-link to="/pixel-preview">像素风预览</router-link>
+            <router-link to="/pixel-preview">项目预览</router-link>
             <router-link to="/profile">个人中心</router-link>
           </nav>
           
