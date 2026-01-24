@@ -422,11 +422,18 @@ const handleSaveDraft = async () => {
   } catch (error) {
     console.error('暂存原稿失败:', error)
     
+    // 如果是网络错误，已经在拦截器中处理过了
+    if (!error.response) {
+      // 错误已在全局拦截器中处理，这里不做额外处理
+      return;
+    }
+    
     // 检查是否为游客模式限制
     if (error.response?.data?.code === 403 && error.response.data.data?.guest_mode) {
       ElMessage.warning('游客模式不支持保存功能，请注册登录后使用')
     } else {
-      ElMessage.error(error.message || '暂存失败')
+      // 其他错误已在拦截器中处理
+      console.log('错误已在全局拦截器中处理')
     }
   }
 }
