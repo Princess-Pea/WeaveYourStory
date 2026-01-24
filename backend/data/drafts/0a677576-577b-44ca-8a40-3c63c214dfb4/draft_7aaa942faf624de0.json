@@ -1,0 +1,31 @@
+{
+  "draft_id": "draft_7aaa942faf624de0",
+  "user_id": "0a677576-577b-44ca-8a40-3c63c214dfb4",
+  "title": "123",
+  "manuscript": {
+    "storyTitle": "123",
+    "emotionalTone": "",
+    "storyOutline": "",
+    "gameBackground": "",
+    "missions": [
+      {
+        "name": "",
+        "triggerCondition": "",
+        "completionCondition": "",
+        "storyProgression": ""
+      }
+    ],
+    "characters": [
+      {
+        "name": "",
+        "personality": "",
+        "appearance": "",
+        "speechStyle": "",
+        "relationships": ""
+      }
+    ]
+  },
+  "status": "draft",
+  "created_at": "2026-01-24T18:28:49.866257",
+  "updated_at": "2026-01-24T18:28:49.866267"
+}

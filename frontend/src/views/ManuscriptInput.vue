@@ -496,21 +496,74 @@ const submitToAI = async () => {
 }
 
 // 初始化时尝试加载暂存的草稿
-const loadDraft = () => {
-  const draft = localStorage.getItem('manuscriptDraft')
-  if (draft) {
-    try {
-      const parsed = JSON.parse(draft)
-      Object.assign(form, parsed)
-      ElMessage.info('已加载暂存的原稿')
-    } catch (error) {
-      console.error('加载暂存草稿失败:', error)
+const loadDraft = async () => {
+  try {
+    // 检查认证状态
+    const { userInfo, getToken } = useAuth();
+    const token = getToken();
+    
+    if (!token || userInfo.value?.is_guest) {
+      // 如果未登录或为游客，尝试从localStorage加载
+      const localDraft = localStorage.getItem('manuscriptDraft');
+      if (localDraft) {
+        try {
+          const parsed = JSON.parse(localDraft);
+          Object.assign(form, parsed);
+          ElMessage.info('已加载本地暂存的原稿');
+        } catch (error) {
+          console.error('加载本地暂存草稿失败:', error);
+        }
+      }
+      return;
+    }
+    
+    // 已登录用户，尝试从后端获取最近的草稿
+    const response = await getDraftList();
+    
+    if (response.code === 200 && response.data.drafts.length > 0) {
+      // 获取最新保存的草稿
+      const latestDraft = response.data.drafts.reduce((latest, draft) => {
+        return new Date(draft.updated_at) > new Date(latest.updated_at) ? draft : latest;
+      });
+      
+      // 获取详细内容
+      const detailResponse = await getDraftDetail(latestDraft.draft_id);
+      if (detailResponse.code === 200 && detailResponse.data.manuscript) {
+        Object.assign(form, detailResponse.data.manuscript);
+        ElMessage.info(`已加载云端草稿: ${detailResponse.data.title}`);
+      }
+    } else {
+      // 如果没有云端草稿，尝试从localStorage加载
+      const localDraft = localStorage.getItem('manuscriptDraft');
+      if (localDraft) {
+        try {
+          const parsed = JSON.parse(localDraft);
+          Object.assign(form, parsed);
+          ElMessage.info('已加载本地暂存的原稿');
+        } catch (error) {
+          console.error('加载本地暂存草稿失败:', error);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('加载草稿失败:', error);
+    
+    // 回退到本地存储
+    const localDraft = localStorage.getItem('manuscriptDraft');
+    if (localDraft) {
+      try {
+        const parsed = JSON.parse(localDraft);
+        Object.assign(form, parsed);
+        ElMessage.info('已加载本地暂存的原稿');
+      } catch (error) {
+        console.error('加载本地暂存草稿失败:', error);
+      }
     }
   }
-}
+};
 
 // 页面加载时尝试加载暂存的草稿
-loadDraft()
+loadDraft();
 </script>
 
 <style scoped>
