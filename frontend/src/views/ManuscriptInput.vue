@@ -389,11 +389,17 @@ const handleSaveDraft = async () => {
       return;
     }
     
-    // 验证表单
-    const valid = await formRef.value.validateField(['storyTitle', 'emotionalTone', 'storyOutline', 'gameBackground']).catch(() => true)
-    if (!valid) {
-      ElMessage.warning('请先填写基本的原稿信息')
-      return
+    // 验证表单 - 检查是否至少填写了一些基本信息
+    const hasBasicInfo = form.storyTitle.trim() !== '' || 
+                   form.emotionalTone !== '' || 
+                   form.storyOutline.trim() !== '' || 
+                   form.gameBackground.trim() !== '' ||
+                   form.missions.some(mission => mission.name.trim() !== '' || mission.triggerCondition.trim() !== '') ||
+                   form.characters.some(character => character.name.trim() !== '');
+    
+    if (!hasBasicInfo) {
+      ElMessage.warning('请至少填写部分原稿信息才能暂存');
+      return;
     }
     
     // 构造草稿数据
