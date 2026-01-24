@@ -508,6 +508,20 @@ const loadDraft = async () => {
     const { userInfo, getToken } = useAuth();
     const token = getToken();
     
+    // 检查当前表单是否已经有内容（防止覆盖用户正在编辑的内容）
+    const hasUnsavedContent = form.storyTitle.trim() !== '' ||
+                           form.emotionalTone !== '' ||
+                           form.storyOutline.trim() !== '' ||
+                           form.gameBackground.trim() !== '' ||
+                           form.missions.some(mission => mission.name.trim() !== '' || mission.triggerCondition.trim() !== '') ||
+                           form.characters.some(character => character.name.trim() !== '');
+    
+    if (hasUnsavedContent) {
+      // 如果当前有未保存的内容，不加载历史草稿
+      console.log('检测到当前有编辑内容，跳过加载历史草稿');
+      return;
+    }
+    
     if (!token || userInfo.value?.is_guest) {
       // 如果未登录或为游客，尝试从localStorage加载
       const localDraft = localStorage.getItem('manuscriptDraft');
