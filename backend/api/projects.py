@@ -1,621 +1,245 @@
-"""
-项目和草稿管理接口模块
-提供草稿保存、项目管理等接口
-"""
-from flask import Blueprint, request, jsonify, g
-from utils.project_storage import ProjectStorage
-import uuid
+from flask import Blueprint, request, jsonify
+from flask_cors import CORS
+from datetime import datetime
+import json
+import os
+from middleware.auth_middleware import token_required
+import secrets
+from database.projects_db import (
+    projects_db,
+    get_project,
+    set_project,
+    delete_project,
+    project_exists,
+    get_all_projects,
+    get_user_projects
+)
 
 # 创建项目管理蓝图
-projects_bp = Blueprint('projects', __name__, url_prefix='/api/v1/projects')
+projects_bp = Blueprint('projects', __name__)
+CORS(projects_bp)
 
-# 初始化项目存储
-project_storage = ProjectStorage()
+@projects_bp.route('/api/v1/projects', methods=['GET'])
+@token_required
+def get_projects():
+    """获取用户项目列表"""
+    try:
+        # 从token中获取用户名
+        token_data = request.environ.get('FLASK_USER', {})
+        username = token_data if isinstance(token_data, str) else 'guest'
+        
+        # 获取用户的所有项目
+        user_projects = []
+        for proj_id, project in get_user_projects(username):
+            user_projects.append({
+                'id': proj_id,
+                'title': project['title'],
+                'status': project['status'],
+                'updated_at': project['updated_at'],
+                'created_at': project['created_at']
+            })
+        
+        return jsonify({
+            'code': 200,
+            'msg': 'success',
+            'requestId': generate_request_id(),
+            'data': {
+                'projects': user_projects
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'获取项目列表失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+@projects_bp.route('/api/v1/projects', methods=['POST'])
+@token_required
+def create_project():
+    """创建新项目"""
+    try:
+        token_data = request.environ.get('FLASK_USER', {})
+        username = token_data if isinstance(token_data, str) else 'guest'
+        
+        data = request.json
+        title = data.get('title', '未命名项目')
+        description = data.get('description', '')
+        
+        if not title:
+            return jsonify({
+                'code': 400,
+                'msg': '项目标题不能为空',
+                'requestId': generate_request_id()
+            }), 400
+        
+        # 生成项目ID
+        project_id = f"proj_{secrets.token_hex(8)}"
+        
+        # 创建项目
+        project_data = {
+            'id': project_id,
+            'title': title,
+            'description': description,
+            'owner': username,
+            'status': 'draft',
+            'created_at': datetime.now().isoformat(),
+            'updated_at': datetime.now().isoformat(),
+            'manuscript_data': {}
+        }
+        set_project(project_id, project_data)
+        
+        return jsonify({
+            'code': 200,
+            'msg': '项目创建成功',
+            'requestId': generate_request_id(),
+            'data': {
+                'project': {
+                    'id': project_id,
+                    'title': title,
+                    'description': description,
+                    'status': 'draft',
+                    'created_at': project_data['created_at']
+                }
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'创建项目失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+@projects_bp.route('/api/v1/projects/<project_id>', methods=['GET'])
+@token_required
+def get_project_by_id(project_id):
+    """获取特定项目"""
+    try:
+        token_data = request.environ.get('FLASK_USER', {})
+        username = token_data if isinstance(token_data, str) else 'guest'
+        
+        # 检查项目是否存在且属于当前用户
+        project = get_project(project_id)
+        if not project or project['owner'] != username:
+            return jsonify({
+                'code': 404,
+                'msg': '项目不存在或无权访问',
+                'requestId': generate_request_id()
+            }), 404
+        
+        return jsonify({
+            'code': 200,
+            'msg': 'success',
+            'requestId': generate_request_id(),
+            'data': {
+                'project': {
+                    'id': project['id'],
+                    'title': project['title'],
+                    'description': project['description'],
+                    'status': project['status'],
+                    'created_at': project['created_at'],
+                    'updated_at': project['updated_at'],
+                    'manuscript_data': project['manuscript_data']
+                }
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'获取项目失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+@projects_bp.route('/api/v1/projects/<project_id>', methods=['PUT'])
+@token_required
+def update_project(project_id):
+    """更新项目"""
+    try:
+        token_data = request.environ.get('FLASK_USER', {})
+        username = token_data if isinstance(token_data, str) else 'guest'
+        
+        # 检查项目是否存在且属于当前用户
+        project = get_project(project_id)
+        if not project or project['owner'] != username:
+            return jsonify({
+                'code': 404,
+                'msg': '项目不存在或无权访问',
+                'requestId': generate_request_id()
+            }), 404
+        
+        data = request.json
+        title = data.get('title')
+        description = data.get('description')
+        status = data.get('status')
+        manuscript_data = data.get('manuscript_data')
+        
+        # 更新项目信息
+        updated_project = project.copy()
+        if title is not None:
+            updated_project['title'] = title
+        if description is not None:
+            updated_project['description'] = description
+        if status is not None:
+            updated_project['status'] = status
+        if manuscript_data is not None:
+            updated_project['manuscript_data'] = manuscript_data
+        
+        updated_project['updated_at'] = datetime.now().isoformat()
+        
+        set_project(project_id, updated_project)
+        
+        return jsonify({
+            'code': 200,
+            'msg': '项目更新成功',
+            'requestId': generate_request_id(),
+            'data': {
+                'project': {
+                    'id': updated_project['id'],
+                    'title': updated_project['title'],
+                    'description': updated_project['description'],
+                    'status': updated_project['status'],
+                    'updated_at': updated_project['updated_at']
+                }
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'更新项目失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+@projects_bp.route('/api/v1/projects/<project_id>', methods=['DELETE'])
+@token_required
+def delete_project_route(project_id):
+    """删除项目"""
+    try:
+        token_data = request.environ.get('FLASK_USER', {})
+        username = token_data if isinstance(token_data, str) else 'guest'
+        
+        # 检查项目是否存在且属于当前用户
+        project = get_project(project_id)
+        if not project or project['owner'] != username:
+            return jsonify({
+                'code': 404,
+                'msg': '项目不存在或无权访问',
+                'requestId': generate_request_id()
+            }), 404
+        
+        delete_project(project_id)
+        
+        return jsonify({
+            'code': 200,
+            'msg': '项目删除成功',
+            'requestId': generate_request_id()
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'删除项目失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
 
 def generate_request_id():
     """生成请求ID"""
-    return f"req_{uuid.uuid4().hex[:16]}"
-
-# ==================== 草稿管理接口 ====================
-
-@projects_bp.route('/drafts', methods=['POST'])
-def save_draft():
-    """
-    保存草稿接口（新建或更新）
-    
-    请求体:
-        {
-            "draft_id": "草稿ID（更新时传入，新建时不传）",
-            "title": "草稿标题",
-            "manuscript": {
-                "story": "剧情描述",
-                "characters": [...],
-                "tasks": [...]
-            }
-        }
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "保存成功",
-            "requestId": "req_xxx",
-            "data": {
-                "draft_id": "xxx",
-                "title": "xxx",
-                "updated_at": "2026-01-24T12:00:00"
-            }
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        is_guest = g.get('is_guest', False)
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 检查是否为游客
-        if is_guest:
-            return jsonify({
-                "code": 403,
-                "msg": "游客模式不支持保存功能，请注册登录后使用",
-                "requestId": request_id,
-                "data": {
-                    "guest_mode": True
-                }
-            }), 403
-        
-        data = request.json
-        draft_id = data.get('draft_id')
-        title = data.get('title', '')
-        manuscript = data.get('manuscript', {})
-        
-        # 保存草稿
-        draft = project_storage.save_draft(user_id, draft_id, title, manuscript)
-        
-        if not draft:
-            return jsonify({
-                "code": 500,
-                "msg": "保存草稿失败",
-                "requestId": request_id
-            }), 500
-        
-        # 返回成功响应
-        return jsonify({
-            "code": 200,
-            "msg": "保存成功",
-            "requestId": request_id,
-            "data": {
-                "draft_id": draft['draft_id'],
-                "title": draft['title'],
-                "updated_at": draft['updated_at']
-            }
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"保存草稿失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/drafts', methods=['GET'])
-def list_drafts():
-    """
-    获取草稿列表接口
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "success",
-            "requestId": "req_xxx",
-            "data": {
-                "drafts": [
-                    {
-                        "draft_id": "xxx",
-                        "title": "xxx",
-                        "status": "draft",
-                        "created_at": "2026-01-24T12:00:00",
-                        "updated_at": "2026-01-24T12:00:00"
-                    }
-                ],
-                "total": 10
-            }
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 获取草稿列表
-        drafts = project_storage.list_drafts(user_id)
-        
-        # 返回成功响应（不包含完整manuscript数据，只返回元信息）
-        draft_list = [
-            {
-                "draft_id": draft['draft_id'],
-                "title": draft['title'],
-                "status": draft['status'],
-                "created_at": draft['created_at'],
-                "updated_at": draft['updated_at']
-            }
-            for draft in drafts
-        ]
-        
-        return jsonify({
-            "code": 200,
-            "msg": "success",
-            "requestId": request_id,
-            "data": {
-                "drafts": draft_list,
-                "total": len(draft_list)
-            }
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"获取草稿列表失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/drafts/<draft_id>', methods=['GET'])
-def get_draft(draft_id):
-    """
-    获取草稿详情接口
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "success",
-            "requestId": "req_xxx",
-            "data": {
-                "draft_id": "xxx",
-                "title": "xxx",
-                "manuscript": {...},
-                "status": "draft",
-                "created_at": "2026-01-24T12:00:00",
-                "updated_at": "2026-01-24T12:00:00"
-            }
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 获取草稿详情
-        draft = project_storage.get_draft(user_id, draft_id)
-        
-        if not draft:
-            return jsonify({
-                "code": 404,
-                "msg": "草稿不存在",
-                "requestId": request_id
-            }), 404
-        
-        # 返回完整草稿数据
-        return jsonify({
-            "code": 200,
-            "msg": "success",
-            "requestId": request_id,
-            "data": draft
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"获取草稿详情失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/drafts/<draft_id>', methods=['DELETE'])
-def delete_draft(draft_id):
-    """
-    删除草稿接口
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "删除成功",
-            "requestId": "req_xxx"
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 删除草稿
-        success = project_storage.delete_draft(user_id, draft_id)
-        
-        if not success:
-            return jsonify({
-                "code": 404,
-                "msg": "草稿不存在",
-                "requestId": request_id
-            }), 404
-        
-        # 返回成功响应
-        return jsonify({
-            "code": 200,
-            "msg": "删除成功",
-            "requestId": request_id
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"删除草稿失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-# ==================== 项目管理接口 ====================
-
-@projects_bp.route('/', methods=['POST'])
-def save_project():
-    """
-    保存项目接口（新建或更新）
-    
-    请求体:
-        {
-            "project_id": "项目ID（更新时传入，新建时不传）",
-            "title": "项目标题",
-            "game_data": {
-                "scenes": [...],
-                "characters": [...],
-                "tasks": [...]
-            },
-            "status": "draft/editing/published"
-        }
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "保存成功",
-            "requestId": "req_xxx",
-            "data": {
-                "project_id": "xxx",
-                "title": "xxx",
-                "status": "xxx",
-                "updated_at": "2026-01-24T12:00:00"
-            }
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        is_guest = g.get('is_guest', False)
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 检查是否为游客
-        if is_guest:
-            return jsonify({
-                "code": 403,
-                "msg": "游客模式不支持保存功能，请注册登录后使用",
-                "requestId": request_id,
-                "data": {
-                    "guest_mode": True
-                }
-            }), 403
-        
-        data = request.json
-        project_id = data.get('project_id')
-        title = data.get('title', '')
-        game_data = data.get('game_data', {})
-        status = data.get('status', 'draft')
-        
-        # 保存项目
-        project = project_storage.save_project(user_id, project_id, title, game_data, status)
-        
-        if not project:
-            return jsonify({
-                "code": 500,
-                "msg": "保存项目失败",
-                "requestId": request_id
-            }), 500
-        
-        # 返回成功响应
-        return jsonify({
-            "code": 200,
-            "msg": "保存成功",
-            "requestId": request_id,
-            "data": {
-                "project_id": project['project_id'],
-                "title": project['title'],
-                "status": project['status'],
-                "updated_at": project['updated_at']
-            }
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"保存项目失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/', methods=['GET'])
-def list_projects():
-    """
-    获取项目列表接口
-    
-    查询参数:
-        status: 状态过滤（可选，draft/editing/published）
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "success",
-            "requestId": "req_xxx",
-            "data": {
-                "projects": [
-                    {
-                        "project_id": "xxx",
-                        "title": "xxx",
-                        "status": "xxx",
-                        "created_at": "2026-01-24T12:00:00",
-                        "updated_at": "2026-01-24T12:00:00"
-                    }
-                ],
-                "total": 10
-            }
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 获取状态过滤参数
-        status = request.args.get('status')
-        
-        # 获取项目列表
-        projects = project_storage.list_projects(user_id, status)
-        
-        # 返回成功响应（不包含完整game_data，只返回元信息）
-        project_list = [
-            {
-                "project_id": project['project_id'],
-                "title": project['title'],
-                "status": project['status'],
-                "created_at": project['created_at'],
-                "updated_at": project['updated_at']
-            }
-            for project in projects
-        ]
-        
-        return jsonify({
-            "code": 200,
-            "msg": "success",
-            "requestId": request_id,
-            "data": {
-                "projects": project_list,
-                "total": len(project_list)
-            }
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"获取项目列表失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/<project_id>', methods=['GET'])
-def get_project(project_id):
-    """
-    获取项目详情接口
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "success",
-            "requestId": "req_xxx",
-            "data": {
-                "project_id": "xxx",
-                "title": "xxx",
-                "game_data": {...},
-                "status": "xxx",
-                "created_at": "2026-01-24T12:00:00",
-                "updated_at": "2026-01-24T12:00:00"
-            }
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 获取项目详情
-        project = project_storage.get_project(user_id, project_id)
-        
-        if not project:
-            return jsonify({
-                "code": 404,
-                "msg": "项目不存在",
-                "requestId": request_id
-            }), 404
-        
-        # 返回完整项目数据
-        return jsonify({
-            "code": 200,
-            "msg": "success",
-            "requestId": request_id,
-            "data": project
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"获取项目详情失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/<project_id>', methods=['DELETE'])
-def delete_project(project_id):
-    """
-    删除项目接口
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "删除成功",
-            "requestId": "req_xxx"
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        # 删除项目
-        success = project_storage.delete_project(user_id, project_id)
-        
-        if not success:
-            return jsonify({
-                "code": 404,
-                "msg": "项目不存在",
-                "requestId": request_id
-            }), 404
-        
-        # 返回成功响应
-        return jsonify({
-            "code": 200,
-            "msg": "删除成功",
-            "requestId": request_id
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"删除项目失败: {str(e)}",
-            "requestId": request_id
-        }), 500
-
-@projects_bp.route('/<project_id>/status', methods=['PUT'])
-def update_project_status(project_id):
-    """
-    更新项目状态接口
-    
-    请求体:
-        {
-            "status": "draft/editing/published"
-        }
-    
-    响应体:
-        {
-            "code": 200,
-            "msg": "更新成功",
-            "requestId": "req_xxx"
-        }
-    """
-    request_id = generate_request_id()
-    
-    try:
-        # 从请求上下文获取用户ID
-        user_id = g.get('user_id')
-        
-        if not user_id:
-            return jsonify({
-                "code": 401,
-                "msg": "未登录或token无效",
-                "requestId": request_id
-            }), 401
-        
-        data = request.json
-        status = data.get('status')
-        
-        if not status:
-            return jsonify({
-                "code": 400,
-                "msg": "状态参数不能为空",
-                "requestId": request_id
-            }), 400
-        
-        # 更新项目状态
-        success = project_storage.update_project_status(user_id, project_id, status)
-        
-        if not success:
-            return jsonify({
-                "code": 404,
-                "msg": "项目不存在",
-                "requestId": request_id
-            }), 404
-        
-        # 返回成功响应
-        return jsonify({
-            "code": 200,
-            "msg": "更新成功",
-            "requestId": request_id
-        })
-    
-    except Exception as e:
-        return jsonify({
-            "code": 500,
-            "msg": f"更新项目状态失败: {str(e)}",
-            "requestId": request_id
-        }), 500
+    return secrets.token_hex(8)

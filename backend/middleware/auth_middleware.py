@@ -1,128 +1,79 @@
-"""
-认证中间件
-负责拦截请求并验证JWT Token
-"""
-from flask import request, jsonify, g
 from functools import wraps
-from utils.jwt_util import JWTUtil
-import uuid
+from flask import request, jsonify, g
+import jwt
+import datetime
+from config.settings import Config
+import traceback
 
-def generate_request_id():
-    """生成请求ID"""
-    return f"req_{uuid.uuid4().hex[:16]}"
-
-def auth_required(f):
-    """
-    认证装饰器
-    用于需要鉴权的接口
-    """
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        # 从请求头获取token
-        auth_header = request.headers.get('Authorization', '')
-        
-        if not auth_header:
-            return jsonify({
-                "code": 401,
-                "msg": "缺少Authorization请求头",
-                "requestId": generate_request_id()
-            }), 401
-        
-        # 解析token（支持 "Bearer token" 和 "token" 两种格式）
-        token = auth_header
-        if auth_header.startswith('Bearer '):
-            token = auth_header[7:]
-        
-        # 验证token
-        payload = JWTUtil.verify_token(token)
-        
-        if not payload:
-            return jsonify({
-                "code": 401,
-                "msg": "token无效或已过期",
-                "requestId": generate_request_id()
-            }), 401
-        
-        # 将用户ID存入请求上下文
-        g.user_id = payload.get('user_id')
-        g.username = payload.get('username')
-        
-        return f(*args, **kwargs)
-    
-    return decorated_function
 
 def init_auth_middleware(app):
-    """
-    初始化认证中间件
-    【魔搭适配点】配置请求拦截规则
-    
-    参数:
-        app: Flask应用实例
-    """
-    
-    # 无需鉴权的路径列表
-    PUBLIC_PATHS = [
-        '/api/v1/auth/register',
-        '/api/v1/auth/login',
-        '/api/v1/auth/refresh',
-        '/api/v1/auth/guest',  # 游客登录接口无需鉴权
-        '/swagger',
-        '/api/v1/game/preview/'  # 预览接口无需鉴权
-    ]
-    
+    """初始化认证中间件"""
     @app.before_request
     def check_auth():
-        """
-        请求前置拦截器
-        对需要鉴权的接口进行token验证
-        """
-        # 获取请求路径和方法
-        path = request.path
-        method = request.method
+        # 不需要认证的路径
+        public_paths = [
+            '/api/v1/auth/login',
+            '/api/v1/auth/register',
+            '/api/v1/health',
+            '/',
+            '/index.html'
+        ]
         
-        # 跳过OPTIONS请求（CORS预检请求）
-        if method == 'OPTIONS':
-            return None
+        # 检查是否为公共路径
+        for path in public_paths:
+            if request.path.startswith(path):
+                return None
         
-        # 检查是否为公开路径
-        for public_path in PUBLIC_PATHS:
-            if path.startswith(public_path):
-                return None  # 不拦截
-        
-        # 静态资源不拦截
-        if path.startswith('/static/'):
-            return None
-        
-        # 其他路径需要鉴权（如果以/api开头）
-        if path.startswith('/api/'):
-            # 从请求头获取token
-            auth_header = request.headers.get('Authorization', '')
+        # 检查认证头部
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return jsonify({'error': 'Missing authorization header', 'code': 401}), 401
             
-            if not auth_header:
-                return jsonify({
-                    "code": 401,
-                    "msg": "缺少Authorization请求头",
-                    "requestId": generate_request_id()
-                }), 401
-            
+        try:
             # 解析token
-            token = auth_header
-            if auth_header.startswith('Bearer '):
-                token = auth_header[7:]
+            token = auth_header.split(" ")[1] if " " in auth_header else auth_header
+            payload = jwt.decode(
+                token, 
+                Config.JWT_SECRET, 
+                algorithms=["HS256"]
+            )
             
-            # 验证token
-            payload = JWTUtil.verify_token(token)
+            # 将用户信息存储到请求上下文中
+            g.user = payload
+            g.token = token
             
-            if not payload:
-                return jsonify({
-                    "code": 401,
-                    "msg": "token无效或已过期",
-                    "requestId": generate_request_id()
-                }), 401
-            
-            # 将用户信息存入请求上下文
-            g.user_id = payload.get('user_id')
-            g.username = payload.get('username')
-            g.is_guest = payload.get('is_guest', False)  # 游客标记
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired', 'code': 401}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Invalid token', 'code': 401}), 401
+        except Exception as e:
+            print(f"认证中间件错误: {str(e)}")
+            traceback.print_exc()
+            return jsonify({'error': 'Authentication error', 'code': 401}), 401
+    
+    return app
+
+
+def token_required(f):
+    """装饰器：需要认证的路由"""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return jsonify({'message': 'Token is missing!', 'code': 401}), 401
         
-        return None  # 放行
+        try:
+            token = auth_header.split(" ")[1] if " " in auth_header else auth_header
+            payload = jwt.decode(
+                token, 
+                Config.JWT_SECRET, 
+                algorithms=["HS256"]
+            )
+            g.user = payload
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired!', 'code': 401}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Token is invalid!', 'code': 401}), 401
+        
+        return f(*args, **kwargs)
+    return decorated
