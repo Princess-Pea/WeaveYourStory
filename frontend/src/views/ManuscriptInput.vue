@@ -269,6 +269,12 @@
           💾 暂存原稿
         </el-button>
         <el-button 
+          type="info" 
+          @click="handleRestoreDraft"
+        >
+          🔄 恢复到暂存的原稿
+        </el-button>
+        <el-button 
           type="primary" 
           @click="submitToAI"
           :loading="submitting"
@@ -285,7 +291,7 @@ import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import request from '../utils/request'
-import { saveDraft, getDraftDetail } from '@/api/projects'
+import { saveDraft, getDraftDetail, getDraftList } from '@/api/projects'
 import { useAuth } from '@/stores/auth'
 
 const router = useRouter()
@@ -420,6 +426,8 @@ const handleSaveDraft = async () => {
     
     if (response.code === 200) {
       ElMessage.success('原稿已暂存')
+      // 持久化到本地存储作为备选
+      localStorage.setItem('manuscriptDraft', JSON.stringify(form))
       // 可以选择性地保存草稿ID到本地以便后续访问
       localStorage.setItem('currentDraftId', response.data.draft_id)
     } else {
@@ -443,6 +451,70 @@ const handleSaveDraft = async () => {
     }
   }
 }
+
+// 恢复到暂存的原稿
+const handleRestoreDraft = async () => {
+  try {
+    // 检查认证状态
+    const { userInfo, getToken } = useAuth();
+    const token = getToken();
+    
+    if (!token || userInfo.value?.is_guest) {
+      // 如果未登录或为游客，尝试从localStorage加载
+      const localDraft = localStorage.getItem('manuscriptDraft');
+      if (localDraft) {
+        try {
+          const parsed = JSON.parse(localDraft);
+          Object.assign(form, parsed);
+          ElMessage.success('已恢复本地暂存的原稿');
+        } catch (error) {
+          console.error('恢复本地暂存草稿失败:', error);
+          ElMessage.error('恢复失败：本地数据损坏');
+        }
+      } else {
+        ElMessage.info('没有找到暂存的原稿');
+      }
+      return;
+    }
+    
+    // 已登录用户，尝试从后端获取最近的草稿
+    const response = await getDraftList();
+    
+    if (response.code === 200 && response.data.drafts.length > 0) {
+      // 获取最新保存的草稿
+      const latestDraft = response.data.drafts.reduce((latest, draft) => {
+        return new Date(draft.updated_at) > new Date(latest.updated_at) ? draft : latest;
+      });
+      
+      // 获取详细内容
+      const detailResponse = await getDraftDetail(latestDraft.draft_id);
+      if (detailResponse.code === 200 && detailResponse.data.manuscript) {
+        Object.assign(form, detailResponse.data.manuscript);
+        ElMessage.success(`已恢复云端草稿: ${detailResponse.data.title}`);
+      } else {
+        throw new Error(detailResponse.msg || '获取草稿详情失败');
+      }
+    } else {
+      // 如果没有云端草稿，尝试从localStorage加载
+      const localDraft = localStorage.getItem('manuscriptDraft');
+      if (localDraft) {
+        try {
+          const parsed = JSON.parse(localDraft);
+          Object.assign(form, parsed);
+          ElMessage.success('已恢复本地暂存的原稿');
+        } catch (error) {
+          console.error('恢复本地暂存草稿失败:', error);
+          ElMessage.error('恢复失败：本地数据损坏');
+        }
+      } else {
+        ElMessage.info('没有找到暂存的原稿');
+      }
+    }
+  } catch (error) {
+    console.error('恢复草稿失败:', error);
+    ElMessage.error(error.message || '恢复失败，请检查网络设置');
+  }
+};
 
 // 提交AI生成
 const submitToAI = async () => {
