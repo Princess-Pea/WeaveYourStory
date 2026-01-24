@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header v-if="$route.path !== '/'">
+      <el-header v-if="$route.path !== '/' && $route.path !== '/login' && $route.path !== '/register'">
         <div class="header-content">
           <router-link to="/" class="app-title-link">
             <h1 class="app-title">PixelForge</h1>
@@ -13,12 +13,43 @@
             <router-link to="/pixel-preview">像素风预览</router-link>
             <router-link to="/profile">个人中心</router-link>
           </nav>
+          
+          <!-- 用户状态展示区域 -->
+          <div class="user-section">
+            <!-- 未登录状态 -->
+            <div v-if="!isLoggedIn" class="auth-buttons">
+              <router-link to="/login" class="auth-link">登录</router-link>
+              <span class="divider">/</span>
+              <router-link to="/register" class="auth-link">注册</router-link>
+            </div>
+            
+            <!-- 已登录状态 -->
+            <el-dropdown v-else trigger="click" @command="handleCommand">
+              <span class="user-info">
+                <el-icon class="user-icon"><User /></el-icon>
+                <span class="username">{{ userInfo?.username }}</span>
+                <el-icon class="arrow-icon"><ArrowDown /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="profile">
+                    <el-icon><User /></el-icon>
+                    个人中心
+                  </el-dropdown-item>
+                  <el-dropdown-item command="logout" divided>
+                    <el-icon><SwitchButton /></el-icon>
+                    退出登录
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
         </div>
       </el-header>
-      <el-main :class="{ 'no-header': $route.path === '/' }">
+      <el-main :class="{ 'no-header': $route.path === '/' || $route.path === '/login' || $route.path === '/register' }">
         <router-view />
       </el-main>
-      <el-footer>
+      <el-footer v-if="$route.path !== '/login' && $route.path !== '/register'">
         <p>Powered by PixelForge - 设计属于你的像素冒险世界</p>
       </el-footer>
     </el-container>
@@ -26,8 +57,53 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { User, ArrowDown, SwitchButton } from '@element-plus/icons-vue'
+import { useAuth } from '@/stores/auth'
+
+const router = useRouter()
 const route = useRoute()
+const { isLoggedIn, userInfo, clearAuth } = useAuth()
+
+/**
+ * 处理下拉菜单命令
+ */
+const handleCommand = (command) => {
+  if (command === 'profile') {
+    router.push('/profile')
+  } else if (command === 'logout') {
+    handleLogout()
+  }
+}
+
+/**
+ * 处理退出登录
+ */
+const handleLogout = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要退出登录吗？',
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    
+    // 清除认证信息
+    clearAuth()
+    
+    ElMessage.success('已退出登录')
+    
+    // 跳转到首页
+    router.push('/')
+  } catch {
+    // 用户取消
+  }
+}
 </script>
 
 <style>
@@ -53,6 +129,7 @@ const route = useRoute()
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  gap: 20px;
 }
 
 .no-header {
@@ -85,6 +162,8 @@ const route = useRoute()
 .navigation {
   display: flex;
   gap: 20px;
+  flex: 1;
+  justify-content: center;
 }
 
 .navigation a {
@@ -128,5 +207,70 @@ const route = useRoute()
 
 ::-webkit-scrollbar-thumb:hover {
   background: #E9A33B;
+}
+
+/* 用户状态展示区域 */
+.user-section {
+  display: flex;
+  align-items: center;
+  min-width: 150px;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+}
+
+.auth-link {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+}
+
+.auth-link:hover {
+  background-color: #383F59;
+  border: 1px solid #E9A33B;
+  box-shadow: 0 0 8px rgba(233, 163, 59, 0.3);
+}
+
+.divider {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+  color: white;
+}
+
+.user-info:hover {
+  background-color: #383F59;
+  border: 1px solid #E9A33B;
+  box-shadow: 0 0 8px rgba(233, 163, 59, 0.3);
+}
+
+.user-icon,
+.arrow-icon {
+  font-size: 16px;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
