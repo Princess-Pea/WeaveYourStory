@@ -373,6 +373,22 @@ const removeCharacter = (index) => {
 // 暂存原稿
 const handleSaveDraft = async () => {
   try {
+    // 检查认证状态
+    const { userInfo, getToken } = useAuth();
+    const token = getToken();
+    
+    if (!token) {
+      ElMessage.warning('请先登录再进行保存操作');
+      router.push('/login');
+      return;
+    }
+    
+    // 检查是否为游客模式
+    if (userInfo.value?.is_guest) {
+      ElMessage.warning('游客模式不支持保存功能，请注册登录后使用');
+      return;
+    }
+    
     // 验证表单
     const valid = await formRef.value.validateField(['storyTitle', 'emotionalTone', 'storyOutline', 'gameBackground']).catch(() => true)
     if (!valid) {
