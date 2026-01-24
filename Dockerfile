@@ -8,9 +8,6 @@ COPY ./ /home/user/app/
 # 安装Python依赖
 RUN pip install flask flask-cors pyjwt python-dotenv
 
-# 安装Node.js依赖
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
-
 # 前端已经构建，直接使用
 # 如果前端尚未构建，则构建前端（可选）
 WORKDIR /home/user/app/frontend
