@@ -14,6 +14,7 @@ from database.projects_db import (
     get_all_projects,
     get_user_projects
 )
+from utils.project_storage import ProjectStorage
 
 # 创建项目管理蓝图
 projects_bp = Blueprint('projects', __name__)
@@ -241,6 +242,150 @@ def delete_project_route(project_id):
         return jsonify({
             'code': 500,
             'msg': f'删除项目失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+# ==================== 草稿管理API ====================
+
+# 初始化项目存储实例
+project_storage = ProjectStorage()
+
+@projects_bp.route('/api/v1/projects/drafts', methods=['POST'])
+@token_required
+def save_draft():
+    """保存草稿（新建或更新）"""
+    try:
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
+        
+        data = request.json
+        draft_id = data.get('draft_id')
+        title = data.get('title', '未命名草稿')
+        manuscript = data.get('manuscript', {})
+        
+        # 保存草稿
+        draft = project_storage.save_draft(
+            user_id=username,
+            draft_id=draft_id,
+            title=title,
+            manuscript=manuscript
+        )
+        
+        if not draft:
+            return jsonify({
+                'code': 500,
+                'msg': '保存草稿失败',
+                'requestId': generate_request_id()
+            }), 500
+        
+        return jsonify({
+            'code': 200,
+            'msg': '草稿保存成功',
+            'requestId': generate_request_id(),
+            'data': {
+                'draft': draft
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'保存草稿失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+
+@projects_bp.route('/api/v1/projects/drafts', methods=['GET'])
+@token_required
+def get_drafts_list():
+    """获取草稿列表"""
+    try:
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
+        
+        # 获取草稿列表
+        drafts = project_storage.list_drafts(user_id=username)
+        
+        return jsonify({
+            'code': 200,
+            'msg': 'success',
+            'requestId': generate_request_id(),
+            'data': {
+                'drafts': drafts
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'获取草稿列表失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+
+@projects_bp.route('/api/v1/projects/drafts/<draft_id>', methods=['GET'])
+@token_required
+def get_draft_by_id(draft_id):
+    """获取草稿详情"""
+    try:
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
+        
+        # 获取草稿详情
+        draft = project_storage.get_draft(user_id=username, draft_id=draft_id)
+        
+        if not draft:
+            return jsonify({
+                'code': 404,
+                'msg': '草稿不存在',
+                'requestId': generate_request_id()
+            }), 404
+        
+        return jsonify({
+            'code': 200,
+            'msg': 'success',
+            'requestId': generate_request_id(),
+            'data': {
+                'draft': draft
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'获取草稿详情失败: {str(e)}',
+            'requestId': generate_request_id()
+        }), 500
+
+
+@projects_bp.route('/api/v1/projects/drafts/<draft_id>', methods=['DELETE'])
+@token_required
+def delete_draft_by_id(draft_id):
+    """删除草稿"""
+    try:
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
+        
+        # 删除草稿
+        success = project_storage.delete_draft(user_id=username, draft_id=draft_id)
+        
+        if not success:
+            return jsonify({
+                'code': 404,
+                'msg': '草稿不存在或删除失败',
+                'requestId': generate_request_id()
+            }), 404
+        
+        return jsonify({
+            'code': 200,
+            'msg': '草稿删除成功',
+            'requestId': generate_request_id()
+        })
+    except Exception as e:
+        return jsonify({
+            'code': 500,
+            'msg': f'删除草稿失败: {str(e)}',
             'requestId': generate_request_id()
         }), 500
 
