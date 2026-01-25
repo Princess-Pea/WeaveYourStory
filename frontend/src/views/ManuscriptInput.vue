@@ -493,9 +493,9 @@ const handleRestoreDraft = async () => {
       const detailResponse = await getDraftDetail(latestDraft.draft_id);
       console.log('草稿详情响应:', detailResponse);
       
-      if (detailResponse.code === 200 && detailResponse.data?.manuscript) {
-        Object.assign(form, detailResponse.data.manuscript);
-        ElMessage.success(`已恢复云端草稿: ${detailResponse.data.title}`);
+      if (detailResponse.code === 200 && detailResponse.data?.draft?.manuscript) {
+        Object.assign(form, detailResponse.data.draft.manuscript);
+        ElMessage.success(`已恢复云端草稿: ${detailResponse.data.draft.title}`);
       } else {
         throw new Error(detailResponse.msg || '获取草稿详情失败');
       }
