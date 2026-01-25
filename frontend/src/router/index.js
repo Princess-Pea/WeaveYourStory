@@ -51,7 +51,7 @@ const routes = [
   {
     path: '/pixel-preview',
     name: 'PixelPreview',
-    component: PixelPreview,
+    component: GamePreview,
     meta: { requiresAuth: true }
   },
   {

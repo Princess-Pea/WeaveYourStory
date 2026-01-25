@@ -54,18 +54,6 @@ def token_required(f):
     decorated.__name__ = f.__name__
     return decorated
 
-# --- 核心接口：用户与鉴权 ---
-@app.route('/api/v1/auth/login', methods=['POST'])
-def login():
-    """模拟登录，返回Token"""
-    data = request.json
-    # 演示目的：任何用户名/密码均可登录
-    token = jwt.encode({
-        'user': data.get('username'),
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-    }, app.config['SECRET_KEY'])
-    return jsonify({'token': token, 'username': data.get('username')})
-
 # --- 核心接口：AIGC 规范化接口 ---
 @app.route('/api/v1/ai/game/submit', methods=['POST'])
 @token_required
