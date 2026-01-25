@@ -684,7 +684,7 @@ const submitToAI = async () => {
     }
 
     // 调用后端AI提交接口
-    const response = await request.post('/ai/game/submit', {
+    const response = await request.post('/api/v1/ai/game/submit', {
       content: JSON.stringify(manuscriptData), // 将结构化原稿数据作为content
       context: { gameId: 'new' }, // 新建游戏ID
       params: { 
