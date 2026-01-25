@@ -46,14 +46,21 @@ try:
                     with open(cls.USERS_FILE, 'w', encoding='utf-8') as f:
                         json.dump({}, f, ensure_ascii=False, indent=2)
     
-    from backend.middleware.auth_middleware import init_auth_middleware
+    # 尝试导入认证中间件，如果失败则跳过
+    try:
+        from backend.middleware.auth_middleware import init_auth_middleware
+        middleware_available = True
+    except ImportError:
+        print("认证中间件导入失败，将跳过中间件初始化")
+        middleware_available = False
     
     # 注册蓝图
     app.register_blueprint(auth_bp, url_prefix='')
     app.register_blueprint(projects_bp, url_prefix='')
     
-    # 初始化认证中间件
-    init_auth_middleware(app)
+    # 初始化认证中间件（如果可用）
+    if middleware_available:
+        init_auth_middleware(app)
     
     # 初始化数据目录
     Config.init_directories()
