@@ -478,17 +478,22 @@ const handleRestoreDraft = async () => {
     }
     
     // 已登录用户，尝试从后端获取最近的草稿
+    console.log('开始获取云端草稿列表...');
     const response = await getDraftList();
+    console.log('云端草稿列表响应:', response);
     
-    if (response.code === 200 && response.data.drafts.length > 0) {
+    if (response.code === 200 && response.data?.drafts?.length > 0) {
       // 获取最新保存的草稿
       const latestDraft = response.data.drafts.reduce((latest, draft) => {
         return new Date(draft.updated_at) > new Date(latest.updated_at) ? draft : latest;
       });
       
+      console.log('获取最新草稿详情，ID:', latestDraft.draft_id);
       // 获取详细内容
       const detailResponse = await getDraftDetail(latestDraft.draft_id);
-      if (detailResponse.code === 200 && detailResponse.data.manuscript) {
+      console.log('草稿详情响应:', detailResponse);
+      
+      if (detailResponse.code === 200 && detailResponse.data?.manuscript) {
         Object.assign(form, detailResponse.data.manuscript);
         ElMessage.success(`已恢复云端草稿: ${detailResponse.data.title}`);
       } else {
@@ -507,12 +512,27 @@ const handleRestoreDraft = async () => {
           ElMessage.error('恢复失败：本地数据损坏');
         }
       } else {
-        ElMessage.info('没有找到暂存的原稿');
+        ElMessage.info('云端和本地都没有找到暂存的原稿');
       }
     }
   } catch (error) {
     console.error('恢复草稿失败:', error);
-    ElMessage.error(error.message || '恢复失败，请检查网络设置');
+    
+    // 更详细的错误信息处理
+    if (error.response) {
+      // 服务器响应了错误状态码
+      if (error.response.status === 401) {
+        ElMessage.error('认证失败，请重新登录');
+      } else {
+        ElMessage.error(`恢复失败: ${error.response.data?.msg || error.response.statusText || '未知错误'}`);
+      }
+    } else if (error.request) {
+      // 请求已发出但没有收到响应
+      ElMessage.error('网络连接失败，请检查网络设置');
+    } else {
+      // 其他错误
+      ElMessage.error(error.message || '恢复失败，请检查网络设置');
+    }
   }
 };
 
