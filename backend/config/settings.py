@@ -19,8 +19,8 @@ class Config:
     """
     
     # 【魔搭适配点】JWT秘钥配置（必填）
-    # 魔搭创空间需在环境变量中配置 JWT_SECRET
-    JWT_SECRET = os.environ.get('JWT_SECRET', 'pixelforge_default_secret_key_change_in_production')
+    # 魔搭创空间需在环境变量中配置 JWT_SECRET 或 JWT_SECRET_KEY
+    JWT_SECRET = os.environ.get('JWT_SECRET', os.environ.get('JWT_SECRET_KEY', 'pixelforge_default_secret_key_change_in_production'))
     
     # 【魔搭适配点】服务端口配置
     # 魔搭创空间默认使用8888端口
