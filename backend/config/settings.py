@@ -18,28 +18,41 @@ class Config:
     配置类 - 从魔搭创空间环境变量读取配置
     """
     
-    # 【魔搭适配点】JWT秘钥配置（必填）
-    # 魔搭创空间需在环境变量中配置 JWT_SECRET 或 JWT_SECRET_KEY
+    # =============== JWT配置 ===============
     JWT_SECRET = os.environ.get('JWT_SECRET', os.environ.get('JWT_SECRET_KEY', 'pixelforge_default_secret_key_change_in_production'))
-    
-    # 【魔搭适配点】服务端口配置
-    # 魔搭创空间默认使用8888端口
-    SERVER_PORT = int(os.environ.get('SERVER_PORT', 8888))
-    
-    # JWT Token过期时间（秒）
     JWT_EXPIRATION = int(os.environ.get('JWT_EXPIRATION', 86400))  # 默认24小时
     
-    # 【魔搭适配点】数据存储路径
-    # 魔搭创空间本地文件存储路径
+    # =============== 服务配置 ===============
+    SERVER_PORT = int(os.environ.get('SERVER_PORT', 8888))
+    
+    # =============== AI服务配置 ===============
+    # AI适配器类型: openai / wenxin / qianwen
+    AI_ADAPTER_TYPE = os.environ.get('AI_ADAPTER_TYPE', 'openai')
+    AI_REQUEST_TIMEOUT = int(os.environ.get('AI_REQUEST_TIMEOUT', 60))
+    AI_MAX_RETRIES = int(os.environ.get('AI_MAX_RETRIES', 3))
+    
+    # OpenAI配置
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
+    OPENAI_API_BASE = os.environ.get('OPENAI_API_BASE', 'https://api.openai.com/v1')
+    OPENAI_MODEL = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
+    
+    # 百度文心一言配置
+    WENXIN_API_KEY = os.environ.get('WENXIN_API_KEY', '')
+    WENXIN_SECRET_KEY = os.environ.get('WENXIN_SECRET_KEY', '')
+    WENXIN_MODEL = os.environ.get('WENXIN_MODEL', 'ernie-bot-4')
+    
+    # 阿里通义千问配置
+    QIANWEN_API_KEY = os.environ.get('QIANWEN_API_KEY', '')
+    QIANWEN_MODEL = os.environ.get('QIANWEN_MODEL', 'qwen-turbo')
+    
+    # =============== 数据存储配置 ===============
     DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
     USERS_DIR = os.path.join(DATA_DIR, 'users')
     USERS_FILE = os.path.join(USERS_DIR, 'users.json')
-    
-    # 项目和草稿存储路径
     PROJECTS_DIR = os.path.join(DATA_DIR, 'projects')
     DRAFTS_DIR = os.path.join(DATA_DIR, 'drafts')
     
-    # Flask配置
+    # =============== Flask配置 ===============
     SECRET_KEY = os.environ.get('FLASK_SECRET_KEY', JWT_SECRET)
     DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
