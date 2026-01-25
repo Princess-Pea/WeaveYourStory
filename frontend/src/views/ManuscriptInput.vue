@@ -484,7 +484,10 @@ const handleSaveDraft = async () => {
       // 持久化到本地存储作为备选
       localStorage.setItem('manuscriptDraft', JSON.stringify(form))
       // 可以选择性地保存草稿ID到本地以便后续访问
-      localStorage.setItem('currentDraftId', response.data.draft_id)
+      const draftId = response.data.draft?.draft_id || response.data.draft_id;
+      if (draftId) {
+        localStorage.setItem('currentDraftId', draftId);
+      }
     } else {
       throw new Error(response.msg || '暂存失败')
     }
@@ -562,23 +565,26 @@ const handleRestoreDraft = async () => {
       const detailResponse = await getDraftDetail(latestDraft.draft_id);
       console.log('草稿详情响应:', detailResponse);
       
-      if (detailResponse.code === 200 && detailResponse.data?.manuscript) {
-        Object.assign(form, detailResponse.data.manuscript);
+      const draftData = detailResponse.data?.draft || detailResponse.data;
+      const manuscript = draftData?.manuscript;
+      
+      if (detailResponse.code === 200 && manuscript) {
+        Object.assign(form, manuscript);
         
         // 处理情感基调的加载
-        if (detailResponse.data.manuscript.emotionalTone) {
+        if (manuscript.emotionalTone) {
           // 检查是否是预设的情感基调
-          const isPresetEmotion = emotionalTones.some(tone => tone.value === detailResponse.data.manuscript.emotionalTone);
+          const isPresetEmotion = emotionalTones.some(tone => tone.value === manuscript.emotionalTone);
           if (isPresetEmotion) {
-            form.selectedEmotionOption = detailResponse.data.manuscript.emotionalTone;
+            form.selectedEmotionOption = manuscript.emotionalTone;
           } else {
             // 如果不是预设选项，说明是自定义情感基调
             form.selectedEmotionOption = 'custom';
-            form.customEmotionalTone = detailResponse.data.manuscript.emotionalTone;
+            form.customEmotionalTone = manuscript.emotionalTone;
           }
         }
         
-        ElMessage.success(`已恢复云端草稿: ${detailResponse.data.title}`);
+        ElMessage.success(`已恢复云端草稿: ${draftData.title || '未命名'}`);
       } else {
         throw new Error(detailResponse.msg || '获取草稿详情失败');
       }
@@ -765,23 +771,26 @@ const loadDraft = async () => {
       
       // 获取详细内容
       const detailResponse = await getDraftDetail(latestDraft.draft_id);
-      if (detailResponse.code === 200 && detailResponse.data.manuscript) {
-        Object.assign(form, detailResponse.data.manuscript);
+      const draftData = detailResponse.data?.draft || detailResponse.data;
+      const manuscript = draftData?.manuscript;
+
+      if (detailResponse.code === 200 && manuscript) {
+        Object.assign(form, manuscript);
         
         // 处理情感基调的加载
-        if (detailResponse.data.manuscript.emotionalTone) {
+        if (manuscript.emotionalTone) {
           // 检查是否是预设的情感基调
-          const isPresetEmotion = emotionalTones.some(tone => tone.value === detailResponse.data.manuscript.emotionalTone);
+          const isPresetEmotion = emotionalTones.some(tone => tone.value === manuscript.emotionalTone);
           if (isPresetEmotion) {
-            form.selectedEmotionOption = detailResponse.data.manuscript.emotionalTone;
+            form.selectedEmotionOption = manuscript.emotionalTone;
           } else {
             // 如果不是预设选项，说明是自定义情感基调
             form.selectedEmotionOption = 'custom';
-            form.customEmotionalTone = detailResponse.data.manuscript.emotionalTone;
+            form.customEmotionalTone = manuscript.emotionalTone;
           }
         }
         
-        ElMessage.info(`已加载云端草稿: ${detailResponse.data.title}`);
+        ElMessage.info(`已加载云端草稿: ${draftData.title || '未命名'}`);
       }
     } else {
       // 如果没有云端草稿，尝试从localStorage加载
