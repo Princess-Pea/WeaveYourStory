@@ -640,7 +640,13 @@ const loadDraft = async () => {
   } catch (error) {
     console.error('加载草稿失败:', error);
     
-    // 回退到本地存储
+    // 如果是401错误，说明认证失败，但不再额外提示（已在拦截器中处理）
+    if (error.response?.status === 401) {
+      console.log('认证失败，已在拦截器中处理');
+      return; // 直接返回，不再回退到本地存储
+    }
+    
+    // 其他错误，回退到本地存储
     const localDraft = localStorage.getItem('manuscriptDraft');
     if (localDraft) {
       try {
