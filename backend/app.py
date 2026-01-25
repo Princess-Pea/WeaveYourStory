@@ -47,7 +47,7 @@ def token_required(f):
         try:
             # 去掉 Bearer 前缀
             token = token.split(" ")[1] if " " in token else token
-            jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            jwt.decode(token, Config.JWT_SECRET, algorithms=["HS256"])
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
         return f(*args, **kwargs)
