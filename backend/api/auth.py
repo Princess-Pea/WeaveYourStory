@@ -56,7 +56,7 @@ def register():
         token = jwt.encode({
             'user': username,
             'exp': datetime.utcnow() + timedelta(days=30),
-            'iat': datetime.utcnow()
+            'iat': datetime.utcnow() - timedelta(seconds=10)  # 添加10秒的容差，防止时钟偏移
         }, Config.JWT_SECRET, algorithm="HS256")
         
         return jsonify({
@@ -114,7 +114,7 @@ def login():
         token = jwt.encode({
             'user': username,
             'exp': datetime.utcnow() + timedelta(days=30),
-            'iat': datetime.utcnow()
+            'iat': datetime.utcnow() - timedelta(seconds=10)  # 添加10秒的容差，防止时钟偏移
         }, Config.JWT_SECRET, algorithm="HS256")
         
         return jsonify({
@@ -151,7 +151,7 @@ def guest_login():
             'user': guest_username,
             'guest_id': guest_id,
             'exp': datetime.utcnow() + timedelta(hours=1),  # 1小时后过期
-            'iat': datetime.utcnow(),
+            'iat': datetime.utcnow() - timedelta(seconds=10),  # 添加10秒的容差，防止时钟偏移
             'is_guest': True
         }, Config.JWT_SECRET, algorithm="HS256")
         
