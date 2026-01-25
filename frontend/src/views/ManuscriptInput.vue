@@ -661,7 +661,8 @@ const loadDraft = async () => {
 };
 
 // 页面加载时尝试加载暂存的草稿
-loadDraft();
+// 临时注释：排查登录后立即显示"登录已过期"问题
+// loadDraft();
 </script>
 
 <style scoped>
