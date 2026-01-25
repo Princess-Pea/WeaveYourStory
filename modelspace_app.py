@@ -23,7 +23,29 @@ CORS(app,
 try:
     from backend.api.auth import auth_bp
     from backend.api.projects import projects_bp
-    from backend.config.settings import Config
+    
+    # 尝试导入配置，如果失败则使用默认值
+    try:
+        from backend.config.settings import Config
+    except ImportError:
+        # 如果导入失败，创建一个基本的配置对象
+        class Config:
+            JWT_SECRET = os.environ.get('JWT_SECRET', 'pixelforge_default_secret_key_change_in_production')
+            DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+            USERS_DIR = os.path.join(DATA_DIR, 'users')
+            USERS_FILE = os.path.join(USERS_DIR, 'users.json')
+            PROJECTS_DIR = os.path.join(DATA_DIR, 'projects')
+            DRAFTS_DIR = os.path.join(DATA_DIR, 'drafts')
+            
+            @classmethod
+            def init_directories(cls):
+                os.makedirs(cls.DATA_DIR, exist_ok=True)
+                os.makedirs(cls.USERS_DIR, exist_ok=True)
+                if not os.path.exists(cls.USERS_FILE):
+                    import json
+                    with open(cls.USERS_FILE, 'w', encoding='utf-8') as f:
+                        json.dump({}, f, ensure_ascii=False, indent=2)
+    
     from backend.middleware.auth_middleware import init_auth_middleware
     
     # 注册蓝图
