@@ -5,6 +5,7 @@
 import os
 import sys
 from flask import Flask, send_from_directory, abort
+from werkzeug.exceptions import NotFound
 from flask_cors import CORS
 
 # 添加backend目录到Python路径
@@ -134,9 +135,9 @@ def serve_index():
 def serve_static(path):
     # 首先排除API路径，确保API路由优先
     if path.startswith('api/'):
-        # 如果是API请求，返回404让API蓝图处理
-        from flask import abort
-        abort(404)
+        # 如果是API请求，抛出404异常，让Flask继续寻找其他路由
+        from werkzeug.exceptions import NotFound
+        raise NotFound()
     
     # 尝试提供前端静态文件
     try:
