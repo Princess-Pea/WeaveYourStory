@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from flask_cors import CORS
 from datetime import datetime
 import json
@@ -24,9 +24,9 @@ CORS(projects_bp)
 def get_projects():
     """获取用户项目列表"""
     try:
-        # 从token中获取用户名
-        token_data = request.environ.get('FLASK_USER', {})
-        username = token_data if isinstance(token_data, str) else 'guest'
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
         
         # 获取用户的所有项目
         user_projects = []
@@ -59,8 +59,9 @@ def get_projects():
 def create_project():
     """创建新项目"""
     try:
-        token_data = request.environ.get('FLASK_USER', {})
-        username = token_data if isinstance(token_data, str) else 'guest'
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
         
         data = request.json
         title = data.get('title', '未命名项目')
@@ -115,8 +116,9 @@ def create_project():
 def get_project_by_id(project_id):
     """获取特定项目"""
     try:
-        token_data = request.environ.get('FLASK_USER', {})
-        username = token_data if isinstance(token_data, str) else 'guest'
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
         
         # 检查项目是否存在且属于当前用户
         project = get_project(project_id)
@@ -155,8 +157,9 @@ def get_project_by_id(project_id):
 def update_project(project_id):
     """更新项目"""
     try:
-        token_data = request.environ.get('FLASK_USER', {})
-        username = token_data if isinstance(token_data, str) else 'guest'
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
         
         # 检查项目是否存在且属于当前用户
         project = get_project(project_id)
@@ -214,8 +217,9 @@ def update_project(project_id):
 def delete_project_route(project_id):
     """删除项目"""
     try:
-        token_data = request.environ.get('FLASK_USER', {})
-        username = token_data if isinstance(token_data, str) else 'guest'
+        # 从g对象获取用户信息
+        token_data = getattr(g, 'user', {})
+        username = token_data.get('user', 'guest') if isinstance(token_data, dict) else 'guest'
         
         # 检查项目是否存在且属于当前用户
         project = get_project(project_id)
