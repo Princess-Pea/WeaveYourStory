@@ -8,6 +8,7 @@ import ManuscriptInput from '../views/ManuscriptInput.vue'
 import GenerationProgress from '../views/GenerationProgress.vue'
 import PixelPreview from '../views/PixelPreview.vue'
 import VisualEditor from '../views/VisualEditor.vue'
+import GamePreview from '../views/GamePreview.vue'
 import Profile from '../views/Profile.vue'
 
 const routes = [
@@ -63,6 +64,12 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/game-preview',
+    name: 'GamePreview',
+    component: GamePreview,
     meta: { requiresAuth: true }
   }
 ]

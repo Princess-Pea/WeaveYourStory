@@ -30,9 +30,10 @@
           <el-col :span="12">
             <el-form-item label="情感基调" prop="emotionalTone">
               <el-select 
-                v-model="form.emotionalTone" 
+                v-model="form.selectedEmotionOption" 
                 placeholder="请选择情感基调"
                 style="width: 100%"
+                @change="handleEmotionChange"
               >
                 <el-option 
                   v-for="tone in emotionalTones" 
@@ -40,7 +41,23 @@
                   :label="tone.label" 
                   :value="tone.value"
                 />
+                <el-option 
+                  key="custom"
+                  label="自定义"
+                  value="custom"
+                />
               </el-select>
+            </el-form-item>
+            <!-- 自定义情感基调输入框 -->
+            <el-form-item 
+              v-if="form.selectedEmotionOption === 'custom'" 
+              label="自定义情感基调" 
+              prop="customEmotionalTone"
+            >
+              <el-input 
+                v-model="form.customEmotionalTone" 
+                placeholder="请输入自定义情感基调（如：神秘、紧张、温馨等）"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -300,6 +317,8 @@ const router = useRouter()
 const form = reactive({
   storyTitle: '',
   emotionalTone: '',
+  selectedEmotionOption: '',
+  customEmotionalTone: '',
   storyOutline: '',
   gameBackground: '',
   missions: [],
@@ -324,7 +343,41 @@ const rules = {
     { required: true, message: '请输入剧情名称', trigger: 'blur' }
   ],
   emotionalTone: [
-    { required: true, message: '请选择情感基调', trigger: 'change' }
+    { 
+      validator: (rule, value, callback) => {
+        // 如果选择了自定义选项，则不需要验证预设情感基调
+        if (form.selectedEmotionOption === 'custom') {
+          callback(); // 通过验证
+        } else {
+          // 否则需要验证预设情感基调是否已选择
+          if (!value) {
+            callback(new Error('请选择情感基调'));
+          } else {
+            callback();
+          }
+        }
+      },
+      trigger: 'change'
+    }
+  ],
+  customEmotionalTone: [
+    { 
+      validator: (rule, value, callback) => {
+        // 如果选择了自定义选项，则需要验证自定义输入
+        if (form.selectedEmotionOption === 'custom') {
+          if (!value || value.trim() === '') {
+            callback(new Error('请输入自定义情感基调'));
+          } else if (value.length < 1 || value.length > 20) {
+            callback(new Error('长度在 1 到 20 个字符之间'));
+          } else {
+            callback();
+          }
+        } else {
+          callback(); // 没有选择自定义，通过验证
+        }
+      },
+      trigger: 'blur'
+    }
   ],
   storyOutline: [
     { required: true, message: '请输入故事大纲', trigger: 'blur' }
@@ -398,6 +451,8 @@ const handleSaveDraft = async () => {
     // 验证表单 - 检查是否至少填写了一些基本信息
     const hasBasicInfo = form.storyTitle.trim() !== '' || 
                    form.emotionalTone !== '' || 
+                   form.selectedEmotionOption !== '' ||
+                   form.customEmotionalTone !== '' ||
                    form.storyOutline.trim() !== '' || 
                    form.gameBackground.trim() !== '' ||
                    form.missions.some(mission => mission.name.trim() !== '' || mission.triggerCondition.trim() !== '') ||
@@ -413,7 +468,7 @@ const handleSaveDraft = async () => {
       title: form.storyTitle || '未命名原稿',
       manuscript: {
         storyTitle: form.storyTitle,
-        emotionalTone: form.emotionalTone,
+        emotionalTone: getFinalEmotionalTone(), // 使用最终的情感基调值
         storyOutline: form.storyOutline,
         gameBackground: form.gameBackground,
         missions: form.missions,
@@ -466,6 +521,20 @@ const handleRestoreDraft = async () => {
         try {
           const parsed = JSON.parse(localDraft);
           Object.assign(form, parsed);
+          
+          // 处理情感基调的加载
+          if (parsed.emotionalTone) {
+            // 检查是否是预设的情感基调
+            const isPresetEmotion = emotionalTones.some(tone => tone.value === parsed.emotionalTone);
+            if (isPresetEmotion) {
+              form.selectedEmotionOption = parsed.emotionalTone;
+            } else {
+              // 如果不是预设选项，说明是自定义情感基调
+              form.selectedEmotionOption = 'custom';
+              form.customEmotionalTone = parsed.emotionalTone;
+            }
+          }
+          
           ElMessage.success('已恢复本地暂存的原稿');
         } catch (error) {
           console.error('恢复本地暂存草稿失败:', error);
@@ -493,9 +562,23 @@ const handleRestoreDraft = async () => {
       const detailResponse = await getDraftDetail(latestDraft.draft_id);
       console.log('草稿详情响应:', detailResponse);
       
-      if (detailResponse.code === 200 && detailResponse.data?.draft?.manuscript) {
-        Object.assign(form, detailResponse.data.draft.manuscript);
-        ElMessage.success(`已恢复云端草稿: ${detailResponse.data.draft.title}`);
+      if (detailResponse.code === 200 && detailResponse.data?.manuscript) {
+        Object.assign(form, detailResponse.data.manuscript);
+        
+        // 处理情感基调的加载
+        if (detailResponse.data.manuscript.emotionalTone) {
+          // 检查是否是预设的情感基调
+          const isPresetEmotion = emotionalTones.some(tone => tone.value === detailResponse.data.manuscript.emotionalTone);
+          if (isPresetEmotion) {
+            form.selectedEmotionOption = detailResponse.data.manuscript.emotionalTone;
+          } else {
+            // 如果不是预设选项，说明是自定义情感基调
+            form.selectedEmotionOption = 'custom';
+            form.customEmotionalTone = detailResponse.data.manuscript.emotionalTone;
+          }
+        }
+        
+        ElMessage.success(`已恢复云端草稿: ${detailResponse.data.title}`);
       } else {
         throw new Error(detailResponse.msg || '获取草稿详情失败');
       }
@@ -506,6 +589,20 @@ const handleRestoreDraft = async () => {
         try {
           const parsed = JSON.parse(localDraft);
           Object.assign(form, parsed);
+          
+          // 处理情感基调的加载
+          if (parsed.emotionalTone) {
+            // 检查是否是预设的情感基调
+            const isPresetEmotion = emotionalTones.some(tone => tone.value === parsed.emotionalTone);
+            if (isPresetEmotion) {
+              form.selectedEmotionOption = parsed.emotionalTone;
+            } else {
+              // 如果不是预设选项，说明是自定义情感基调
+              form.selectedEmotionOption = 'custom';
+              form.customEmotionalTone = parsed.emotionalTone;
+            }
+          }
+          
           ElMessage.success('已恢复本地暂存的原稿');
         } catch (error) {
           console.error('恢复本地暂存草稿失败:', error);
@@ -536,23 +633,35 @@ const handleRestoreDraft = async () => {
   }
 };
 
+// 处理情感基调选择变化
+const handleEmotionChange = (value) => {
+  if (value === 'custom') {
+    // 当选择自定义时，清空预设情感基调
+    form.emotionalTone = '';
+  } else {
+    // 当选择预设选项时，设置对应的情感基调
+    form.emotionalTone = value;
+  }
+};
+
+// 获取最终的情感基调值
+const getFinalEmotionalTone = () => {
+  if (form.selectedEmotionOption === 'custom') {
+    return form.customEmotionalTone;
+  }
+  return form.emotionalTone;
+};
+
 // 提交AI生成
 const submitToAI = async () => {
-  // 验证表单
-  const valid = await formRef.value.validate().catch(() => false)
-  if (!valid) {
-    ElMessage.error('请填写完整信息后再提交')
-    return
-  }
-
   // 检查任务和角色是否至少有一个
   if (form.missions.length === 0) {
-    ElMessage.error('请至少添加一个任务')
-    return
+    ElMessage.error('请至少添加一个任务');
+    return;
   }
   if (form.characters.length === 0) {
-    ElMessage.error('请至少添加一个角色')
-    return
+    ElMessage.error('请至少添加一个角色');
+    return;
   }
 
   submitting.value = true
@@ -561,7 +670,7 @@ const submitToAI = async () => {
     // 将表单数据转换为结构化JSON
     const manuscriptData = {
       storyTitle: form.storyTitle,
-      emotionalTone: form.emotionalTone,
+      emotionalTone: getFinalEmotionalTone(),
       storyOutline: form.storyOutline,
       gameBackground: form.gameBackground,
       missions: form.missions,
@@ -574,7 +683,7 @@ const submitToAI = async () => {
       context: { gameId: 'new' }, // 新建游戏ID
       params: { 
         style: "像素风", 
-        emotion: form.emotionalTone 
+        emotion: getFinalEmotionalTone() 
       }
     })
 
@@ -603,6 +712,8 @@ const loadDraft = async () => {
     // 检查当前表单是否已经有内容（防止覆盖用户正在编辑的内容）
     const hasUnsavedContent = form.storyTitle.trim() !== '' ||
                            form.emotionalTone !== '' ||
+                           form.selectedEmotionOption !== '' ||
+                           form.customEmotionalTone !== '' ||
                            form.storyOutline.trim() !== '' ||
                            form.gameBackground.trim() !== '' ||
                            form.missions.some(mission => mission.name.trim() !== '' || mission.triggerCondition.trim() !== '') ||
@@ -621,6 +732,20 @@ const loadDraft = async () => {
         try {
           const parsed = JSON.parse(localDraft);
           Object.assign(form, parsed);
+          
+          // 处理情感基调的加载
+          if (parsed.emotionalTone) {
+            // 检查是否是预设的情感基调
+            const isPresetEmotion = emotionalTones.some(tone => tone.value === parsed.emotionalTone);
+            if (isPresetEmotion) {
+              form.selectedEmotionOption = parsed.emotionalTone;
+            } else {
+              // 如果不是预设选项，说明是自定义情感基调
+              form.selectedEmotionOption = 'custom';
+              form.customEmotionalTone = parsed.emotionalTone;
+            }
+          }
+          
           ElMessage.info('已加载本地暂存的原稿');
         } catch (error) {
           console.error('加载本地暂存草稿失败:', error);
@@ -642,6 +767,20 @@ const loadDraft = async () => {
       const detailResponse = await getDraftDetail(latestDraft.draft_id);
       if (detailResponse.code === 200 && detailResponse.data.manuscript) {
         Object.assign(form, detailResponse.data.manuscript);
+        
+        // 处理情感基调的加载
+        if (detailResponse.data.manuscript.emotionalTone) {
+          // 检查是否是预设的情感基调
+          const isPresetEmotion = emotionalTones.some(tone => tone.value === detailResponse.data.manuscript.emotionalTone);
+          if (isPresetEmotion) {
+            form.selectedEmotionOption = detailResponse.data.manuscript.emotionalTone;
+          } else {
+            // 如果不是预设选项，说明是自定义情感基调
+            form.selectedEmotionOption = 'custom';
+            form.customEmotionalTone = detailResponse.data.manuscript.emotionalTone;
+          }
+        }
+        
         ElMessage.info(`已加载云端草稿: ${detailResponse.data.title}`);
       }
     } else {
@@ -651,6 +790,20 @@ const loadDraft = async () => {
         try {
           const parsed = JSON.parse(localDraft);
           Object.assign(form, parsed);
+          
+          // 处理情感基调的加载
+          if (parsed.emotionalTone) {
+            // 检查是否是预设的情感基调
+            const isPresetEmotion = emotionalTones.some(tone => tone.value === parsed.emotionalTone);
+            if (isPresetEmotion) {
+              form.selectedEmotionOption = parsed.emotionalTone;
+            } else {
+              // 如果不是预设选项，说明是自定义情感基调
+              form.selectedEmotionOption = 'custom';
+              form.customEmotionalTone = parsed.emotionalTone;
+            }
+          }
+          
           ElMessage.info('已加载本地暂存的原稿');
         } catch (error) {
           console.error('加载本地暂存草稿失败:', error);
@@ -672,6 +825,20 @@ const loadDraft = async () => {
       try {
         const parsed = JSON.parse(localDraft);
         Object.assign(form, parsed);
+        
+        // 处理情感基调的加载
+        if (parsed.emotionalTone) {
+          // 检查是否是预设的情感基调
+          const isPresetEmotion = emotionalTones.some(tone => tone.value === parsed.emotionalTone);
+          if (isPresetEmotion) {
+            form.selectedEmotionOption = parsed.emotionalTone;
+          } else {
+            // 如果不是预设选项，说明是自定义情感基调
+            form.selectedEmotionOption = 'custom';
+            form.customEmotionalTone = parsed.emotionalTone;
+          }
+        }
+        
         ElMessage.info('已加载本地暂存的原稿');
       } catch (error) {
         console.error('加载本地暂存草稿失败:', error);
