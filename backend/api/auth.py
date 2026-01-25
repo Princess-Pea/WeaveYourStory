@@ -117,6 +117,10 @@ def login():
             'iat': datetime.utcnow() - timedelta(seconds=10)  # 添加10秒的容差，防止时钟偏移
         }, Config.JWT_SECRET, algorithm="HS256")
         
+        # 调试日志
+        print(f"[LOGIN] 生成token: {token[:20] if isinstance(token, str) else str(token)[:20]}...")
+        print(f"[LOGIN] 使用的密钥前20位: {Config.JWT_SECRET[:20]}...")
+        
         return jsonify({
             'code': 200,
             'msg': '登录成功',

@@ -14,6 +14,7 @@ def init_auth_middleware(app):
         public_paths = [
             '/api/v1/auth/login',
             '/api/v1/auth/register',
+            '/api/v1/auth/guest',
             '/api/v1/health',
             '/',
             '/index.html'
@@ -32,22 +33,31 @@ def init_auth_middleware(app):
         try:
             # 解析token
             token = auth_header.split(" ")[1] if " " in auth_header else auth_header
+            
+            # 调试日志：打印token的前20个字符
+            print(f"[AUTH] 收到token: {token[:20]}...")
+            
             payload = jwt.decode(
                 token, 
                 Config.JWT_SECRET, 
                 algorithms=["HS256"]
             )
             
+            # 调试日志：打印payload
+            print(f"[AUTH] Token解析成功, payload: {payload}")
+            
             # 将用户信息存储到请求上下文中
             g.user = payload
             g.token = token
             
-        except jwt.ExpiredSignatureError:
+        except jwt.ExpiredSignatureError as e:
+            print(f"[AUTH] Token已过期: {str(e)}")
             return jsonify({'error': 'Token has expired', 'code': 401}), 401
-        except jwt.InvalidTokenError:
+        except jwt.InvalidTokenError as e:
+            print(f"[AUTH] Token无效: {str(e)}")
             return jsonify({'error': 'Invalid token', 'code': 401}), 401
         except Exception as e:
-            print(f"认证中间件错误: {str(e)}")
+            print(f"[AUTH] 认证中间件错误: {str(e)}")
             traceback.print_exc()
             return jsonify({'error': 'Authentication error', 'code': 401}), 401
     
