@@ -4,12 +4,18 @@
 """
 import os
 import sys
+import importlib.util
 from flask import Flask, send_from_directory, abort
 from werkzeug.exceptions import NotFound
 from flask_cors import CORS
 
-# 添加backend目录到Python路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
+# 动态添加backend目录到Python路径
+project_root = os.path.dirname(__file__)  # 当前文件的目录
+backend_path = os.path.join(project_root, 'backend')
+sys.path.insert(0, backend_path)
+
+# 尝试添加项目根目录到路径（有时需要这个）
+sys.path.insert(0, project_root)
 
 # 创建Flask应用
 app = Flask(__name__, static_folder='frontend/dist')
@@ -22,38 +28,80 @@ CORS(app,
 
 # 手动注册API蓝图（避免与backend.app的潜在冲突）
 try:
-    from backend.api.auth import auth_bp
-    from backend.api.projects import projects_bp
+    # 尝试多种方法导入后端模块
+    import importlib.util
+    
+    # 首先尝试常规导入
+    try:
+        from backend.api.auth import auth_bp
+        from backend.api.projects import projects_bp
+    except ImportError:
+        # 如果常规导入失败，尝试动态导入
+        auth_module_path = os.path.join(backend_path, 'api', 'auth.py')
+        if os.path.exists(auth_module_path):
+            spec = importlib.util.spec_from_file_location("auth", auth_module_path)
+            auth_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(auth_module)
+            auth_bp = auth_module.auth_bp
+            
+            projects_module_path = os.path.join(backend_path, 'api', 'projects.py')
+            spec = importlib.util.spec_from_file_location("projects", projects_module_path)
+            projects_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(projects_module)
+            projects_bp = projects_module.projects_bp
+        else:
+            raise ImportError("无法找到后端API模块")
     
     # 尝试导入配置，如果失败则使用默认值
     try:
         from backend.config.settings import Config
     except ImportError:
-        # 如果导入失败，创建一个基本的配置对象
-        class Config:
-            JWT_SECRET = os.environ.get('JWT_SECRET', 'pixelforge_default_secret_key_change_in_production')
-            DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
-            USERS_DIR = os.path.join(DATA_DIR, 'users')
-            USERS_FILE = os.path.join(USERS_DIR, 'users.json')
-            PROJECTS_DIR = os.path.join(DATA_DIR, 'projects')
-            DRAFTS_DIR = os.path.join(DATA_DIR, 'drafts')
-            
-            @classmethod
-            def init_directories(cls):
-                os.makedirs(cls.DATA_DIR, exist_ok=True)
-                os.makedirs(cls.USERS_DIR, exist_ok=True)
-                if not os.path.exists(cls.USERS_FILE):
-                    import json
-                    with open(cls.USERS_FILE, 'w', encoding='utf-8') as f:
-                        json.dump({}, f, ensure_ascii=False, indent=2)
+        # 如果导入失败，尝试动态导入
+        config_path = os.path.join(backend_path, 'config', 'settings.py')
+        if os.path.exists(config_path):
+            spec = importlib.util.spec_from_file_location("settings", config_path)
+            config_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(config_module)
+            Config = config_module.Config
+        else:
+            # 如果动态导入也失败，创建一个基本的配置对象
+            class Config:
+                JWT_SECRET = os.environ.get('JWT_SECRET', 'pixelforge_default_secret_key_change_in_production')
+                DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+                USERS_DIR = os.path.join(DATA_DIR, 'users')
+                USERS_FILE = os.path.join(USERS_DIR, 'users.json')
+                PROJECTS_DIR = os.path.join(DATA_DIR, 'projects')
+                DRAFTS_DIR = os.path.join(DATA_DIR, 'drafts')
+                
+                @classmethod
+                def init_directories(cls):
+                    os.makedirs(cls.DATA_DIR, exist_ok=True)
+                    os.makedirs(cls.USERS_DIR, exist_ok=True)
+                    if not os.path.exists(cls.USERS_FILE):
+                        import json
+                        with open(cls.USERS_FILE, 'w', encoding='utf-8') as f:
+                            json.dump({}, f, ensure_ascii=False, indent=2)
     
     # 尝试导入认证中间件，如果失败则跳过
     try:
         from backend.middleware.auth_middleware import init_auth_middleware
         middleware_available = True
     except ImportError:
-        print("认证中间件导入失败，将跳过中间件初始化")
-        middleware_available = False
+        # 尝试动态导入中间件
+        try:
+            middleware_path = os.path.join(backend_path, 'middleware', 'auth_middleware.py')
+            if os.path.exists(middleware_path):
+                spec = importlib.util.spec_from_file_location("auth_middleware", middleware_path)
+                middleware_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(middleware_module)
+                init_auth_middleware = middleware_module.init_auth_middleware
+                middleware_available = True
+            else:
+                print("认证中间件文件不存在，将跳过中间件初始化")
+                middleware_available = False
+        except Exception as e:
+            print(f"认证中间件导入失败: {e}，将跳过中间件初始化")
+            middleware_available = False
     
     # 注册蓝图
     app.register_blueprint(auth_bp, url_prefix='')
