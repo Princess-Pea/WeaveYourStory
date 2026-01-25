@@ -33,18 +33,11 @@ def init_auth_middleware(app):
         try:
             # 解析token
             token = auth_header.split(" ")[1] if " " in auth_header else auth_header
-            
-            # 调试日志：打印token的前20个字符
-            print(f"[AUTH] 收到token: {token[:20]}...")
-            
             payload = jwt.decode(
                 token, 
                 Config.JWT_SECRET, 
                 algorithms=["HS256"]
             )
-            
-            # 调试日志：打印payload
-            print(f"[AUTH] Token解析成功, payload: {payload}")
             
             # 将用户信息存储到请求上下文中
             g.user = payload

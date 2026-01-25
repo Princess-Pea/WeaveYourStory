@@ -21,7 +21,6 @@ projects_bp = Blueprint('projects', __name__)
 CORS(projects_bp)
 
 @projects_bp.route('/api/v1/projects', methods=['GET'])
-@token_required
 def get_projects():
     """获取用户项目列表"""
     try:
@@ -56,7 +55,6 @@ def get_projects():
         }), 500
 
 @projects_bp.route('/api/v1/projects', methods=['POST'])
-@token_required
 def create_project():
     """创建新项目"""
     try:
@@ -113,7 +111,6 @@ def create_project():
         }), 500
 
 @projects_bp.route('/api/v1/projects/<project_id>', methods=['GET'])
-@token_required
 def get_project_by_id(project_id):
     """获取特定项目"""
     try:
@@ -154,7 +151,6 @@ def get_project_by_id(project_id):
         }), 500
 
 @projects_bp.route('/api/v1/projects/<project_id>', methods=['PUT'])
-@token_required
 def update_project(project_id):
     """更新项目"""
     try:
@@ -214,7 +210,6 @@ def update_project(project_id):
         }), 500
 
 @projects_bp.route('/api/v1/projects/<project_id>', methods=['DELETE'])
-@token_required
 def delete_project_route(project_id):
     """删除项目"""
     try:
@@ -251,7 +246,6 @@ def delete_project_route(project_id):
 project_storage = ProjectStorage()
 
 @projects_bp.route('/api/v1/projects/drafts', methods=['POST'])
-@token_required
 def save_draft():
     """保存草稿（新建或更新）"""
     try:
@@ -296,7 +290,6 @@ def save_draft():
 
 
 @projects_bp.route('/api/v1/projects/drafts', methods=['GET'])
-@token_required
 def get_drafts_list():
     """获取草稿列表"""
     try:
@@ -324,7 +317,6 @@ def get_drafts_list():
 
 
 @projects_bp.route('/api/v1/projects/drafts/<draft_id>', methods=['GET'])
-@token_required
 def get_draft_by_id(draft_id):
     """获取草稿详情"""
     try:
@@ -359,7 +351,6 @@ def get_draft_by_id(draft_id):
 
 
 @projects_bp.route('/api/v1/projects/drafts/<draft_id>', methods=['DELETE'])
-@token_required
 def delete_draft_by_id(draft_id):
     """删除草稿"""
     try:
