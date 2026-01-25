@@ -5,7 +5,7 @@
         <h2>🎨 像素风游戏可视化编辑器</h2>
         <div class="header-actions">
           <el-button type="primary" @click="saveChanges">💾 保存修改</el-button>
-          <el-button type="success" @click="previewGame">👀 预览游戏</el-button>
+          <el-button type="success" @click="previewGame">✅ 预览游戏</el-button>
           <el-button @click="backToManuscript">↩️ 返回原稿</el-button>
         </div>
       </el-header>
@@ -13,7 +13,7 @@
       <el-container>
         <!-- 左侧游戏结构树 -->
         <el-aside width="300px" class="editor-sidebar">
-          <el-tabs v-model="activeTab" class="sidebar-tabs">
+          <el-tabs v-model="activeTab" class="sidebar-tabs" @tab-change="handleTabChange">
             <el-tab-pane label="场景" name="scenes">
               <div class="structure-tree">
                 <el-button 
@@ -126,11 +126,11 @@
         
         <!-- 中间可视化编辑区 -->
         <el-main class="editor-main">
-          <div v-if="editingSection" class="editing-panel">
+          <div v-if="editingSection" class="editing-panel" id="editing-main-panel">
             <h3>{{ editingSectionTitle }}</h3>
             
             <!-- 场景编辑 -->
-            <div v-if="editingSection === 'scene' && currentScene">
+            <div id="scene-edit-section" v-if="editingSection === 'scene' && currentScene">
               <el-form :model="currentScene" label-position="top">
                 <el-row :gutter="20">
                   <el-col :span="12">
@@ -223,7 +223,7 @@
             </div>
             
             <!-- 角色编辑 -->
-            <div v-if="editingSection === 'character' && currentCharacter">
+            <div id="character-edit-section" v-if="editingSection === 'character' && currentCharacter">
               <el-form :model="currentCharacter" label-position="top">
                 <el-row :gutter="20">
                   <el-col :span="12">
@@ -312,7 +312,7 @@
             </div>
             
             <!-- 任务线编辑 -->
-            <div v-if="editingSection === 'mission' && currentMission">
+            <div id="mission-edit-section" v-if="editingSection === 'mission' && currentMission">
               <el-form :model="currentMission" label-position="top">
                 <el-row :gutter="20">
                   <el-col :span="12">
@@ -473,7 +473,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../utils/request'
@@ -566,11 +566,20 @@ onMounted(async () => {
         ElMessage.error('加载游戏数据失败')
       }
     } else {
-      // 尝试从后端API获取数据
+      // 尝试从后端API获取项目数据
       try {
-        const response = await request.get(`/game/${gameId}`)
+        const response = await request.get(`/api/v1/projects/${gameId}`)
         if (response.code === 200) {
-          gameData.value = response.data
+          // 从项目数据中提取游戏数据
+          const projectData = response.data.project
+          if (projectData.manuscript_data && projectData.manuscript_data.gameData) {
+            gameData.value = projectData.manuscript_data.gameData
+          } else {
+            // 如果没有找到游戏数据，使用空数据
+            gameData.value = getEmptyGameData()
+            gameData.value.gameId = gameId
+            gameData.value.gameName = projectData.title || '未命名游戏'
+          }
           ElMessage.success('游戏数据加载成功！')
         } else {
           throw new Error(response.msg || '获取游戏数据失败')
@@ -578,14 +587,15 @@ onMounted(async () => {
       } catch (error) {
         console.error('获取游戏数据失败:', error)
         ElMessage.error('获取游戏数据失败')
-        // 使用默认数据
-        gameData.value = getDefaultGameData()
+        // 不使用默认数据，保持为空
+        gameData.value = getEmptyGameData()
+        gameData.value.gameId = gameId
       }
     }
   } else {
-    // 使用默认数据
-    gameData.value = getDefaultGameData()
-    ElMessage.info('已加载默认游戏数据')
+    // 不使用默认数据，保持为空
+    gameData.value = getEmptyGameData()
+    ElMessage.info('已初始化空游戏数据')
   }
 })
 
@@ -651,12 +661,87 @@ function getDefaultGameData() {
   }
 }
 
+// 获取空游戏数据
+function getEmptyGameData() {
+  return {
+    gameId: '',
+    gameName: '未命名游戏',
+    emotionalTone: '',
+    style: 'pixel_art',
+    scenes: [],
+    characters: [],
+    missions: [],
+    interactionRules: {
+      movement: {
+        up: '向上移动',
+        down: '向下移动', 
+        left: '向左移动',
+        right: '向右移动'
+      },
+      dialogueTrigger: {
+        distance: 30,
+        key: 'SPACE'
+      },
+      itemInteraction: {
+        distance: 20,
+        key: 'E'
+      }
+    }
+  }
+}
+
 // 处理场景点击
 function handleSceneClick(data) {
   currentScene.value = data
   currentCharacter.value = null
   currentMission.value = null
   editingSection.value = 'scene'
+  
+  // 滚动到场景编辑区域
+  nextTick(() => {
+    // 确保在下一个事件循环中执行
+    setTimeout(() => {
+      // 首先尝试滚动到具体的编辑区域
+      let targetElement = document.getElementById('scene-edit-section');
+      if (!targetElement) {
+        // 如果具体区域不存在，尝试滚动到主编辑面板
+        targetElement = document.getElementById('editing-main-panel');
+      }
+      
+      if (targetElement) {
+        // 使用 scrollIntoView 滚动到元素
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+        
+        // 添加临时高亮效果
+        targetElement.style.border = '2px solid #E9A33B';
+        targetElement.style.boxShadow = '0 0 15px #E9A33B';
+        targetElement.style.transition = 'all 0.3s ease';
+        
+        // 设置一个标志，用于后续的样式恢复
+        targetElement.setAttribute('data-highlighted', 'true');
+        
+        setTimeout(() => {
+          // 恢复样式，但如果元素仍然被标记为高亮，则保持效果
+          if (targetElement.getAttribute('data-highlighted') === 'true') {
+            targetElement.style.border = '1px solid #E9A33B';
+            targetElement.style.boxShadow = '0 0 15px #E9A33B'; // 保持发光效果
+            // 移除高亮标记
+            targetElement.removeAttribute('data-highlighted');
+          }
+        }, 2000);
+      } else {
+        // 如果找不到目标元素，至少确保编辑面板可见
+        const editPanel = document.querySelector('.editing-panel');
+        if (editPanel) {
+          editPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 50); // 减少延时时间
+  });
 }
 
 // 处理角色点击
@@ -665,6 +750,52 @@ function handleCharacterClick(data) {
   currentScene.value = null
   currentMission.value = null
   editingSection.value = 'character'
+  
+  // 滚动到角色编辑区域
+  nextTick(() => {
+    // 确保在下一个事件循环中执行
+    setTimeout(() => {
+      // 首先尝试滚动到具体的编辑区域
+      let targetElement = document.getElementById('character-edit-section');
+      if (!targetElement) {
+        // 如果具体区域不存在，尝试滚动到主编辑面板
+        targetElement = document.getElementById('editing-main-panel');
+      }
+      
+      if (targetElement) {
+        // 使用 scrollIntoView 滚动到元素
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+        
+        // 添加临时高亮效果
+        targetElement.style.border = '2px solid #E9A33B';
+        targetElement.style.boxShadow = '0 0 15px #E9A33B';
+        targetElement.style.transition = 'all 0.3s ease';
+        
+        // 设置一个标志，用于后续的样式恢复
+        targetElement.setAttribute('data-highlighted', 'true');
+        
+        setTimeout(() => {
+          // 恢复样式，但如果元素仍然被标记为高亮，则保持效果
+          if (targetElement.getAttribute('data-highlighted') === 'true') {
+            targetElement.style.border = '1px solid #E9A33B';
+            targetElement.style.boxShadow = '0 0 15px #E9A33B'; // 保持发光效果
+            // 移除高亮标记
+            targetElement.removeAttribute('data-highlighted');
+          }
+        }, 2000);
+      } else {
+        // 如果找不到目标元素，至少确保编辑面板可见
+        const editPanel = document.querySelector('.editing-panel');
+        if (editPanel) {
+          editPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 50); // 减少延时时间
+  });
 }
 
 // 处理任务点击
@@ -673,6 +804,91 @@ function handleMissionClick(data) {
   currentScene.value = null
   currentCharacter.value = null
   editingSection.value = 'mission'
+  
+  // 滚动到任务编辑区域
+  nextTick(() => {
+    // 确保在下一个事件循环中执行
+    setTimeout(() => {
+      // 首先尝试滚动到具体的编辑区域
+      let targetElement = document.getElementById('mission-edit-section');
+      if (!targetElement) {
+        // 如果具体区域不存在，尝试滚动到主编辑面板
+        targetElement = document.getElementById('editing-main-panel');
+      }
+      
+      if (targetElement) {
+        // 使用 scrollIntoView 滚动到元素
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+        
+        // 添加临时高亮效果
+        targetElement.style.border = '2px solid #E9A33B';
+        targetElement.style.boxShadow = '0 0 15px #E9A33B';
+        targetElement.style.transition = 'all 0.3s ease';
+        
+        // 设置一个标志，用于后续的样式恢复
+        targetElement.setAttribute('data-highlighted', 'true');
+        
+        setTimeout(() => {
+          // 恢复样式，但如果元素仍然被标记为高亮，则保持效果
+          if (targetElement.getAttribute('data-highlighted') === 'true') {
+            targetElement.style.border = '1px solid #E9A33B';
+            targetElement.style.boxShadow = '0 0 15px #E9A33B'; // 保持发光效果
+            // 移除高亮标记
+            targetElement.removeAttribute('data-highlighted');
+          }
+        }, 2000);
+      } else {
+        // 如果找不到目标元素，至少确保编辑面板可见
+        const editPanel = document.querySelector('.editing-panel');
+        if (editPanel) {
+          editPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 50); // 减少延时时间
+  });
+}
+
+// 处理标签页切换
+function handleTabChange(name) {
+  // 根据标签页名称设置编辑状态
+  if (name === 'scenes') {
+    // 如果场景列表中有场景，选择第一个场景
+    if (gameData.value.scenes && gameData.value.scenes.length > 0) {
+      handleSceneClick(gameData.value.scenes[0]);
+    } else {
+      // 如果没有场景，设置编辑区域为空白状态
+      currentScene.value = null;
+      currentCharacter.value = null;
+      currentMission.value = null;
+      editingSection.value = 'scene';
+    }
+  } else if (name === 'characters') {
+    // 如果角色列表中有角色，选择第一个角色
+    if (gameData.value.characters && gameData.value.characters.length > 0) {
+      handleCharacterClick(gameData.value.characters[0]);
+    } else {
+      // 如果没有角色，设置编辑区域为空白状态
+      currentScene.value = null;
+      currentCharacter.value = null;
+      currentMission.value = null;
+      editingSection.value = 'character';
+    }
+  } else if (name === 'missions') {
+    // 如果任务列表中有任务，选择第一个任务
+    if (gameData.value.missions && gameData.value.missions.length > 0) {
+      handleMissionClick(gameData.value.missions[0]);
+    } else {
+      // 如果没有任务，设置编辑区域为空白状态
+      currentScene.value = null;
+      currentCharacter.value = null;
+      currentMission.value = null;
+      editingSection.value = 'mission';
+    }
+  }
 }
 
 // 添加场景
@@ -865,10 +1081,18 @@ async function saveChanges() {
       return;
     }
     
-    // 构造项目数据
+    // 构造项目数据，将完整的gameData保存到manuscript_data中
     const projectData = {
-      title: gameData.value.title || '未命名游戏',
-      game_data: gameData.value,
+      title: gameData.value.gameName || '未命名游戏',
+      manuscript_data: {
+        gameData: gameData.value,  // 保存完整的可视化编辑数据
+        emotionalTone: gameData.value.emotionalTone,
+        style: gameData.value.style,
+        scenes: gameData.value.scenes,
+        characters: gameData.value.characters,
+        missions: gameData.value.missions,
+        interactionRules: gameData.value.interactionRules
+      },
       status: 'editing'
     };
     
@@ -882,8 +1106,8 @@ async function saveChanges() {
     
     if (response.code === 200) {
       // 更新本地存储的游戏数据
-      if (response.data.project_id) {
-        gameData.value.projectId = response.data.project_id;
+      if (response.data.project.id) {
+        gameData.value.projectId = response.data.project.id;
       }
       localStorage.setItem(`game_${gameData.value.gameId}`, JSON.stringify(gameData.value));
       ElMessage.success('修改已保存！');
@@ -902,10 +1126,14 @@ async function saveChanges() {
   }
 }
 
-// 预览游戏
-function previewGame() {
-  // 跳转到预览页面，携带游戏ID
-  router.push(`/pixel-preview?id=${gameData.value.gameId}`)
+// 预览游戏（保存并预览）
+async function previewGame() {
+  // 先保存更改
+  await saveChanges();
+  // 短暂延时确保保存完成
+  await new Promise(resolve => setTimeout(resolve, 500));
+  // 然后预览游戏
+  router.push(`/game-preview?gameId=${gameData.value.gameId}`)
 }
 
 // 返回原稿
