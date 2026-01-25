@@ -133,8 +133,8 @@ const handleLogin = async () => {
     if (response.code === 200 && response.data) {
       // 存储 Token 和用户信息
       setAuth(response.data.token, {
-        user_id: response.data.user_id,
-        username: response.data.username
+        username: response.data.user.username,
+        email: response.data.user.email || ''
       })
 
       ElMessage.success('登录成功！')
@@ -167,8 +167,8 @@ const handleGuestLogin = async () => {
     if (response.code === 200 && response.data) {
       // 存储 Token 和用户信息
       setAuth(response.data.token, {
-        user_id: response.data.user_id,
-        username: response.data.username,
+        username: response.data.user.username,
+        guest_id: response.data.user.guest_id,
         is_guest: true
       })
 
