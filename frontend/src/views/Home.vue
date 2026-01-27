@@ -267,14 +267,21 @@ const triggerAnimations = () => {
   opacity: 0.6;
   z-index: 0;
   pointer-events: none;
+  /* 顶部渐入效果 */
   mask-image: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 1) 0%, 
-    rgba(0, 0, 0, 1) 10%, 
+    rgba(0, 0, 0, 0) 0%, 
+    rgba(0, 0, 0, 0.2) 10%, 
+    rgba(0, 0, 0, 0.5) 20%, 
     rgba(0, 0, 0, 0.8) 30%, 
-    rgba(0, 0, 0, 0.5) 50%, 
-    rgba(0, 0, 0, 0.2) 70%, 
-    rgba(0, 0, 0, 0) 90%, 
+    rgba(0, 0, 0, 1) 40%, 
+    rgba(0, 0, 0, 1) 60%, 
+    rgba(0, 0, 0, 0.8) 70%, 
+    rgba(0, 0, 0, 0.5) 80%, 
+    rgba(0, 0, 0, 0.2) 90%, 
     rgba(0, 0, 0, 0) 100%);
+  /* 确保水平方向完全铺满 */
+  background-repeat: repeat-x;
+  background-position: 0 0;
 }
 
 /* 粒子效果 */
