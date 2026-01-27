@@ -269,10 +269,10 @@ const triggerAnimations = () => {
   /* 只在指定区域显示，上下边缘柔和过渡 */
   mask-image: linear-gradient(to bottom, 
     rgba(0, 0, 0, 0) 0%, 
-    rgba(0, 0, 0, 0.2) 10%, 
-    rgba(0, 0, 0, 1) 20%, 
-    rgba(0, 0, 0, 1) 80%, 
-    rgba(0, 0, 0, 0.2) 90%, 
+    rgba(0, 0, 0, 0.5) 5%, 
+    rgba(0, 0, 0, 1) 10%, 
+    rgba(0, 0, 0, 1) 90%, 
+    rgba(0, 0, 0, 0.5) 95%, 
     rgba(0, 0, 0, 0) 100%);
 }
 
