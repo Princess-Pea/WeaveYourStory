@@ -1,0 +1,67 @@
+<svg width="300" height="400" viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- 远景山脉 -->
+  <rect x="0" y="100" width="120" height="30" fill="#8B7355"/>
+  <rect x="30" y="90" width="90" height="25" fill="#A0826D"/>
+  <rect x="60" y="80" width="60" height="20" fill="#8B7355"/>
+  
+  <!-- 像素矮松 -->
+  <rect x="15" y="120" width="15" height="30" fill="#228B22"/>
+  <rect x="8" y="115" width="30" height="15" fill="#228B22"/>
+  <rect x="11" y="110" width="24" height="10" fill="#228B22"/>
+  <rect x="13" y="105" width="20" height="10" fill="#228B22"/>
+  
+  <rect x="45" y="125" width="15" height="25" fill="#228B22"/>
+  <rect x="38" y="120" width="30" height="10" fill="#228B22"/>
+  <rect x="41" y="115" width="24" height="10" fill="#228B22"/>
+  
+  <!-- 灌木 -->
+  <rect x="75" y="135" width="20" height="15" fill="#3CB371"/>
+  <rect x="72" y="130" width="26" height="10" fill="#228B22"/>
+  <rect x="78" y="125" width="16" height="10" fill="#3CB371"/>
+  
+  <!-- 像素岩石 -->
+  <rect x="95" y="145" width="15" height="8" fill="#696969"/>
+  <rect x="98" y="143" width="10" height="8" fill="#808080"/>
+  
+  <!-- 左侧城堡主体 - 更复杂的城堡 -->
+  <!-- 主塔楼 -->
+  <rect x="120" y="150" width="60" height="100" fill="#696969"/> <!-- 主楼 -->
+  <rect x="115" y="170" width="70" height="80" fill="#696969"/> <!-- 基座 -->
+  <rect x="125" y="140" width="50" height="15" fill="#8B4513"/> <!-- 屋顶 -->
+  <rect x="105" y="180" width="15" height="70" fill="#696969"/> <!-- 左塔 -->
+  <rect x="175" y="175" width="15" height="75" fill="#696969"/> <!-- 右塔 -->
+  <rect x="140" y="110" width="20" height="30" fill="#696969"/> <!-- 顶塔 -->
+  
+  <!-- 城堡细节 -->
+  <rect x="125" y="180" width="8" height="12" fill="#4682B4"/> <!-- 主窗 -->
+  <rect x="155" y="180" width="8" height="12" fill="#4682B4"/>
+  <rect x="118" y="200" width="6" height="10" fill="#4682B4"/> <!-- 左塔窗 -->
+  <rect x="178" y="195" width="6" height="10" fill="#4682B4"/> <!-- 右塔窗 -->
+  <rect x="145" y="120" width="10" height="15" fill="#4682B4"/> <!-- 顶塔窗 -->
+  
+  <!-- 城堡门廊 -->
+  <rect x="135" y="230" width="30" height="20" fill="#555555"/>
+  <rect x="137" y="235" width="26" height="15" fill="#8B4513"/> <!-- 门 -->
+  
+  <!-- 城堡旗帜 -->
+  <rect x="150" y="105" width="1" height="10" fill="#000000"/> <!-- 旗杆 -->
+  <rect x="151" y="100" width="12" height="8" fill="#FF6B6B"/> <!-- 旗帜 -->
+  
+  <!-- 城堡围墙 -->
+  <rect x="100" y="230" width="90" height="10" fill="#696969"/>
+  <rect x="100" y="220" width="10" height="10" fill="#696969"/> <!-- 墙垛 -->
+  <rect x="120" y="220" width="10" height="10" fill="#696969"/>
+  <rect x="140" y="220" width="10" height="10" fill="#696969"/>
+  <rect x="160" y="220" width="10" height="10" fill="#696969"/>
+  <rect x="180" y="220" width="10" height="10" fill="#696969"/>
+  
+  <!-- 城堡尖顶 -->
+  <rect x="108" y="175" width="9" height="5" fill="#8B4513"/> <!-- 左塔顶 -->
+  <rect x="178" y="170" width="9" height="5" fill="#8B4513"/> <!-- 右塔顶 -->
+  <rect x="143" y="105" width="14" height="5" fill="#8B4513"/> <!-- 顶塔尖顶 -->
+  
+  <!-- 城堡庭院 -->
+  <rect x="125" y="250" width="50" height="30" fill="#A0522D"/> <!-- 庭院 -->
+  <rect x="135" y="255" width="8" height="8" fill="#3CB371"/> <!-- 庭院树 -->
+  <rect x="150" y="265" width="6" height="6" fill="#3CB371"/> <!-- 庭院花 -->
+</svg>

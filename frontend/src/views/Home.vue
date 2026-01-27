@@ -1,4 +1,23 @@
 <template>
+  <!-- 装饰元素：左右城堡森林 -->
+  <div class="decorative-left-castle"></div>
+  <div class="decorative-right-castle"></div>
+  
+  <!-- 装饰元素：小河 -->
+  <div class="decorative-river"></div>
+  <div class="decorative-river-overlay"></div>
+  
+  <!-- 装饰元素：像素星星 -->
+  <div class="decorative-star star-1"></div>
+  <div class="decorative-star star-2"></div>
+  <div class="decorative-star star-3"></div>
+  <div class="decorative-star star-4"></div>
+  <div class="decorative-star star-5"></div>
+  
+  <!-- 装饰元素：像素云朵 -->
+  <div class="decorative-cloud cloud-1"></div>
+  <div class="decorative-cloud cloud-2"></div>
+
   <div class="home-container">
     <!-- 网格背景 -->
     <div class="grid-background"></div>
@@ -21,10 +40,10 @@
     </div>
     
     <div class="actions-section">
-      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input', $event)" class="create-btn animate-fade-in-base">
+      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-fade-in-base">
         EXPLORE
       </el-button>
-      <p class="button-subtext animate-fade-in-base">design your own game.</p>
+      <p class="button-subtext animate-fade-in-base">start your own game.</p>
     </div>
 
     <!-- 像素小人动画 -->
@@ -155,7 +174,7 @@ import { onMounted, nextTick, onUnmounted } from 'vue'
 
 const router = useRouter()
 
-const navigateTo = (path, event) => {
+const navigateTo = (path) => {
   // 触发粒子爆炸效果
   const btn = document.querySelector('.create-btn')
   if (btn) {
@@ -189,11 +208,11 @@ onMounted(async () => {
   
   // 立即触发动画序列
   triggerAnimations();
-  
+
   // 使用Intersection Observer监听页面是否可见,以便在页面重新进入时再次触发
   animationObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting && entry.target.classList.contains('home-container')) {
+      if (entry.isIntersecting && entry.target.classList.contains('.home-container')) {
         // 当页面重新进入视窗时,再次触发动画
         setTimeout(() => {
           triggerAnimations();
@@ -203,7 +222,7 @@ onMounted(async () => {
   }, {
     threshold: 0.1
   });
-  
+
   animationObserver.observe(document.querySelector('.home-container'));
 });
 
@@ -234,11 +253,10 @@ const triggerAnimations = () => {
         void el.offsetWidth; // 强制重排
         el.classList.add('animate-fade-in');
       });
-    }, 300);
+  }, 300);
   }, 10);
 };
 </script>
-
 <style scoped>
 .home-container {
   padding: 40px 20px;
@@ -248,31 +266,32 @@ const triggerAnimations = () => {
   border-radius: 10px;
   color: #ecf0f1;
   min-height: 100vh;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 }
 
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 0; /* 从页面最上方开始 */
+  top: 90px;
   left: 0;
   right: 0;
-  bottom: 450px; /* 到start your own game字段上方结束 */
+  bottom: 300px;
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 30px 30px;
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: 30px 30px, auto;
   opacity: 0.6;
   z-index: 0;
   pointer-events: none;
-  /* 只在指定区域显示，上下边缘柔和过渡 */
   mask-image: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0) 0%, 
-    rgba(0, 0, 0, 0.5) 5%, 
+    rgba(0, 0, 0, 1) 0%, 
     rgba(0, 0, 0, 1) 10%, 
-    rgba(0, 0, 0, 1) 90%, 
-    rgba(0, 0, 0, 0.5) 95%, 
+    rgba(0, 0, 0, 0.8) 30%, 
+    rgba(0, 0, 0, 0.5) 50%, 
+    rgba(0, 0, 0, 0.2) 70%, 
+    rgba(0, 0, 0, 0) 90%, 
     rgba(0, 0, 0, 0) 100%);
 }
 
@@ -474,44 +493,26 @@ const triggerAnimations = () => {
   padding: 0;
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
-  background: linear-gradient(145deg, #7a1ad2, #9a3ce2);
-  border: 2px solid #000 !important;
+  background-color: #8a2be2 !important;
+  border: 1px solid black !important;
   color: white !important;
   border-radius: 0 !important;
-  box-shadow: 
-    inset 2px 2px 0 rgba(255, 255, 255, 0.3), /* 内部高光 */
-    inset -2px -2px 0 rgba(0, 0, 0, 0.3), /* 内部阴影 */
-    4px 4px 0 0 rgba(0, 0, 0, 1); /* 主体阴影 */
-  transition: all 0.05s ease !important;
+  box-shadow: none !important;
+  transition: all 0.1s ease !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: visible;
-  cursor: pointer;
-  transform: translateY(0);
 }
 
 .create-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 
-    inset 4px 4px 0 rgba(255, 255, 255, 0.4),
-    inset -4px -4px 0 rgba(0, 0, 0, 0.2),
-    6px 6px 0 0 rgba(0, 0, 0, 1),
-    0 0 16px rgba(223, 166, 80, 0.4); /* 添加荧光效果 */
-  background: linear-gradient(145deg, #8a2be2, #aa4df2);
+  transform: translateY(-1px);
+  border-color: #ff8c00 !important;
+  background-color: #8a2be2 !important;
 }
 
-.create-btn:active {
-  transform: translateY(2px);
-  box-shadow: 
-    inset -2px -2px 0 rgba(255, 255, 255, 0.3),
-    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
-    2px 2px 0 0 rgba(0, 0, 0, 1);
-  background: linear-gradient(145deg, #6a0ac2, #8a2bd2);
-}
-
-/* 卡片粒子爆炸效果 */
+/* 粒子爆炸效果 */
 .create-btn.particle-burst::before,
 .create-btn.particle-burst::after {
   content: '';
@@ -556,46 +557,6 @@ const triggerAnimations = () => {
   }
   100% {
     box-shadow: 0 -64px 0 2px transparent, 64px 0 0 2px transparent, 0 64px 0 2px transparent, -64px 0 0 2px transparent;
-    opacity: 0;
-  }
-}
-
-.feature-card.card-burst::after {
-  content: '';
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background-color: transparent;
-  left: 50%;
-  top: 50%;
-  animation: card-burst-particles 0.8s ease-out;
-  pointer-events: none;
-  z-index: 10;
-}
-
-@keyframes card-burst-particles {
-  0% {
-    box-shadow: 
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #8a2be2,
-      0 0 0 2px #8a2be2,
-      0 0 0 2px #8a2be2,
-      0 0 0 2px #8a2be2;
-    opacity: 1;
-  }
-  100% {
-    box-shadow: 
-      -48px -48px 0 2px transparent,
-      48px -48px 0 2px transparent,
-      -48px 48px 0 2px transparent,
-      48px 48px 0 2px transparent,
-      0 -64px 0 2px transparent,
-      64px 0 0 2px transparent,
-      0 64px 0 2px transparent,
-      -64px 0 0 2px transparent;
     opacity: 0;
   }
 }
@@ -669,13 +630,10 @@ const triggerAnimations = () => {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 48px;
   margin-top: 64px;
   padding: 32px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .feature-card {
@@ -715,15 +673,56 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover::before {
-  border: 2px solid #DFA650;
-  box-shadow: 0 0 16px rgba(223, 166, 80, 0.6), inset 0 0 12px rgba(223, 166, 80, 0.2);
+  border: 1px solid #ff8c00;
+  box-shadow: 0 0 16px rgba(255, 140, 0, 0.3);
+}
+
+/* 卡片粒子爆炸效果 */
+.feature-card.card-burst::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+  left: 50%;
+  top: 50%;
+  animation: card-burst-particles 0.8s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes card-burst-particles {
+  0% {
+    box-shadow: 
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2;
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 
+      -48px -48px 0 2px transparent,
+      48px -48px 0 2px transparent,
+      -48px 48px 0 2px transparent,
+      48px 48px 0 2px transparent,
+      0 -64px 0 2px transparent,
+      64px 0 0 2px transparent,
+      0 64px 0 2px transparent,
+      -64px 0 0 2px transparent;
+    opacity: 0;
+  }
 }
 
 .feature-number {
   position: absolute;
   top: -24px;
   left: -24px;
-  background-color: #7a7a7a;
+  background-color: #ff8c00;
   color: white;
   width: 48px;
   height: 48px;
@@ -733,7 +732,7 @@ const triggerAnimations = () => {
   font-weight: bold;
   font-size: 14px;
   font-family: 'Press Start 2P', cursive;
-  border: 2px solid black;
+  border: 1px solid black;
   z-index: 100;
   clip-path: polygon(
     0 4px, 4px 4px, 4px 0,
@@ -741,13 +740,6 @@ const triggerAnimations = () => {
     100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
     4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
   );
-  transition: all 0.2s;
-}
-
-.feature-card:hover .feature-number {
-  background-color: #DFA650;
-  color: black;
-  box-shadow: 0 0 12px rgba(223, 166, 80, 0.6);
 }
 
 .feature-icon {
@@ -773,5 +765,208 @@ const triggerAnimations = () => {
 .bottom-spacer {
   height: 200px;
   margin-top: 40px;
+}
+
+/* 装饰元素样式 */
+.decorative-left-castle {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.8);
+  width: 200px;
+  height: 300px;
+  background-image: url('/left-castle-forest.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.decorative-right-castle {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.8);
+  width: 200px;
+  height: 300px;
+  background-image: url('/right-castle-forest.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.decorative-river {
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-image: url("/pixel-river.svg");
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.9;
+  z-index: 1;
+  pointer-events: none;
+  animation: river-flow 8s linear infinite;
+}
+
+.decorative-walking-characters {
+  position: fixed;
+  bottom: 100px;
+  left: 10%;
+  width: 100px;
+  height: 50px;
+  background-image: url("/walking-characters.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  z-index: 2;
+  pointer-events: none;
+  animation: walk-along-river 12s linear infinite;
+}
+
+@keyframes walk-along-river {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(100vw - 200px));
+  }
+}
+
+@keyframes river-flow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50px);
+  }
+}
+</style>
+
+<style>
+/* 全局装饰元素样式 - 不使用scoped以确保应用到根级元素 */
+.decorative-left-castle {
+  position: fixed !important;
+  left: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scale(0.8) !important;
+  width: 200px !important;
+  height: 300px !important;
+  background-image: url('/left-castle-forest.svg') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.decorative-right-castle {
+  position: fixed !important;
+  right: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) scale(0.8) !important;
+  width: 200px !important;
+  height: 300px !important;
+  background-image: url('/right-castle-forest.svg') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.decorative-river {
+  position: fixed !important;
+  bottom: 48px !important;
+  left: 0 !important;
+  width: 200% !important;
+  height: 48px !important;
+  background-image: url('/pixel-river.svg') !important;
+  background-size: 320px 48px !important;
+  background-repeat: repeat-x !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  animation: river-flow-main 5s linear infinite !important;
+}
+
+.decorative-river-overlay {
+  position: fixed !important;
+  bottom: 48px !important;
+  left: 0 !important;
+  width: 200% !important;
+  height: 48px !important;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(135, 206, 250, 0.12) 25%, 
+    rgba(100, 149, 237, 0.15) 50%, 
+    rgba(135, 206, 250, 0.12) 75%, 
+    transparent 100%) !important;
+  background-size: 320px 48px !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  animation: river-shimmer 3s linear infinite !important;
+}
+
+/* 像素星星装饰 */
+.decorative-star {
+  position: fixed !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: #FFD700 !important;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%) !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  animation: star-twinkle 2s ease-in-out infinite !important;
+}
+
+.star-1 { top: 80px !important; left: 10% !important; animation-delay: 0s !important; }
+.star-2 { top: 120px !important; right: 8% !important; animation-delay: 0.4s !important; width: 12px !important; height: 12px !important; }
+.star-3 { top: 200px !important; left: 5% !important; animation-delay: 0.8s !important; width: 10px !important; height: 10px !important; }
+.star-4 { top: 160px !important; right: 12% !important; animation-delay: 1.2s !important; }
+.star-5 { bottom: 200px !important; left: 8% !important; animation-delay: 1.6s !important; width: 14px !important; height: 14px !important; }
+
+/* 像素云朵装饰 */
+.decorative-cloud {
+  position: fixed !important;
+  width: 64px !important;
+  height: 32px !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background: 
+    radial-gradient(circle at 16px 20px, rgba(255,255,255,0.9) 12px, transparent 12px),
+    radial-gradient(circle at 32px 16px, rgba(255,255,255,0.9) 16px, transparent 16px),
+    radial-gradient(circle at 48px 20px, rgba(255,255,255,0.9) 12px, transparent 12px) !important;
+  animation: cloud-float 20s linear infinite !important;
+}
+
+.cloud-1 { top: 100px !important; left: -64px !important; animation-duration: 25s !important; }
+.cloud-2 { top: 180px !important; left: -64px !important; animation-duration: 30s !important; animation-delay: 10s !important; width: 80px !important; height: 40px !important; }
+
+@keyframes river-flow-main {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-320px); }
+}
+
+@keyframes river-shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-320px); }
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+@keyframes cloud-float {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(100vw + 128px)); }
 }
 </style>
