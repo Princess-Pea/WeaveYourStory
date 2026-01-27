@@ -159,22 +159,20 @@ const navigateTo = (path, event) => {
   // 触发粒子爆炸效果
   const btn = document.querySelector('.create-btn')
   if (btn) {
-    // 计算鼠标位置相对于按钮的位置
-    const rect = btn.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
+    // 使用鼠标相对于页面的位置
+    const x = event.clientX
+    const y = event.clientY
     
     // 创建临时粒子效果容器，设置在鼠标点击位置
     const burst = document.createElement('div')
     burst.className = 'click-particle-burst'
     burst.style.left = x + 'px'
     burst.style.top = y + 'px'
-    burst.style.position = 'absolute'
+    burst.style.position = 'fixed'
     burst.style.pointerEvents = 'none'
     
-    // 将粒子效果添加到按钮容器中
-    btn.style.position = 'relative'
-    btn.appendChild(burst)
+    // 将粒子效果添加到页面主体中
+    document.body.appendChild(burst)
     
     // 动画完成后移除
     setTimeout(() => {
@@ -192,23 +190,20 @@ const onCardClick = (event) => {
   // 触发卡片粒子爆炸效果，显示在鼠标点击位置
   const card = event.currentTarget
   if (card && !card.classList.contains('card-burst')) {
-    // 获取鼠标相对于卡片的位置
-    const rect = card.getBoundingClientRect()
-    const containerRect = card.parentElement.getBoundingClientRect()
-    const x = event.clientX - containerRect.left
-    const y = event.clientY - containerRect.top
+    // 获取鼠标相对于页面的位置
+    const x = event.clientX
+    const y = event.clientY
     
     // 创建临时粒子效果容器，设置在鼠标点击位置
     const burst = document.createElement('div')
     burst.className = 'click-particle-burst'
     burst.style.left = x + 'px'
     burst.style.top = y + 'px'
-    burst.style.position = 'absolute'
+    burst.style.position = 'fixed'
     burst.style.pointerEvents = 'none'
     
-    // 将粒子效果添加到卡片容器中
-    card.parentElement.style.position = 'relative'
-    card.parentElement.appendChild(burst)
+    // 将粒子效果添加到页面主体中
+    document.body.appendChild(burst)
     
     // 动画完成后移除
     setTimeout(() => {
@@ -524,8 +519,7 @@ const triggerAnimations = () => {
   box-shadow: 
     inset 2px 2px 0 rgba(255, 255, 255, 0.3), /* 内部高光 */
     inset -2px -2px 0 rgba(0, 0, 0, 0.3), /* 内部阴影 */
-    4px 4px 0 0 rgba(0, 0, 0, 1), /* 主体阴影 */
-    6px 6px 0 0 #ffcc00; /* 底部装饰阴影 */
+    4px 4px 0 0 rgba(0, 0, 0, 1); /* 主体阴影 */
   transition: all 0.05s ease !important;
   display: inline-flex;
   align-items: center;
@@ -542,8 +536,7 @@ const triggerAnimations = () => {
     inset 4px 4px 0 rgba(255, 255, 255, 0.4),
     inset -4px -4px 0 rgba(0, 0, 0, 0.2),
     6px 6px 0 0 rgba(0, 0, 0, 1),
-    8px 8px 0 0 #ffcc00,
-    0 0 16px rgba(233, 163, 59, 0.4); /* 添加荧光效果 */
+    0 0 16px rgba(223, 166, 80, 0.4); /* 添加荧光效果 */
   background: linear-gradient(145deg, #8a2be2, #aa4df2);
 }
 
@@ -552,8 +545,7 @@ const triggerAnimations = () => {
   box-shadow: 
     inset -2px -2px 0 rgba(255, 255, 255, 0.3),
     inset 2px 2px 0 rgba(0, 0, 0, 0.3),
-    2px 2px 0 0 rgba(0, 0, 0, 1),
-    4px 4px 0 0 #ffcc00;
+    2px 2px 0 0 rgba(0, 0, 0, 1);
   background: linear-gradient(145deg, #6a0ac2, #8a2bd2);
 }
 
@@ -673,8 +665,8 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover::before {
-  border: 2px solid #9aff00;
-  box-shadow: 0 0 16px rgba(154, 255, 0, 0.6), inset 0 0 12px rgba(154, 255, 0, 0.2);
+  border: 2px solid #DFA650;
+  box-shadow: 0 0 16px rgba(223, 166, 80, 0.6), inset 0 0 12px rgba(223, 166, 80, 0.2);
 }
 
 /* 卡片粒子爆炸效果 */
@@ -742,9 +734,9 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover .feature-number {
-  background-color: #ffcc00;
+  background-color: #DFA650;
   color: black;
-  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
+  box-shadow: 0 0 12px rgba(223, 166, 80, 0.6);
 }
 
 .feature-icon {
