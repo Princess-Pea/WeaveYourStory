@@ -255,7 +255,7 @@ const triggerAnimations = () => {
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 100px; /* 从PixelForge标志下方开始 */
+  top: 0; /* 从页面最上方开始 */
   left: 0;
   right: 0;
   bottom: 450px; /* 到start your own game字段上方结束 */
