@@ -21,10 +21,10 @@
     </div>
     
     <div class="actions-section">
-      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-fade-in-base">
+      <el-button type="primary" size="large" @click="navigateTo('/manuscript-input', $event)" class="create-btn animate-fade-in-base">
         EXPLORE
       </el-button>
-      <p class="button-subtext animate-fade-in-base">start your own game.</p>
+      <p class="button-subtext animate-fade-in-base">design your own game.</p>
     </div>
 
     <!-- 像素小人动画 -->
@@ -155,11 +155,26 @@ import { onMounted, nextTick, onUnmounted } from 'vue'
 
 const router = useRouter()
 
-const navigateTo = (path) => {
+const navigateTo = (path, event) => {
   // 触发粒子爆炸效果
   const btn = document.querySelector('.create-btn')
   if (btn) {
-    btn.classList.add('particle-burst')
+    // 计算鼠标位置相对于button的位置
+    const rect = btn.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    
+    // 创建临时粒子效果容器，设置在鼠标点击位置
+    const burst = document.createElement('div')
+    burst.className = 'click-particle-burst'
+    burst.style.left = x + 'px'
+    burst.style.top = y + 'px'
+    btn.appendChild(burst)
+    
+    // 动画完成后移除
+    setTimeout(() => {
+      burst.remove()
+    }, 800)
   }
   
   // 粒子效果后跳转
@@ -169,9 +184,27 @@ const navigateTo = (path) => {
 }
 
 const onCardClick = (event) => {
-  // 触发卡片粒子爆炸效果
+  // 触发卡片粒子爆炸效果，显示在鼠标点击位置
   const card = event.currentTarget
   if (card && !card.classList.contains('card-burst')) {
+    // 获取鼠标相对于卡片的位置
+    const rect = card.getBoundingClientRect()
+    const cardRect = card.parentElement.getBoundingClientRect()
+    const x = event.clientX - cardRect.left
+    const y = event.clientY - cardRect.top
+    
+    // 创建临时粒子效果容器，设置在鼠标点击位置
+    const burst = document.createElement('div')
+    burst.className = 'click-particle-burst'
+    burst.style.left = x + 'px'
+    burst.style.top = y + 'px'
+    card.parentElement.appendChild(burst)
+    
+    // 动画完成后移除
+    setTimeout(() => {
+      burst.remove()
+    }, 800)
+    
     card.classList.add('card-burst')
     // 1秒后移除效果类，允许再次触发
     setTimeout(() => {
@@ -475,72 +508,31 @@ const triggerAnimations = () => {
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   background-color: #8a2be2 !important;
-  border: 1px solid black !important;
+  border: 2px solid #000 !important;
   color: white !important;
   border-radius: 0 !important;
-  box-shadow: none !important;
-  transition: all 0.1s ease !important;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.05s ease !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: visible;
+  cursor: pointer;
 }
 
 .create-btn:hover {
-  transform: translateY(-1px);
-  border-color: #ff8c00 !important;
-  background-color: #8a2be2 !important;
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), 0 0 16px rgba(233, 163, 59, 0.4) !important;
+  background-color: #9a3be2 !important;
 }
 
-/* 粒子爆炸效果 */
-.create-btn.particle-burst::before,
-.create-btn.particle-burst::after {
-  content: '';
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background-color: #ff8c00;
-  left: 50%;
-  top: 50%;
-  animation: burst-particle 0.6s ease-out;
+.create-btn:active {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5) !important;
+  background-color: #7a1be2 !important;
 }
 
-.create-btn.particle-burst::before {
-  animation-name: burst-particle-1;
-}
-
-.create-btn.particle-burst::after {
-  animation-name: burst-particle-2;
-}
-
-@keyframes burst-particle-1 {
-  0% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-  25% {
-    box-shadow: -16px -16px 0 2px #ff8c00, 16px -16px 0 2px #ff8c00, -16px 16px 0 2px #8a2be2, 16px 16px 0 2px #8a2be2;
-  }
-  100% {
-    box-shadow: -48px -48px 0 2px transparent, 48px -48px 0 2px transparent, -48px 48px 0 2px transparent, 48px 48px 0 2px transparent;
-    opacity: 0;
-  }
-}
-
-@keyframes burst-particle-2 {
-  0% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-  25% {
-    box-shadow: 0 -16px 0 2px #8a2be2, 16px 0 0 2px #ff8c00, 0 16px 0 2px #8a2be2, -16px 0 0 2px #ff8c00;
-  }
-  100% {
-    box-shadow: 0 -64px 0 2px transparent, 64px 0 0 2px transparent, 0 64px 0 2px transparent, -64px 0 0 2px transparent;
-    opacity: 0;
-  }
-}
 
 .button-subtext {
   font-family: 'Courier New', 'monospace', sans-serif;
@@ -657,25 +649,22 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover::before {
-  border: 1px solid #ff8c00;
-  box-shadow: 0 0 16px rgba(255, 140, 0, 0.3);
+  border: 2px solid #9aff00;
+  box-shadow: 0 0 16px rgba(154, 255, 0, 0.6), inset 0 0 12px rgba(154, 255, 0, 0.2);
 }
 
 /* 卡片粒子爆炸效果 */
-.feature-card.card-burst::after {
-  content: '';
+.click-particle-burst {
   position: absolute;
   width: 8px;
   height: 8px;
   background-color: transparent;
-  left: 50%;
-  top: 50%;
-  animation: card-burst-particles 0.8s ease-out;
   pointer-events: none;
   z-index: 10;
+  animation: click-burst-particles 0.8s ease-out;
 }
 
-@keyframes card-burst-particles {
+@keyframes click-burst-particles {
   0% {
     box-shadow: 
       0 0 0 2px #ff8c00,
@@ -702,11 +691,12 @@ const triggerAnimations = () => {
   }
 }
 
+
 .feature-number {
   position: absolute;
   top: -24px;
   left: -24px;
-  background-color: #ff8c00;
+  background-color: #7a7a7a;
   color: white;
   width: 48px;
   height: 48px;
@@ -716,7 +706,7 @@ const triggerAnimations = () => {
   font-weight: bold;
   font-size: 14px;
   font-family: 'Press Start 2P', cursive;
-  border: 1px solid black;
+  border: 2px solid black;
   z-index: 100;
   clip-path: polygon(
     0 4px, 4px 4px, 4px 0,
@@ -724,6 +714,13 @@ const triggerAnimations = () => {
     100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
     4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
   );
+  transition: all 0.2s;
+}
+
+.feature-card:hover .feature-number {
+  background-color: #ffcc00;
+  color: black;
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
 }
 
 .feature-icon {
