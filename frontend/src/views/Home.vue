@@ -611,10 +611,13 @@ const triggerAnimations = () => {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 48px;
   margin-top: 64px;
   padding: 32px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .feature-card {
