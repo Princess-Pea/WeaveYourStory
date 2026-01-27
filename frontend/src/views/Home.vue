@@ -159,25 +159,7 @@ const navigateTo = (path, event) => {
   // 触发粒子爆炸效果
   const btn = document.querySelector('.create-btn')
   if (btn) {
-    // 使用鼠标相对于页面的位置
-    const x = event.clientX
-    const y = event.clientY
-    
-    // 创建临时粒子效果容器，设置在鼠标点击位置
-    const burst = document.createElement('div')
-    burst.className = 'click-particle-burst'
-    burst.style.left = x + 'px'
-    burst.style.top = y + 'px'
-    burst.style.position = 'fixed'
-    burst.style.pointerEvents = 'none'
-    
-    // 将粒子效果添加到页面主体中
-    document.body.appendChild(burst)
-    
-    // 动画完成后移除
-    setTimeout(() => {
-      burst.remove()
-    }, 800)
+    btn.classList.add('particle-burst')
   }
   
   // 粒子效果后跳转
@@ -187,29 +169,9 @@ const navigateTo = (path, event) => {
 }
 
 const onCardClick = (event) => {
-  // 触发卡片粒子爆炸效果，显示在鼠标点击位置
+  // 触发卡片粒子爆炸效果
   const card = event.currentTarget
   if (card && !card.classList.contains('card-burst')) {
-    // 获取鼠标相对于页面的位置
-    const x = event.clientX
-    const y = event.clientY
-    
-    // 创建临时粒子效果容器，设置在鼠标点击位置
-    const burst = document.createElement('div')
-    burst.className = 'click-particle-burst'
-    burst.style.left = x + 'px'
-    burst.style.top = y + 'px'
-    burst.style.position = 'fixed'
-    burst.style.pointerEvents = 'none'
-    
-    // 将粒子效果添加到页面主体中
-    document.body.appendChild(burst)
-    
-    // 动画完成后移除
-    setTimeout(() => {
-      burst.remove()
-    }, 800)
-    
     card.classList.add('card-burst')
     // 1秒后移除效果类，允许再次触发
     setTimeout(() => {
@@ -549,6 +511,94 @@ const triggerAnimations = () => {
   background: linear-gradient(145deg, #6a0ac2, #8a2bd2);
 }
 
+/* 卡片粒子爆炸效果 */
+.create-btn.particle-burst::before,
+.create-btn.particle-burst::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #ff8c00;
+  left: 50%;
+  top: 50%;
+  animation: burst-particle 0.6s ease-out;
+}
+
+.create-btn.particle-burst::before {
+  animation-name: burst-particle-1;
+}
+
+.create-btn.particle-burst::after {
+  animation-name: burst-particle-2;
+}
+
+@keyframes burst-particle-1 {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  25% {
+    box-shadow: -16px -16px 0 2px #ff8c00, 16px -16px 0 2px #ff8c00, -16px 16px 0 2px #8a2be2, 16px 16px 0 2px #8a2be2;
+  }
+  100% {
+    box-shadow: -48px -48px 0 2px transparent, 48px -48px 0 2px transparent, -48px 48px 0 2px transparent, 48px 48px 0 2px transparent;
+    opacity: 0;
+  }
+}
+
+@keyframes burst-particle-2 {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  25% {
+    box-shadow: 0 -16px 0 2px #8a2be2, 16px 0 0 2px #ff8c00, 0 16px 0 2px #8a2be2, -16px 0 0 2px #ff8c00;
+  }
+  100% {
+    box-shadow: 0 -64px 0 2px transparent, 64px 0 0 2px transparent, 0 64px 0 2px transparent, -64px 0 0 2px transparent;
+    opacity: 0;
+  }
+}
+
+.feature-card.card-burst::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+  left: 50%;
+  top: 50%;
+  animation: card-burst-particles 0.8s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes card-burst-particles {
+  0% {
+    box-shadow: 
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #ff8c00,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2,
+      0 0 0 2px #8a2be2;
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 
+      -48px -48px 0 2px transparent,
+      48px -48px 0 2px transparent,
+      -48px 48px 0 2px transparent,
+      48px 48px 0 2px transparent,
+      0 -64px 0 2px transparent,
+      64px 0 0 2px transparent,
+      0 64px 0 2px transparent,
+      -64px 0 0 2px transparent;
+    opacity: 0;
+  }
+}
 
 .button-subtext {
   font-family: 'Courier New', 'monospace', sans-serif;
@@ -668,45 +718,6 @@ const triggerAnimations = () => {
   border: 2px solid #DFA650;
   box-shadow: 0 0 16px rgba(223, 166, 80, 0.6), inset 0 0 12px rgba(223, 166, 80, 0.2);
 }
-
-/* 卡片粒子爆炸效果 */
-.click-particle-burst {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background-color: transparent;
-  pointer-events: none;
-  z-index: 10;
-  animation: click-burst-particles 0.8s ease-out;
-}
-
-@keyframes click-burst-particles {
-  0% {
-    box-shadow: 
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #ff8c00,
-      0 0 0 2px #8a2be2,
-      0 0 0 2px #8a2be2,
-      0 0 0 2px #8a2be2,
-      0 0 0 2px #8a2be2;
-    opacity: 1;
-  }
-  100% {
-    box-shadow: 
-      -48px -48px 0 2px transparent,
-      48px -48px 0 2px transparent,
-      -48px 48px 0 2px transparent,
-      48px 48px 0 2px transparent,
-      0 -64px 0 2px transparent,
-      64px 0 0 2px transparent,
-      0 64px 0 2px transparent,
-      -64px 0 0 2px transparent;
-    opacity: 0;
-  }
-}
-
 
 .feature-number {
   position: absolute;
