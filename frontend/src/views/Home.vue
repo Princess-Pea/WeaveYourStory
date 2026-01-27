@@ -255,7 +255,7 @@ const triggerAnimations = () => {
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 90px;
+  top: 15px;
   left: 0;
   right: 0;
   bottom: 300px;
