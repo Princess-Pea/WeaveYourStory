@@ -159,7 +159,7 @@ const navigateTo = (path, event) => {
   // 触发粒子爆炸效果
   const btn = document.querySelector('.create-btn')
   if (btn) {
-    // 计算鼠标位置相对于button的位置
+    // 计算鼠标位置相对于按钮的位置
     const rect = btn.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
@@ -169,6 +169,11 @@ const navigateTo = (path, event) => {
     burst.className = 'click-particle-burst'
     burst.style.left = x + 'px'
     burst.style.top = y + 'px'
+    burst.style.position = 'absolute'
+    burst.style.pointerEvents = 'none'
+    
+    // 将粒子效果添加到按钮容器中
+    btn.style.position = 'relative'
     btn.appendChild(burst)
     
     // 动画完成后移除
@@ -189,15 +194,20 @@ const onCardClick = (event) => {
   if (card && !card.classList.contains('card-burst')) {
     // 获取鼠标相对于卡片的位置
     const rect = card.getBoundingClientRect()
-    const cardRect = card.parentElement.getBoundingClientRect()
-    const x = event.clientX - cardRect.left
-    const y = event.clientY - cardRect.top
+    const containerRect = card.parentElement.getBoundingClientRect()
+    const x = event.clientX - containerRect.left
+    const y = event.clientY - containerRect.top
     
     // 创建临时粒子效果容器，设置在鼠标点击位置
     const burst = document.createElement('div')
     burst.className = 'click-particle-burst'
     burst.style.left = x + 'px'
     burst.style.top = y + 'px'
+    burst.style.position = 'absolute'
+    burst.style.pointerEvents = 'none'
+    
+    // 将粒子效果添加到卡片容器中
+    card.parentElement.style.position = 'relative'
     card.parentElement.appendChild(burst)
     
     // 动画完成后移除
@@ -507,11 +517,15 @@ const triggerAnimations = () => {
   padding: 0;
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
-  background-color: #8a2be2 !important;
+  background: linear-gradient(145deg, #7a1ad2, #9a3ce2);
   border: 2px solid #000 !important;
   color: white !important;
   border-radius: 0 !important;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 
+    inset 2px 2px 0 rgba(255, 255, 255, 0.3), /* 内部高光 */
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3), /* 内部阴影 */
+    4px 4px 0 0 rgba(0, 0, 0, 1), /* 主体阴影 */
+    6px 6px 0 0 #ffcc00; /* 底部装饰阴影 */
   transition: all 0.05s ease !important;
   display: inline-flex;
   align-items: center;
@@ -519,18 +533,28 @@ const triggerAnimations = () => {
   position: relative;
   overflow: visible;
   cursor: pointer;
+  transform: translateY(0);
 }
 
 .create-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), 0 0 16px rgba(233, 163, 59, 0.4) !important;
-  background-color: #9a3be2 !important;
+  transform: translateY(-3px);
+  box-shadow: 
+    inset 4px 4px 0 rgba(255, 255, 255, 0.4),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    6px 6px 0 0 rgba(0, 0, 0, 1),
+    8px 8px 0 0 #ffcc00,
+    0 0 16px rgba(233, 163, 59, 0.4); /* 添加荧光效果 */
+  background: linear-gradient(145deg, #8a2be2, #aa4df2);
 }
 
 .create-btn:active {
   transform: translateY(2px);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5) !important;
-  background-color: #7a1be2 !important;
+  box-shadow: 
+    inset -2px -2px 0 rgba(255, 255, 255, 0.3),
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 0 rgba(0, 0, 0, 1),
+    4px 4px 0 0 #ffcc00;
+  background: linear-gradient(145deg, #6a0ac2, #8a2bd2);
 }
 
 
