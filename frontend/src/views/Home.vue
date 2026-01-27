@@ -267,7 +267,7 @@ const triggerAnimations = () => {
   opacity: 0.6;
   z-index: 0;
   pointer-events: none;
-  /* 顶部渐入效果 */
+  /* 顶部渐入效果和底部渐隐效果 */
   mask-image: linear-gradient(to bottom, 
     rgba(0, 0, 0, 0) 0%, 
     rgba(0, 0, 0, 0.2) 10%, 
@@ -280,7 +280,7 @@ const triggerAnimations = () => {
     rgba(0, 0, 0, 0.2) 90%, 
     rgba(0, 0, 0, 0) 100%);
   /* 确保水平方向完全铺满 */
-  background-repeat: repeat-x;
+  background-repeat: repeat;
   background-position: 0 0;
 }
 
