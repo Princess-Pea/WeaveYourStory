@@ -133,7 +133,7 @@ async function loadGamesList() {
     if (response.code === 200) {
       // 将后端返回的项目数据格式化为表格所需格式
       gamesList.value = response.data.projects.map(project => ({
-        id: project.project_id,
+        id: project.id,
         name: project.title,
         createTime: project.created_at,
         lastModified: project.updated_at,
@@ -202,7 +202,7 @@ async function saveCurrentGame() {
     if (response.code === 200) {
       // 更新本地游戏列表
       const gameEntry = {
-        id: response.data.project_id,
+        id: response.data.project.id,
         name: gameDataObj.gameName || '未命名游戏',
         createTime: new Date().toLocaleString(),
         lastModified: new Date().toLocaleString(),

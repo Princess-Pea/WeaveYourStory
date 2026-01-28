@@ -1101,6 +1101,16 @@ function removeDialog(character, index) {
 // 保存修改
 async function saveChanges() {
   try {
+    // 检查是否为开发者模式
+    const isDeveloperMode = localStorage.getItem('developerMode') === 'true';
+    
+    if (isDeveloperMode) {
+      // 开发者模式下，只保存到localStorage
+      localStorage.setItem(`game_${gameData.value.gameId}`, JSON.stringify(gameData.value));
+      ElMessage.success('修改已保存到本地（开发者模式）！');
+      return;
+    }
+    
     // 检查是否为游客模式
     const { userInfo } = useAuth();
     if (userInfo.value?.is_guest) {

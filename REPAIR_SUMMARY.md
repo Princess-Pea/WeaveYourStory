@@ -10,6 +10,18 @@
 
 ## 详细修复内容
 
+### 修复4：开发者模式保存功能 (最新)
+
+**问题描述**：在“可视化编辑”界面点击“保存修改”，会报CORS错误
+
+**根本原因**：在开发者模式下，`VisualEditor.vue` 中的 `saveChanges` 函数仍然尝试发送网络请求到后端API，而不是只在本地保存。
+
+**修复方案**：修改 `saveChanges` 函数，添加开发者模式检测逻辑，如果是开发者模式，则只保存到localStorage而不发送网络请求。
+
+**影响文件**：`frontend/src/views/VisualEditor.vue`
+
+---
+
 ### 修复1：预设选择一致性 (问题1)
 
 **问题描述**：开发者模式下，原稿输入界面填充的预设和"提交AI生成"跳转加载的预设不是同一套
@@ -105,6 +117,8 @@ const initialSceneId = route.query.sceneId || (gameData.scenes && gameData.scene
 - commit `694816c` - 添加开发者模式功能验证报告和实现总结
 - commit `e9d2197` - 修复三个问题（主要修复）
 - commit `1e83275` - 修复onMounted导入问题
+- commit `f4b4a3a` - 添加修复总结文档
+- 最新提交 - 修复开发者模式下保存功能的CORS错误
 
 ---
 

@@ -66,7 +66,7 @@ export function deleteDraft(draftId) {
  */
 export function saveProject(data) {
   return request({
-    url: '/api/v1/projects/',
+    url: '/api/v1/projects',
     method: 'post',
     data
   })
@@ -78,7 +78,7 @@ export function saveProject(data) {
  * @returns {Promise}
  */
 export function getProjectList(status) {
-  let url = '/api/v1/projects/'
+  let url = '/api/v1/projects'
   if (status) {
     url += `?status=${status}`
   }

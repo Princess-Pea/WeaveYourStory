@@ -754,7 +754,7 @@ const submitToAI = async () => {
       
       if (selectedTemplateId) {
         // 尝试根据保存的模板ID获取对应的预设
-        preset = getPresetByTemplateId(selectedTemplateId.replace('template_', 'template')) || getRandomPreset();
+        preset = getPresetByTemplateId(selectedTemplateId) || getRandomPreset();
       } else {
         // 如果没有保存的模板ID，则使用随机预设
         preset = getRandomPreset();
