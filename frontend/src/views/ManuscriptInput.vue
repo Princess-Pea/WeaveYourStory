@@ -317,6 +317,7 @@ import request from '../utils/request'
 import { saveDraft, getDraftDetail, getDraftList } from '@/api/projects'
 import { useAuth } from '@/stores/auth'
 import { getRandomTemplate } from '@/constants/manuscriptTemplates'
+import { getPresetByTemplateId, getRandomPreset } from '@/constants/gamePresets'
 
 const router = useRouter()
 
@@ -451,7 +452,10 @@ const fillWithDefaultTemplate = () => {
   form.missions = JSON.parse(JSON.stringify(templateData.missions))
   form.characters = JSON.parse(JSON.stringify(templateData.characters))
   
-  ElMessage.success(`已填充模板：${template.name} (${template.style})`)
+  // 启用开发者模式，使得提交AI生成时会返回预设游戏数据
+  localStorage.setItem('developerMode', 'true')
+  
+  ElMessage.success(`已填充模板：${template.name} (${template.style})。点击「提交AI生成」便会加载对应的游戏数据。`)
 }
 
 // 暂存原稿
@@ -708,7 +712,28 @@ const submitToAI = async () => {
       characters: form.characters
     }
 
-    // 调用后端AI提交接口
+    // ===== 开发者模式处理 =====
+    // 检查是否启用了开发者模式（通过使用默认模板填充）
+    // 在开发者模式下，直接返回预设游戏数据而不调用真实AI接口
+    const isDeveloperMode = localStorage.getItem('developerMode') === 'true'
+    
+    if (isDeveloperMode) {
+      // 获取随机预设游戏数据
+      const preset = getRandomPreset()
+      const gameData = preset.gameData
+      
+      // 将游戏数据保存到localStorage以供可视化编辑器使用
+      localStorage.setItem(`game_${gameData.gameId}`, JSON.stringify(gameData))
+      
+      // 显示成功消息
+      ElMessage.success(`开发者模式：已加载预设 "${preset.name}" 的游戏数据`)
+      
+      // 跳转到可视化编辑器
+      router.push(`/visual-editor?gameId=${gameData.gameId}`)
+      return
+    }
+
+    // 调用后端AI提交接口（正常模式）
     const response = await request.post('/api/v1/ai/game/submit', {
       content: JSON.stringify(manuscriptData), // 将结构化原稿数据作为content
       context: { gameId: 'new' }, // 新建游戏ID
