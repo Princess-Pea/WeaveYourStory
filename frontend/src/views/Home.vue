@@ -35,7 +35,7 @@
         <p class="subtitle animate-fade-in-base">将你的故事打造成可游玩的像素风情感叙事冒险游戏。<br/>设计独属于你的角色和剧情,让ai为其赋予生命力,再打磨每一处细节。</p>
       </div>
       <div class="header-right">
-        <router-link to="/profile" class="profile-link">👤 个人中心</router-link>
+        <router-link to="/profile" class="profile-link">个人中心</router-link>
       </div>
     </div>
     
@@ -465,18 +465,41 @@ const triggerAnimations = () => {
   color: white;
   text-decoration: none;
   padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s;
-  border: 2px solid transparent;
-  background-color: #383F59;
+  border-radius: 0 !important;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  background: linear-gradient(145deg, #5a5a5a, #7a7a7a);
+  border: 2px solid #000 !important;
+  transition: all 0.05s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 
+    inset 2px 2px 0 rgba(255, 255, 255, 0.3),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 0 rgba(0, 0, 0, 1);
+  transform: translateY(0);
 }
 
-.profile-link:hover {
-  background-color: #E9A33B;
+.profile-link:hover, .profile-link:active {
+  background: linear-gradient(145deg, #c89050, #e0a860);
+  box-shadow: 
+    inset 2px 2px 0 rgba(255, 255, 255, 0.3),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 0 rgba(0, 0, 0, 1),
+    0 0 12px rgba(223, 166, 80, 0.4);
+  transform: translateY(0);
   color: black;
-  text-decoration: underline;
-  border: 2px solid #E9A33B;
-  box-shadow: 0 0 10px #E9A33B;
+  text-decoration: none;
+}
+
+.profile-link:active {
+  transform: translateY(1px);
+  box-shadow: 
+    inset -2px -2px 0 rgba(255, 255, 255, 0.3),
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    1px 1px 0 0 rgba(0, 0, 0, 1);
 }
 
 .actions-section {
@@ -647,10 +670,13 @@ const triggerAnimations = () => {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 48px;
   margin-top: 64px;
   padding: 32px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .feature-card {
@@ -690,8 +716,8 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover::before {
-  border: 2px solid #DFA650;
-  box-shadow: 0 0 16px rgba(223, 166, 80, 0.6), inset 0 0 12px rgba(223, 166, 80, 0.2);
+  border: 2px solid #F09235;
+  box-shadow: 0 0 16px rgba(240, 146, 53, 0.6), inset 0 0 12px rgba(240, 146, 53, 0.2);
 }
 
 /* 卡片粒子爆炸效果 */
@@ -761,9 +787,9 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover .feature-number {
-  background-color: #DFA650;
+  background-color: #F09235;
   color: black;
-  box-shadow: 0 0 12px rgba(223, 166, 80, 0.6);
+  box-shadow: 0 0 12px rgba(240, 146, 53, 0.6);
 }
 
 .feature-icon {
@@ -959,16 +985,17 @@ const triggerAnimations = () => {
 /* 像素云朵装饰 */
 .decorative-cloud {
   position: fixed !important;
-  width: 64px !important;
-  height: 32px !important;
+  width: 80px !important;
+  height: 40px !important;
   opacity: 0.85 !important;
   z-index: 1 !important;
   pointer-events: none !important;
   background: 
-    radial-gradient(circle at 16px 20px, rgba(255,255,255,0.9) 12px, transparent 12px),
-    radial-gradient(circle at 32px 16px, rgba(255,255,255,0.9) 16px, transparent 16px),
-    radial-gradient(circle at 48px 20px, rgba(255,255,255,0.9) 12px, transparent 12px) !important;
+    radial-gradient(circle at 16px 24px, rgba(255,255,255,0.9) 10px, transparent 10px),
+    radial-gradient(circle at 40px 20px, rgba(255,255,255,0.9) 14px, transparent 14px),
+    radial-gradient(circle at 64px 24px, rgba(255,255,255,0.9) 10px, transparent 10px) !important;
   animation: cloud-float 20s linear infinite !important;
+  image-rendering: pixelated !important;
 }
 
 .cloud-1 { top: 100px !important; left: -64px !important; animation-duration: 25s !important; }
