@@ -220,33 +220,47 @@ async function loadGameFromServer(gameId) {
       }
     } else {
       console.log('未在localStorage中找到游戏数据:', `game_${gameId}`);
+      
+      // 检查是否处于开发者模式
+      const isDeveloperMode = localStorage.getItem('developerMode') === 'true';
+      if (isDeveloperMode) {
+        console.log('开发者模式下未找到游戏数据，返回null');
+        return null;
+      }
     }
     
-    // 首先尝试从游戏预览API获取数据（这是专门用于游戏预览的接口）
-    const response = await fetch(`/api/v1/game/preview/${gameId}`)
-    if (!response.ok) {
-      // 如果预览API不可用，尝试从项目API获取数据
-      const projectResponse = await fetch(`/api/v1/projects/${gameId}`)
-      if (!projectResponse.ok) {
-        throw new Error(`HTTP error! status: ${projectResponse.status}`)
-      }
-      const projectResult = await projectResponse.json()
-      if (projectResult.code !== 200) {
-        throw new Error(projectResult.msg || '获取项目数据失败')
+    // 如果不是开发者模式（即普通模式），才尝试网络请求
+    const isDeveloperMode = localStorage.getItem('developerMode') === 'true';
+    if (!isDeveloperMode) {  // 只有在非开发者模式下才发起网络请求
+      // 首先尝试从游戏预览API获取数据（这是专门用于游戏预览的接口）
+      const response = await fetch(`/api/v1/game/preview/${gameId}`)
+      if (!response.ok) {
+        // 如果预览API不可用，尝试从项目API获取数据
+        const projectResponse = await fetch(`/api/v1/projects/${gameId}`)
+        if (!projectResponse.ok) {
+          throw new Error(`HTTP error! status: ${projectResponse.status}`)
+        }
+        const projectResult = await projectResponse.json()
+        if (projectResult.code !== 200) {
+          throw new Error(projectResult.msg || '获取项目数据失败')
+        }
+        
+        // 提取项目数据并转换为游戏格式
+        const projectData = projectResult.data.project
+        return transformProjectToGameData(projectData)
       }
       
-      // 提取项目数据并转换为游戏格式
-      const projectData = projectResult.data.project
-      return transformProjectToGameData(projectData)
+      const result = await response.json()
+      if (result.code !== 200) {
+        throw new Error(result.msg || '获取游戏数据失败')
+      }
+      
+      // 直接返回游戏数据
+      return result.data
+    } else {
+      console.log('开发者模式下不发起网络请求');
+      return null;
     }
-    
-    const result = await response.json()
-    if (result.code !== 200) {
-      throw new Error(result.msg || '获取游戏数据失败')
-    }
-    
-    // 直接返回游戏数据
-    return result.data
   } catch (error) {
     console.error('Error fetching game data:', error)
     return null
