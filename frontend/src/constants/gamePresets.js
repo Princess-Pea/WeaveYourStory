@@ -4,6 +4,8 @@
  * 用于可视化编辑和项目预览
  */
 
+import { injectAssets } from './assetConfig'
+
 export const GAME_PRESETS = [
   {
     id: 'preset_1',
@@ -681,18 +683,29 @@ export const GAME_PRESETS = [
 ];
 
 /**
- * 根据模板ID获取预设游戏数据
+ * 根据模板ID获取预设游戏数据壶注入素材
  */
 export const getPresetByTemplateId = (templateId) => {
-  return GAME_PRESETS.find(preset => preset.templateId === templateId);
+  const preset = GAME_PRESETS.find(preset => preset.templateId === templateId);
+  if (preset) {
+    return {
+      ...preset,
+      gameData: injectAssets(preset.gameData)
+    };
+  }
+  return null;
 };
 
 /**
- * 获取随机预设
+ * 获取随机预设注入素材
  */
 export const getRandomPreset = () => {
   const randomIndex = Math.floor(Math.random() * GAME_PRESETS.length);
-  return GAME_PRESETS[randomIndex];
+  const preset = GAME_PRESETS[randomIndex];
+  return {
+    ...preset,
+    gameData: injectAssets(preset.gameData)
+  };
 };
 
 /**
