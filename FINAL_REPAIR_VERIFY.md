@@ -29,10 +29,18 @@
 - **解决方案**：启动 `backend/app.py` 服务，该服务包含了CORS配置和API端点
 - **验证**：现在前端可以成功调用后端API进行保存操作
 
+### 问题6：API端点URL不匹配（新增）
+- **状态**：✅ 已修复
+- **问题**：前端调用的API端点URL与后端提供的端点不匹配
+- **根本原因**：前端调用 `/api/v1/projects/`（带斜杠），后端提供 `/api/v1/projects`（不带斜杠）
+- **修复**：修改 `frontend/src/api/projects.js` 中的 `saveProject` 和 `getProjectList` 函数，移除末尾斜杠
+- **验证**：现在前端可以正确调用后端API
+
 ## 测试结果
-所有五个问题均已修复或确认正常工作。系统现在可以正常运行，不会出现之前提到的任何错误。
+所有六个问题均已修复或确认正常工作。系统现在可以正常运行，不会出现之前提到的任何错误。
 
 ## 影响的文件
 - `frontend/src/views/ManuscriptInput.vue`
 - `frontend/src/views/VisualEditor.vue`
+- `frontend/src/api/projects.js`
 - `backend/app.py` (需要运行)
