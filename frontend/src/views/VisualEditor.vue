@@ -439,27 +439,43 @@
         <el-aside width="350px" class="preview-area">
           <h3>🎮 像素风预览</h3>
           <div class="pixel-preview-container">
+            <!-- 显示场景背景 -->
             <div 
               v-if="currentScene" 
               class="pixel-scene"
-              :style="{ backgroundColor: getSceneColor(currentScene.name) }"
+              :style="{ backgroundImage: `url(${currentScene.backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }"
             >
               <h4>{{ currentScene.name }}</h4>
-              <p>{{ currentScene.backgroundDescription }}</p>
-              
+                            
               <!-- 显示互动元素 -->
               <div 
                 v-for="(element, index) in currentScene.interactiveElements" 
                 :key="index"
                 class="pixel-element"
-                :style="{ left: element.position[0] + 'px', top: element.position[1] + 'px' }"
+                :style="{ left: (element.position[0] * 0.2) + 'px', top: (element.position[1] * 0.2) + 'px', position: 'absolute' }"
               >
-                <div class="element-icon">{{ getElementIcon(element.type) }}</div>
+                <img 
+                  v-if="element.sprite || element.characterSprite" 
+                  :src="element.sprite || element.characterSprite" 
+                  :alt="element.name"
+                  class="element-sprite"
+                  :style="{ width: '32px', height: '32px' }"
+                />
+                <div v-else class="element-icon">{{ getElementIcon(element.type) }}</div>
                 <div class="element-label">{{ element.name }}</div>
               </div>
-              
-              <!-- 简单的角色表示 -->
-              <div class="pixel-character" style="left: 100px; top: 100px;">😊</div>
+                            
+              <!-- 显示玩家角色 -->
+              <div class="pixel-player" :style="{ left: '100px', top: '100px', position: 'absolute' }">
+                <img 
+                  v-if="gameData.playerSprite" 
+                  :src="gameData.playerSprite" 
+                  alt="Player"
+                  class="player-sprite"
+                  :style="{ width: '32px', height: '32px' }"
+                />
+                <div v-else>😊</div>
+              </div>
             </div>
             
             <div v-else class="no-scene-selected">
