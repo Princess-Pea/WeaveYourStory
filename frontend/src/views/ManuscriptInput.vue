@@ -286,6 +286,13 @@
           📋 默认模板填充
         </el-button>
         <el-button 
+          :type="developerMode ? 'warning' : 'info'" 
+          @click="toggleDeveloperMode"
+          :icon="developerMode ? 'TurnOff' : 'Setting'"
+        >
+          {{ developerMode ? '开发者模式: ON' : '开发者模式: OFF' }}
+        </el-button>
+        <el-button 
           type="warning" 
           @click="handleSaveDraft"
         >
@@ -302,7 +309,7 @@
           @click="submitToAI"
           :loading="submitting"
         >
-          🤖 提交AI生成
+          🤖 {{ developerMode ? '加载预设数据' : '提交AI生成' }}
         </el-button>
       </div>
     </el-form>
@@ -332,6 +339,27 @@ const form = reactive({
   missions: [],
   characters: []
 })
+
+// 开发者模式状态
+const developerMode = ref(false);
+
+// 初始化时检查开发者模式状态
+onMounted(() => {
+  const savedDeveloperMode = localStorage.getItem('developerMode');
+  developerMode.value = savedDeveloperMode === 'true';
+});
+
+// 切换开发者模式
+const toggleDeveloperMode = () => {
+  developerMode.value = !developerMode.value;
+  localStorage.setItem('developerMode', developerMode.value.toString());
+  
+  if (developerMode.value) {
+    ElMessage.success('已启用开发者模式');
+  } else {
+    ElMessage.info('已禁用开发者模式');
+  }
+};
 
 // 情感基调选项
 const emotionalTones = [
