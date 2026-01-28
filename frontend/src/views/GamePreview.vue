@@ -201,6 +201,18 @@ function calculateCanvasSize() {
 // 从服务器加载游戏数据
 async function loadGameFromServer(gameId) {
   try {
+    // 首先尝试从localStorage获取游戏数据（开发者模式）
+    const localGameData = localStorage.getItem(`game_${gameId}`);
+    if (localGameData) {
+      try {
+        const parsedData = JSON.parse(localGameData);
+        console.log('从localStorage加载游戏数据:', parsedData);
+        return parsedData;
+      } catch (parseError) {
+        console.error('解析本地游戏数据失败:', parseError);
+      }
+    }
+    
     // 首先尝试从游戏预览API获取数据（这是专门用于游戏预览的接口）
     const response = await fetch(`/api/v1/game/preview/${gameId}`)
     if (!response.ok) {
