@@ -79,6 +79,9 @@ import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+// 导入素材配置
+import { getSceneBackground, getCharacterSprite, getInteractiveElement } from '@/constants/assetConfig'
+
 // 引入其他必要的模块
 const router = useRouter()
 const route = useRoute()
@@ -379,6 +382,53 @@ function drawScene() {
 
 // 绘制背景
 function drawBackground(currentScene) {
+  // 如果当前场景有预设的背景图片，优先使用
+  if (currentScene && currentScene.backgroundImage) {
+    const img = new Image();
+    img.src = currentScene.backgroundImage;
+    
+    // 为了防止阻塞渲染，我们直接绘制渐变作为后备
+    drawFallbackBackground(currentScene);
+    
+    // 在图片加载完成后绘制
+    img.onload = () => {
+      // 清除画布
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // 计算缩放比例以适应Canvas
+      const scaleX = canvas.width / img.width;
+      const scaleY = canvas.height / img.height;
+      const scale = Math.min(scaleX, scaleY);
+      
+      // 计算居中位置
+      const x = (canvas.width - img.width * scale) / 2;
+      const y = (canvas.height - img.height * scale) / 2;
+      
+      // 绘制背景图片
+      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+      
+      // 重新绘制场景细节
+      const currentScene = gameData.scenes.find(s => s.id === gameState.currentSceneId);
+      drawPixelDetails(currentScene);
+      drawTerrain(currentScene);
+      if (currentScene) {
+        currentScene.interactiveElements.forEach(element => {
+          drawInteractiveElement(element);
+        });
+      }
+      drawPlayer();
+      if (gameState.showDialogue) {
+        drawDialogue();
+      }
+    };
+  } else {
+    // 如果没有预设图片，使用原有的渐变绘制
+    drawFallbackBackground(currentScene);
+  }
+}
+
+// 备用的渐变背景绘制
+function drawFallbackBackground(currentScene) {
   // 根据场景描述设置不同的像素风格背景
   if (currentScene && currentScene.backgroundDescription) {
     const desc = currentScene.backgroundDescription.toLowerCase()
@@ -428,8 +478,11 @@ function drawBackground(currentScene) {
     gradient.addColorStop(1, '#98fb98') // 柔和绿
     ctx.fillStyle = gradient
   }
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   
+  // 添加像素艺术细节（如云朵、远山等）
+  drawPixelDetails(currentScene);
+}
   // 添加像素艺术细节（如云朵、远山等）
   drawPixelDetails(currentScene)
 }
@@ -514,6 +567,33 @@ function drawInteractiveElement(element) {
 // 绘制像素NPC
 function drawPixelNPC(element) {
   const [x, y] = element.position
+  
+  // 如果元素有预设的精灵图片，优先使用
+  if (element.sprite) {
+    const img = new Image();
+    img.src = element.sprite;
+    
+    img.onload = () => {
+      // 计算缩放比例以适应角色大小
+      const targetSize = 32; // 目标角色大小
+      const scale = targetSize / Math.max(img.width, img.height);
+      
+      // 绘制精灵图片
+      ctx.drawImage(img, x - (img.width * scale) / 2, y - (img.height * scale), 
+                 img.width * scale, img.height * scale);
+    };
+    
+    // 如果图片未加载完成，绘制备用图形
+    drawFallbackNPC(element);
+  } else {
+    // 如果没有预设精灵，使用原有绘制方式
+    drawFallbackNPC(element);
+  }
+}
+
+// 备用的NPC绘制
+function drawFallbackNPC(element) {
+  const [x, y] = element.position
   // 绘制NPC身体（更精美的像素风格）
   // 衣服颜色可以根据元素属性变化
   ctx.fillStyle = element.color || '#FF69B4' // 粉色身体，默认为粉色
@@ -563,6 +643,33 @@ function drawPixelQuestNPC(element) {
 
 // 绘制像素物品
 function drawPixelItem(element) {
+  const [x, y] = element.position
+  
+  // 如果元素有预设的精灵图片，优先使用
+  if (element.sprite) {
+    const img = new Image();
+    img.src = element.sprite;
+    
+    img.onload = () => {
+      // 计算缩放比例以适应物品大小
+      const targetSize = 24; // 目标物品大小
+      const scale = targetSize / Math.max(img.width, img.height);
+      
+      // 绘制精灵图片
+      ctx.drawImage(img, x - (img.width * scale) / 2, y - (img.height * scale), 
+                 img.width * scale, img.height * scale);
+    };
+    
+    // 如果图片未加载完成，绘制备用图形
+    drawFallbackItem(element);
+  } else {
+    // 如果没有预设精灵，使用原有绘制方式
+    drawFallbackItem(element);
+  }
+}
+
+// 备用的物品绘制
+function drawFallbackItem(element) {
   const [x, y] = element.position
   // 绘制宝箱或其他物品（更精美的像素风格）
   // 物品类型决定外观
@@ -721,8 +828,64 @@ function drawSceneLabel(sceneName) {
   ctx.fillText(sceneName, 30, 42)
 }
 
-// 绘制玩家角色
+// 绘制玩家
 function drawPlayer() {
+  if (!gameState) return
+  
+  const { x, y } = gameState.playerPosition
+  
+  // 如果游戏数据中有玩家精灵，优先使用
+  if (gameData.playerSprite) {
+    const img = new Image();
+    img.src = gameData.playerSprite;
+    
+    img.onload = () => {
+      // 计算缩放比例以适应角色大小
+      const targetSize = 32; // 目标角色大小
+      const scale = targetSize / Math.max(img.width, img.height);
+      
+      // 绘制精灵图片
+      ctx.drawImage(img, x - (img.width * scale) / 2, y - (img.height * scale), 
+                 img.width * scale, img.height * scale);
+      
+      // 绘制方向指示
+      drawPlayerDirectionIndicator(x, y);
+    };
+    
+    // 如果图片未加载完成，绘制备用图形
+    drawFallbackPlayer();
+  } else {
+    // 如果没有预设精灵，使用原有绘制方式
+    drawFallbackPlayer();
+  }
+}
+
+// 绘制玩家方向指示
+function drawPlayerDirectionIndicator(x, y) {
+  // 绘制方向指示（像素箭头）
+  ctx.fillStyle = '#FFFF00' // 黄色方向指示
+  switch (gameState.playerDirection) {
+    case 'up':
+      ctx.fillRect(x - 2, y - 30, 4, 6) // 上箭头
+      ctx.fillRect(x - 1, y - 32, 2, 4) // 箭头顶
+      break
+    case 'down':
+      ctx.fillRect(x - 2, y - 5, 4, 6) // 下箭头
+      ctx.fillRect(x - 1, y + 7, 2, 4) // 箭头底
+      break
+    case 'left':
+      ctx.fillRect(x - 15, y - 2, 6, 4) // 左箭头
+      ctx.fillRect(x - 17, y - 1, 4, 2) // 箭头左
+      break
+    case 'right':
+      ctx.fillRect(x + 9, y - 2, 6, 4) // 右箭头
+      ctx.fillRect(x + 13, y - 1, 4, 2) // 箭头右
+      break
+  }
+}
+
+// 备用的玩家绘制
+function drawFallbackPlayer() {
   if (!gameState) return
   
   const { x, y } = gameState.playerPosition

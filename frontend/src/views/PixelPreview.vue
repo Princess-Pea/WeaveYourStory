@@ -1,37 +1,55 @@
 <template>
-  <div class="empty-preview-container">
-    <div class="empty-content">
+  <div class="preview-container">
+    <div class="preview-header">
       <h2>🎮 项目预览</h2>
-      <p>此功能正在开发中，敬请期待...</p>
+      <p>在此预览已生成的游戏内容</p>
+    </div>
+    
+    <div class="preview-content">
+      <!-- 游戏预览组件 -->
+      <div class="game-preview-wrapper">
+        <GamePreview />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-// 此页面为预留的空界面，等待其他成员开发
+import GamePreview from './GamePreview.vue'
 </script>
 
 <style scoped>
-.empty-preview-container {
+.preview-container {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #020817;
+  color: white;
+  overflow: hidden;
+}
+
+.preview-header {
+  padding: 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #E9A33B;
+}
+
+.preview-header h2 {
+  margin: 0 0 10px 0;
+  color: #E9A33B;
+}
+
+.preview-content {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #020817; /* 新的深蓝灰色背景 */
-  color: white;
+  padding: 20px;
 }
 
-.empty-content {
-  text-align: center;
-}
-
-.empty-content h2 {
-  margin-bottom: 20px;
-  color: #E9A33B; /* 高亮色 */
-}
-
-.empty-content p {
-  font-size: 16px;
-  color: #ccc;
+.game-preview-wrapper {
+  width: 100%;
+  height: 100%;
 }
 </style>
