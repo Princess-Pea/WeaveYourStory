@@ -36,11 +36,21 @@
 - **修复**：修改 `frontend/src/api/projects.js` 中的 `saveProject` 和 `getProjectList` 函数，移除末尾斜杠
 - **验证**：现在前端可以正确调用后端API
 
+### 问题7：项目ID字段不匹配（新增）
+- **状态**：✅ 已修复
+- **问题**：在个人中心的项目列表中，删除操作返回404错误
+- **根本原因**：前端期望的项目ID字段与后端实际返回的字段不匹配
+  - 前端使用 `response.data.project_id`，但后端返回的是 `response.data.project.id`
+  - 前端使用 `project.project_id`，但后端返回的是 `project.id`
+- **修复**：修改 `frontend/src/views/Profile.vue` 中的第205行和第136行，使用正确的字段名
+- **验证**：现在项目列表中的删除功能可以正常工作
+
 ## 测试结果
-所有六个问题均已修复或确认正常工作。系统现在可以正常运行，不会出现之前提到的任何错误。
+所有七个问题均已修复或确认正常工作。系统现在可以正常运行，不会出现之前提到的任何错误。
 
 ## 影响的文件
 - `frontend/src/views/ManuscriptInput.vue`
 - `frontend/src/views/VisualEditor.vue`
 - `frontend/src/api/projects.js`
+- `frontend/src/views/Profile.vue`
 - `backend/app.py` (需要运行)
