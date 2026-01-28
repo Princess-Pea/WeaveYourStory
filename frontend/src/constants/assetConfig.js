@@ -347,15 +347,87 @@ export function injectAssets(gameData) {
     enrichedGameData.scenes.forEach(scene => {
       if (scene.interactiveElements && Array.isArray(scene.interactiveElements)) {
         scene.interactiveElements.forEach(element => {
-          // 根据元素名称推断元素ID
-          const elementId = element.name
-            ?.toLowerCase()
-            ?.replace(/[^\w]/g, '_') || 'default';
+          // 根据元素名称匹配预定义的元素类型
+          let elementId = null;
+            
+          // 中文关键词匹配
+          if (element.name.includes('树叶') || element.name.includes('leaf')) {
+            elementId = 'glowing_leaf';
+          } else if (element.name.includes('水晶') || element.name.includes('crystal')) {
+            elementId = 'blue_crystal';
+          } else if (element.name.includes('契约') || element.name.includes('fragment')) {
+            elementId = 'contract_fragment';
+          } else if (element.name.includes('信') || element.name.includes('letter')) {
+            elementId = 'mystery_letter';
+          } else if (element.name.includes('通行') || element.name.includes('pass')) {
+            elementId = 'pass_card';
+          } else if (element.name.includes('证据') || element.name.includes('file')) {
+            elementId = 'evidence_file';
+          } else if (element.name.includes('花瓣') || element.name.includes('petal')) {
+            elementId = 'cherry_petal';
+          } else if (element.name.includes('日记') || element.name.includes('diary')) {
+            elementId = 'youth_diary';
+          } else if (element.name.includes('光') || element.name.includes('light')) {
+            elementId = 'light';
+          } else {
+            // 如果没有匹配到，尝试使用原始逻辑
+            elementId = element.name
+              ?.toLowerCase()
+              ?.replace(/[^\w]/g, '_') || 'default';
+          }
+            
           element.sprite = getInteractiveElement(elementId);
+            
+          // 如果是NPC类型的元素，也可以尝试匹配角色精灵
+          if (element.type === 'npc' && element.name) {
+            // 根据角色名称匹配角色类型
+            let charId = null;
+            if (element.name.includes('月影') || element.name.includes('elf')) {
+              charId = 'char_1';
+            } else if (element.name.includes('火狐') || element.name.includes('fox')) {
+              charId = 'char_2';
+            } else if (element.name.includes('石谷') || element.name.includes('dwarf')) {
+              charId = 'char_3';
+            } else if (element.name.includes('古董') || element.name.includes('raven')) {
+              charId = 'char_4';
+            } else if (element.name.includes('雷克斯') || element.name.includes('reporter')) {
+              charId = 'city_char_1';
+            } else if (element.name.includes('夜莺') || element.name.includes('mysterious')) {
+              charId = 'city_char_2';
+            } else if (element.name.includes('老赵') || element.name.includes('worker')) {
+              charId = 'city_char_3';
+            } else if (element.name.includes('博士') || element.name.includes('doctor')) {
+              charId = 'city_char_4';
+            } else if (element.name.includes('君') || element.name.includes('girl')) {
+              charId = 'school_char_1';
+            } else if (element.name.includes('林岚') || element.name.includes('friend')) {
+              charId = 'school_char_2';
+            } else if (element.name.includes('校长') || element.name.includes('principal')) {
+              charId = 'school_char_3';
+            } else if (element.name.includes('时间守护') || element.name.includes('guardian')) {
+              charId = 'school_char_4';
+            } else {
+              // 默认按索引分配
+              const allCharIds = Object.keys(CHARACTER_ASSETS);
+              if (allCharIds.length > 0) {
+                // 使用字符串哈希算法
+                let hash = 0;
+                for (let i = 0; i < element.name.length; i++) {
+                  const char = element.name.charCodeAt(i);
+                  hash = ((hash << 5) - hash) + char;
+                  hash |= 0; // 转换为32位整数
+                }
+                const index = Math.abs(hash) % allCharIds.length;
+                charId = allCharIds[index];
+              }
+            }
+              
+            element.sprite = getCharacterSprite(charId);
+          }
         });
       }
     });
   }
-
+    
   return enrichedGameData;
 }
