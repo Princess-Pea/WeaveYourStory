@@ -378,7 +378,7 @@ export function injectAssets(gameData) {
             
           element.sprite = getInteractiveElement(elementId);
             
-          // 如果是NPC类型的元素，也可以尝试匹配角色精灵
+          // 如果是NPC类型的元素，额外设置角色精灵
           if (element.type === 'npc' && element.name) {
             // 根据角色名称匹配角色类型
             let charId = null;
@@ -422,7 +422,7 @@ export function injectAssets(gameData) {
               }
             }
               
-            element.sprite = getCharacterSprite(charId);
+            element.characterSprite = getCharacterSprite(charId);
           }
         });
       }
