@@ -596,6 +596,23 @@ function drawPixelNPC(element) {
     
     // 如果图片未加载完成，绘制备用图形
     drawFallbackNPC(element);
+  } else if (element.characterSprite) {
+    // 如果没有sprite但有characterSprite（如NPC），使用characterSprite
+    const img = new Image();
+    img.src = element.characterSprite;
+    
+    img.onload = () => {
+      // 计算缩放比例以适应角色大小
+      const targetSize = 32; // 目标角色大小
+      const scale = targetSize / Math.max(img.width, img.height);
+      
+      // 绘制精灵图片
+      ctx.drawImage(img, x - (img.width * scale) / 2, y - (img.height * scale), 
+                 img.width * scale, img.height * scale);
+    };
+    
+    // 如果图片未加载完成，绘制备用图形
+    drawFallbackNPC(element);
   } else {
     // 如果没有预设精灵，使用原有绘制方式
     drawFallbackNPC(element);
