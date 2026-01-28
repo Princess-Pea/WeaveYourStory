@@ -43,7 +43,7 @@
       <el-button type="primary" size="large" @click="navigateTo('/manuscript-input')" class="create-btn animate-fade-in-base">
         EXPLORE
       </el-button>
-      <p class="button-subtext animate-fade-in-base">start your own game.</p>
+      <p class="button-subtext animate-fade-in-base">Design your own game.</p>
     </div>
 
     <!-- 像素小人动画 -->
@@ -273,25 +273,24 @@ const triggerAnimations = () => {
 /* 网格背景 */
 .grid-background {
   position: absolute;
-  top: 90px;
+  top: 0; /* 从页面最上方开始 */
   left: 0;
   right: 0;
-  bottom: 300px;
+  bottom: 450px; /* 到design your own game字段上方结束 */
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-  background-size: 30px 30px, auto;
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
   opacity: 0.6;
   z-index: 0;
   pointer-events: none;
+  /* 只在指定区域显示，上下边缘柔和过渡 */
   mask-image: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 0) 0%, 
+    rgba(0, 0, 0, 0.5) 5%, 
     rgba(0, 0, 0, 1) 10%, 
-    rgba(0, 0, 0, 0.8) 30%, 
-    rgba(0, 0, 0, 0.5) 50%, 
-    rgba(0, 0, 0, 0.2) 70%, 
-    rgba(0, 0, 0, 0) 90%, 
+    rgba(0, 0, 0, 1) 90%, 
+    rgba(0, 0, 0, 0.5) 95%, 
     rgba(0, 0, 0, 0) 100%);
 }
 
@@ -493,23 +492,41 @@ const triggerAnimations = () => {
   padding: 0;
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
-  background-color: #8a2be2 !important;
-  border: 1px solid black !important;
+  background: linear-gradient(145deg, #7a1ad2, #9a3ce2);
+  border: 2px solid #000 !important;
   color: white !important;
   border-radius: 0 !important;
-  box-shadow: none !important;
-  transition: all 0.1s ease !important;
+  box-shadow: 
+    inset 2px 2px 0 rgba(255, 255, 255, 0.3), /* 内部高光 */
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3), /* 内部阴影 */
+    4px 4px 0 0 rgba(0, 0, 0, 1); /* 主体阴影 */
+  transition: all 0.05s ease !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: visible;
+  cursor: pointer;
+  transform: translateY(0);
 }
 
 .create-btn:hover {
-  transform: translateY(-1px);
-  border-color: #ff8c00 !important;
-  background-color: #8a2be2 !important;
+  transform: translateY(-3px);
+  box-shadow: 
+    inset 4px 4px 0 rgba(255, 255, 255, 0.4),
+    inset -4px -4px 0 rgba(0, 0, 0, 0.2),
+    6px 6px 0 0 rgba(0, 0, 0, 1),
+    0 0 16px rgba(223, 166, 80, 0.4); /* 添加荧光效果 */
+  background: linear-gradient(145deg, #8a2be2, #aa4df2);
+}
+
+.create-btn:active {
+  transform: translateY(2px);
+  box-shadow: 
+    inset -2px -2px 0 rgba(255, 255, 255, 0.3),
+    inset 2px 2px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 0 rgba(0, 0, 0, 1);
+  background: linear-gradient(145deg, #6a0ac2, #8a2bd2);
 }
 
 /* 粒子爆炸效果 */
@@ -673,8 +690,8 @@ const triggerAnimations = () => {
 }
 
 .feature-card:hover::before {
-  border: 1px solid #ff8c00;
-  box-shadow: 0 0 16px rgba(255, 140, 0, 0.3);
+  border: 2px solid #DFA650;
+  box-shadow: 0 0 16px rgba(223, 166, 80, 0.6), inset 0 0 12px rgba(223, 166, 80, 0.2);
 }
 
 /* 卡片粒子爆炸效果 */
@@ -722,7 +739,7 @@ const triggerAnimations = () => {
   position: absolute;
   top: -24px;
   left: -24px;
-  background-color: #ff8c00;
+  background-color: #7a7a7a;
   color: white;
   width: 48px;
   height: 48px;
@@ -732,7 +749,7 @@ const triggerAnimations = () => {
   font-weight: bold;
   font-size: 14px;
   font-family: 'Press Start 2P', cursive;
-  border: 1px solid black;
+  border: 2px solid black;
   z-index: 100;
   clip-path: polygon(
     0 4px, 4px 4px, 4px 0,
@@ -740,6 +757,13 @@ const triggerAnimations = () => {
     100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
     4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
   );
+  transition: all 0.2s;
+}
+
+.feature-card:hover .feature-number {
+  background-color: #DFA650;
+  color: black;
+  box-shadow: 0 0 12px rgba(223, 166, 80, 0.6);
 }
 
 .feature-icon {
