@@ -288,7 +288,6 @@
         <el-button 
           :type="developerMode ? 'warning' : 'info'" 
           @click="toggleDeveloperMode"
-          :icon="developerMode ? 'TurnOff' : 'Setting'"
         >
           {{ developerMode ? '开发者模式: ON' : '开发者模式: OFF' }}
         </el-button>
@@ -317,7 +316,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import request from '../utils/request'
