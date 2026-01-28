@@ -496,6 +496,9 @@ import request from '../utils/request'
 import { saveProject } from '@/api/projects'
 import { useAuth } from '@/stores/auth'
 
+// 导入素材配置
+import { getSceneBackground, getCharacterSprite, getInteractiveElement } from '@/constants/assetConfig'
+
 const route = useRoute()
 const router = useRouter()
 
