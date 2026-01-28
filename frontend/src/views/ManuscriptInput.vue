@@ -280,6 +280,12 @@
       <!-- 操作按钮 -->
       <div class="form-actions">
         <el-button 
+          type="success" 
+          @click="fillWithDefaultTemplate"
+        >
+          📋 默认模板填充
+        </el-button>
+        <el-button 
           type="warning" 
           @click="handleSaveDraft"
         >
@@ -310,6 +316,7 @@ import { useRouter } from 'vue-router'
 import request from '../utils/request'
 import { saveDraft, getDraftDetail, getDraftList } from '@/api/projects'
 import { useAuth } from '@/stores/auth'
+import { getRandomTemplate } from '@/constants/manuscriptTemplates'
 
 const router = useRouter()
 
@@ -427,6 +434,24 @@ const removeCharacter = (index) => {
     return
   }
   form.characters.splice(index, 1)
+}
+
+// 使用默认模板填充表单
+const fillWithDefaultTemplate = () => {
+  const template = getRandomTemplate()
+  const templateData = template.data
+  
+  // 填充所有字段
+  form.storyTitle = templateData.storyTitle
+  form.selectedEmotionOption = templateData.selectedEmotionOption
+  form.emotionalTone = templateData.emotionalTone
+  form.customEmotionalTone = templateData.customEmotionalTone
+  form.storyOutline = templateData.storyOutline
+  form.gameBackground = templateData.gameBackground
+  form.missions = JSON.parse(JSON.stringify(templateData.missions))
+  form.characters = JSON.parse(JSON.stringify(templateData.characters))
+  
+  ElMessage.success(`已填充模板：${template.name} (${template.style})`)
 }
 
 // 暂存原稿
