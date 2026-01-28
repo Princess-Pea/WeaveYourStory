@@ -149,6 +149,20 @@ async function initializeGame() {
       if (!gameData) {
         throw new Error('Failed to load game data')
       }
+      
+      // 游戏数据加载成功后，初始化游戏状态
+      // 初始化游戏状态
+      gameState = {
+        currentSceneId: gameData.scenes && gameData.scenes.length > 0 ? gameData.scenes[0].id : null,
+        playerPosition: { x: 100, y: 100 },
+        playerDirection: 'right',
+        collectedItems: [],
+        completedMissions: [],
+        showDialogue: false,
+        dialogueText: '',
+        isMoving: false
+      };
+      
       startGame()
     } catch (error) {
       console.error('Error loading game:', error)
