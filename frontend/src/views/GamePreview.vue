@@ -372,7 +372,7 @@ function update() {
 
 // 渲染游戏画面
 function render() {
-  if (!ctx) return
+  if (!ctx || !gameState) return
   
   // 清空画布
   ctx.fillStyle = '#87CEEB' // 天蓝色背景
