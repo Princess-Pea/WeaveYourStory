@@ -495,9 +495,8 @@ function drawFallbackBackground(currentScene) {
   // 添加像素艺术细节（如云朵、远山等）
   drawPixelDetails(currentScene);
 }
-  // 添加像素艺术细节（如云朵、远山等）
-  drawPixelDetails(currentScene)
-}
+
+// 绘制像素细节
 
 // 绘制像素细节
 function drawPixelDetails(currentScene) {
