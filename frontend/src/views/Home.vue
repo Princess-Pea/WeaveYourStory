@@ -449,6 +449,7 @@ const triggerAnimations = () => {
   line-height: 1.6;
   text-align: center;
   font-family: 'Courier New', 'monospace', sans-serif;
+  opacity: 0.8;
 }
 
 .header-right {
@@ -466,8 +467,8 @@ const triggerAnimations = () => {
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 0 !important;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 12px;
+  font-family: 'Courier New', 'monospace', sans-serif;
+  font-size: 14px;
   background: linear-gradient(145deg, #5a5a5a, #7a7a7a);
   border: 2px solid #000 !important;
   transition: all 0.05s ease !important;
@@ -985,17 +986,16 @@ const triggerAnimations = () => {
 /* 像素云朵装饰 */
 .decorative-cloud {
   position: fixed !important;
-  width: 80px !important;
-  height: 40px !important;
+  width: 64px !important;
+  height: 32px !important;
   opacity: 0.85 !important;
   z-index: 1 !important;
   pointer-events: none !important;
   background: 
-    radial-gradient(circle at 16px 24px, rgba(255,255,255,0.9) 10px, transparent 10px),
-    radial-gradient(circle at 40px 20px, rgba(255,255,255,0.9) 14px, transparent 14px),
-    radial-gradient(circle at 64px 24px, rgba(255,255,255,0.9) 10px, transparent 10px) !important;
+    radial-gradient(circle at 16px 20px, rgba(255,255,255,0.9) 12px, transparent 12px),
+    radial-gradient(circle at 32px 16px, rgba(255,255,255,0.9) 16px, transparent 16px),
+    radial-gradient(circle at 48px 20px, rgba(255,255,255,0.9) 12px, transparent 12px) !important;
   animation: cloud-float 20s linear infinite !important;
-  image-rendering: pixelated !important;
 }
 
 .cloud-1 { top: 100px !important; left: -64px !important; animation-duration: 25s !important; }
