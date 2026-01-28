@@ -201,16 +201,25 @@ function calculateCanvasSize() {
 // 从服务器加载游戏数据
 async function loadGameFromServer(gameId) {
   try {
+    console.log('尝试加载游戏数据，gameId:', gameId);
+    
     // 首先尝试从localStorage获取游戏数据（开发者模式）
     const localGameData = localStorage.getItem(`game_${gameId}`);
     if (localGameData) {
       try {
         const parsedData = JSON.parse(localGameData);
-        console.log('从localStorage加载游戏数据:', parsedData);
+        console.log('从localStorage加载游戏数据成功:', parsedData);
+        console.log('场景数量:', parsedData.scenes?.length || 0);
+        console.log('角色数量:', parsedData.characters?.length || 0);
+        console.log('场景背景图片存在:', !!parsedData.scenes?.[0]?.backgroundImage);
+        console.log('角色精灵图片存在:', !!parsedData.characters?.[0]?.sprite);
         return parsedData;
       } catch (parseError) {
         console.error('解析本地游戏数据失败:', parseError);
+        console.error('本地数据内容:', localGameData);
       }
+    } else {
+      console.log('未在localStorage中找到游戏数据:', `game_${gameId}`);
     }
     
     // 首先尝试从游戏预览API获取数据（这是专门用于游戏预览的接口）

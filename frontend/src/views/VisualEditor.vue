@@ -572,19 +572,27 @@ const treeProps = {
 // 初始化数据
 onMounted(async () => {
   const gameId = route.query.gameId || route.query.taskId
+  console.log('VisualEditor - 初始化，gameId:', gameId);
   if (gameId) {
     // 从本地存储获取生成的游戏数据
     const savedData = localStorage.getItem(`game_${gameId}`)
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData)
+        console.log('VisualEditor - 从localStorage加载游戏数据成功:', parsedData);
+        console.log('VisualEditor - 场景数量:', parsedData.scenes?.length || 0);
+        console.log('VisualEditor - 角色数量:', parsedData.characters?.length || 0);
+        console.log('VisualEditor - 场景背景图片存在:', !!parsedData.scenes?.[0]?.backgroundImage);
+        console.log('VisualEditor - 角色精灵图片存在:', !!parsedData.characters?.[0]?.sprite);
         gameData.value = parsedData
         ElMessage.success('游戏数据加载成功！')
       } catch (error) {
         console.error('解析游戏数据失败:', error)
+        console.error('数据内容:', savedData);
         ElMessage.error('加载游戏数据失败')
       }
     } else {
+      console.log('VisualEditor - 未在localStorage中找到游戏数据:', `game_${gameId}`);
       // 尝试从后端API获取项目数据
       try {
         const response = await request.get(`/api/v1/projects/${gameId}`)
