@@ -469,6 +469,9 @@ const fillWithDefaultTemplate = () => {
   const template = getRandomTemplate()
   const templateData = template.data
   
+  // 保存模板ID，以便在提交时使用相同的预设
+  localStorage.setItem('selectedTemplateId', template.id);
+  
   // 填充所有字段
   form.storyTitle = templateData.storyTitle
   form.selectedEmotionOption = templateData.selectedEmotionOption
@@ -745,8 +748,18 @@ const submitToAI = async () => {
     const isDeveloperMode = localStorage.getItem('developerMode') === 'true'
     
     if (isDeveloperMode) {
-      // 获取随机预设游戏数据
-      const preset = getRandomPreset()
+      // 获取保存的模板ID，如果不存在则使用随机预设
+      const selectedTemplateId = localStorage.getItem('selectedTemplateId');
+      let preset;
+      
+      if (selectedTemplateId) {
+        // 尝试根据保存的模板ID获取对应的预设
+        preset = getPresetByTemplateId(selectedTemplateId.replace('template_', 'template')) || getRandomPreset();
+      } else {
+        // 如果没有保存的模板ID，则使用随机预设
+        preset = getRandomPreset();
+      }
+      
       const gameData = preset.gameData
       
       // 将游戏数据保存到localStorage以供可视化编辑器使用

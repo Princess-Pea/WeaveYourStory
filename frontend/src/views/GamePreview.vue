@@ -151,9 +151,12 @@ async function initializeGame() {
       }
       
       // 游戏数据加载成功后，初始化游戏状态
+      // 从 URL 参数获取初始场景ID（如果有）
+      const initialSceneId = route.query.sceneId || (gameData.scenes && gameData.scenes.length > 0 ? gameData.scenes[0].id : null);
+      
       // 初始化游戏状态
       gameState = {
-        currentSceneId: gameData.scenes && gameData.scenes.length > 0 ? gameData.scenes[0].id : null,
+        currentSceneId: initialSceneId,
         playerPosition: { x: 100, y: 100 },
         playerDirection: 'right',
         collectedItems: [],

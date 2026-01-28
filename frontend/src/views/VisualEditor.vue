@@ -1159,8 +1159,15 @@ async function previewGame() {
   await saveChanges();
   // 短暂延时确保保存完成
   await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // 构建预览URL，如果当前选择了场景，则传递场景ID
+  let previewUrl = `/game-preview?gameId=${gameData.value.gameId}`;
+  if (currentScene.value) {
+    previewUrl += `&sceneId=${currentScene.value.id}`;
+  }
+  
   // 然后预览游戏
-  router.push(`/game-preview?gameId=${gameData.value.gameId}`)
+  router.push(previewUrl)
 }
 
 // 返回原稿
