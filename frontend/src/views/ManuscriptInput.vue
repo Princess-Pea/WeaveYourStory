@@ -283,7 +283,7 @@
           type="success" 
           @click="fillWithDefaultTemplate"
         >
-          📋 默认模板填充
+          📋 一键填充
         </el-button>
         <el-button 
           :type="developerMode ? 'warning' : 'info'" 
@@ -464,28 +464,92 @@ const removeCharacter = (index) => {
   form.characters.splice(index, 1)
 }
 
-// 使用默认模板填充表单
-const fillWithDefaultTemplate = () => {
-  const template = getRandomTemplate()
-  const templateData = template.data
-  
-  // 保存模板ID，以便在提交时使用相同的预设
-  localStorage.setItem('selectedTemplateId', template.id);
-  
-  // 填充所有字段
-  form.storyTitle = templateData.storyTitle
-  form.selectedEmotionOption = templateData.selectedEmotionOption
-  form.emotionalTone = templateData.emotionalTone
-  form.customEmotionalTone = templateData.customEmotionalTone
-  form.storyOutline = templateData.storyOutline
-  form.gameBackground = templateData.gameBackground
-  form.missions = JSON.parse(JSON.stringify(templateData.missions))
-  form.characters = JSON.parse(JSON.stringify(templateData.characters))
-  
-  // 启用开发者模式，使得提交AI生成时会返回预设游戏数据
-  localStorage.setItem('developerMode', 'true')
-  
-  ElMessage.success(`已填充模板：${template.name} (${template.style})。点击「提交AI生成」便会加载对应的游戏数据。`)
+// 使用默认模板或AI补全填充表单
+const fillWithDefaultTemplate = async () => {
+  // 检查表单是否完全为空
+  const isFormEmpty = !form.storyTitle.trim() && 
+                    !form.storyOutline.trim() && 
+                    !form.gameBackground.trim() && 
+                    form.missions.length === 0 && 
+                    form.characters.length === 0 &&
+                    !form.selectedEmotionOption;
+
+  if (isFormEmpty) {
+    // 逻辑 2.1: 如果表单完全为空，则像原来一样填充预设
+    const template = getRandomTemplate()
+    const templateData = template.data
+    
+    // 保存模板ID，以便在提交时使用相同的预设
+    localStorage.setItem('selectedTemplateId', template.id);
+    
+    // 填充所有字段
+    form.storyTitle = templateData.storyTitle
+    form.selectedEmotionOption = templateData.selectedEmotionOption
+    form.emotionalTone = templateData.emotionalTone
+    form.customEmotionalTone = templateData.customEmotionalTone
+    form.storyOutline = templateData.storyOutline
+    form.gameBackground = templateData.gameBackground
+    form.missions = JSON.parse(JSON.stringify(templateData.missions))
+    form.characters = JSON.parse(JSON.stringify(templateData.characters))
+    
+    // 启用开发者模式，使得提交AI生成时会返回预设游戏数据
+    localStorage.setItem('developerMode', 'true')
+    
+    ElMessage.success(`已填充预设模板：${template.name}。`)
+    return;
+  }
+
+  // 逻辑 2.2: 如果表单不完全为空，而“剧情名称”“故事大纲”有任一栏为空，则提示
+  if (!form.storyTitle.trim() || !form.storyOutline.trim()) {
+    ElMessage.warning('请至少输入剧情名称和故事大纲，以便 AI 为您补全其他部分');
+    return;
+  }
+
+  // 逻辑 2.3: 如果表单不完全为空，且“剧情名称”“故事大纲”均不为空，则调用 AI 补全
+  const loading = ElMessage({
+    message: '🚀 AI 正在为您补全原稿内容...',
+    type: 'info',
+    duration: 0
+  });
+
+  try {
+    const response = await request.post('/api/v1/ai/assist/manuscript', {
+      content: JSON.stringify(form),
+      context: {},
+      params: { emotion: getFinalEmotionalTone() }
+    });
+
+    if (response.code === 200) {
+      const aiResult = JSON.parse(response.data.result);
+      
+      // 更新表单，保留用户已填写的部分（如果AI返回了空字段则不覆盖）
+      if (aiResult.selectedEmotionOption) form.selectedEmotionOption = aiResult.selectedEmotionOption;
+      if (aiResult.emotionalTone) form.emotionalTone = aiResult.emotionalTone;
+      if (aiResult.customEmotionalTone) form.customEmotionalTone = aiResult.customEmotionalTone;
+      if (aiResult.gameBackground) form.gameBackground = aiResult.gameBackground;
+      
+      if (aiResult.missions && aiResult.missions.length > 0) {
+        form.missions = aiResult.missions;
+      }
+      
+      if (aiResult.characters && aiResult.characters.length > 0) {
+        form.characters = aiResult.characters;
+      }
+      
+      // 禁用开发者模式（因为这是AI生成的）
+      localStorage.setItem('developerMode', 'false');
+      developerMode.value = false;
+      
+      loading.close();
+      ElMessage.success('✨ AI 已成功为您补全原稿内容！');
+    } else {
+      throw new Error(response.msg || 'AI 补全失败');
+    }
+  } catch (error) {
+    loading.close();
+    console.error('AI 补全失败:', error);
+    ElMessage.error(`AI 补全失败: ${error.message || '请检查后端服务是否启动'}`);
+  }
 }
 
 // 暂存原稿
