@@ -283,7 +283,7 @@
           type="success" 
           @click="fillWithDefaultTemplate"
         >
-          📋 默认模板填充
+          📋 一键填充
         </el-button>
         <el-button 
           :type="developerMode ? 'warning' : 'info'" 
