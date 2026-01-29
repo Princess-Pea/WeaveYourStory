@@ -12,7 +12,7 @@ from utils.ai_adapter import ai_adapter
 from config.settings import Config
 from api.auth import auth_bp
 from api.projects import projects_bp
-from middleware.auth_middleware import init_auth_middleware
+from middleware.auth_middleware import init_auth_middleware, token_required
 
 app = Flask(__name__)
 CORS(app) # 允许跨域请求
@@ -37,22 +37,6 @@ projects = [
     {"id": "1", "title": "我的第一个冒险", "status": "published", "updated_at": "2026-01-20"},
     {"id": "2", "title": "森林物语", "status": "editing", "updated_at": "2026-01-22"}
 ]
-
-# --- 鉴权中间件 ---
-def token_required(f):
-    def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')
-        if not token:
-            return jsonify({'message': 'Token is missing!'}), 401
-        try:
-            # 去掉 Bearer 前缀
-            token = token.split(" ")[1] if " " in token else token
-            jwt.decode(token, Config.JWT_SECRET, algorithms=["HS256"])
-        except:
-            return jsonify({'message': 'Token is invalid!'}), 401
-        return f(*args, **kwargs)
-    decorated.__name__ = f.__name__
-    return decorated
 
 # --- 核心接口：AIGC 规范化接口 ---
 @app.route('/api/v1/ai/game/submit', methods=['POST'])
