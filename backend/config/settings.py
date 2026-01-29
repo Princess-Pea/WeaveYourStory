@@ -26,10 +26,14 @@ class Config:
     SERVER_PORT = int(os.environ.get('SERVER_PORT', 8888))
     
     # =============== AI服务配置 ===============
-    # AI适配器类型: openai / wenxin / qianwen
-    AI_ADAPTER_TYPE = os.environ.get('AI_ADAPTER_TYPE', 'openai')
+    # AI适配器类型: openai / wenxin / qianwen / modelscope
+    AI_ADAPTER_TYPE = os.environ.get('AI_ADAPTER_TYPE', 'modelscope')
     AI_REQUEST_TIMEOUT = int(os.environ.get('AI_REQUEST_TIMEOUT', 60))
     AI_MAX_RETRIES = int(os.environ.get('AI_MAX_RETRIES', 3))
+    
+    # 魔搭社区配置（DashScope API）
+    MODELSCOPE_KEY = os.environ.get('MODELSCOPE_KEY', '')
+    MODELSCOPE_MODEL = os.environ.get('MODELSCOPE_MODEL', 'qwen-turbo')
     
     # OpenAI配置
     OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')

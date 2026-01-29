@@ -56,11 +56,11 @@ class AIConfig:
     QIANWEN_MODEL = os.environ.get("QIANWEN_MODEL", "qwen-turbo")
     
     # 魔搭社区配置（使用DashScope API）
-    MODELSCOPE_API_KEY = os.environ.get("MODELSCOPE_API_KEY", "")
+    MODELSCOPE_KEY = os.environ.get("MODELSCOPE_KEY", "")
     MODELSCOPE_MODEL = os.environ.get("MODELSCOPE_MODEL", "qwen-turbo")
     
     # 通用配置
-    AI_ADAPTER_TYPE = os.environ.get("AI_ADAPTER_TYPE", "openai")
+    AI_ADAPTER_TYPE = os.environ.get("AI_ADAPTER_TYPE", "modelscope")
     AI_REQUEST_TIMEOUT = int(os.environ.get("AI_REQUEST_TIMEOUT", 60))
     AI_MAX_RETRIES = int(os.environ.get("AI_MAX_RETRIES", 3))
 
@@ -110,6 +110,17 @@ class BaseAIAdapter(ABC):
         :param context: 上下文信息
         :param params: 生成参数
         :return: 生成的任务内容
+        """
+        pass
+    
+    @abstractmethod
+    def assist_with_manuscript(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """
+        AI辅助补全原稿表单
+        :param content: 现有表单内容（JSON字符串）
+        :param context: 上下文信息
+        :param params: 生成参数
+        :return: 补全后的完整表单内容（JSON字符串）
         """
         pass
 
@@ -408,6 +419,90 @@ class OpenAIAIAdapter(BaseAIAdapter):
         except Exception as e:
             print(f"任务生成失败: {e}，使用模拟数据...")
             return self._generate_mock_task(content, context, params)
+
+    def assist_with_manuscript(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """AI辅助补全原稿表单"""
+        if not self.api_key:
+            return self._generate_mock_manuscript(content, context, params)
+        
+        try:
+            prompt = self._build_manuscript_prompt(content, context, params)
+            return self._call_openai_api(prompt)
+        except Exception as e:
+            print(f"原稿补全失败: {e}，使用模拟数据...")
+            return self._generate_mock_manuscript(content, context, params)
+
+    def _build_manuscript_prompt(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """构建原稿表单补全提示词"""
+        try:
+            form_data = json.loads(content)
+        except:
+            form_data = {}
+            
+        story_title = form_data.get("storyTitle", "")
+        story_outline = form_data.get("storyOutline", "")
+        
+        return f"""你是一个专业的像素风格游戏策划和剧本作家。
+请根据用户提供的部分原稿内容（主要是剧情名称和故事大纲），补全剩余的游戏原稿表单。
+
+## 已有内容
+- 剧情名称: {story_title}
+- 故事大纲: {story_outline}
+- 其他已填内容: {json.dumps(form_data, ensure_ascii=False, indent=2)}
+
+## 补全要求
+1. **情感基调**: 根据大纲选择合适的情感基调（如：温暖、治愈、神秘、紧张、感伤）。
+2. **游戏背景**: 详细描述一个符合大纲的像素风游戏世界背景。
+3. **角色设计**: 设计3-4个富有魅力的角色，包括他们的外观（像素风）、性格和对话风格。
+4. **任务设计**: 设计3-4个推动剧情的任务，包括触发条件、完成条件和剧情推进。
+5. **逻辑连贯**: 补全的内容必须与原有的剧情名称和故事大纲严格保持一致且逻辑自洽。
+
+## 输出格式
+请直接返回JSON格式的数据，字段必须与输入的JSON格式完全一致：
+{{
+  "storyTitle": "...",
+  "selectedEmotionOption": "...",
+  "emotionalTone": "...",
+  "customEmotionalTone": "...",
+  "storyOutline": "...",
+  "gameBackground": "...",
+  "missions": [
+    {{ "name": "...", "triggerCondition": "...", "completionCondition": "...", "storyProgression": "..." }}
+  ],
+  "characters": [
+    {{ "name": "...", "appearance": "...", "personality": "...", "speechStyle": "...", "relationships": "..." }}
+  ]
+}}
+
+只返回JSON对象，不要包含任何多余文字或Markdown格式。"""
+
+    def _generate_mock_manuscript(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """生成模拟的原稿补全内容"""
+        try:
+            form_data = json.loads(content)
+        except:
+            form_data = {}
+            
+        story_title = form_data.get("storyTitle", "未命名剧情")
+        story_outline = form_data.get("storyOutline", "暂无大纲")
+        
+        mock_data = {
+            "storyTitle": story_title,
+            "selectedEmotionOption": "warm",
+            "emotionalTone": "温暖",
+            "customEmotionalTone": "",
+            "storyOutline": story_outline,
+            "gameBackground": f"这是一个基于《{story_title}》的像素风世界，充满了怀旧与冒险的气息。",
+            "missions": [
+                { "name": "初步探索", "triggerCondition": "进入游戏", "completionCondition": "与第一个NPC对话", "storyProgression": "了解了世界的基本情况" },
+                { "name": "寻找线索", "triggerCondition": "完成任务1", "completionCondition": "找到神秘物品", "storyProgression": "发现了隐藏的真相" }
+            ],
+            "characters": [
+                { "name": "主角", "appearance": "身穿蓝衣的像素冒险者", "personality": "热血勇敢", "speechStyle": "直接坦诚", "relationships": "自己" },
+                { "name": "老村长", "appearance": "白胡子的矮小像素老者", "personality": "睿智和蔼", "speechStyle": "语重心长", "relationships": "指引者" }
+            ]
+        }
+        return json.dumps(mock_data, ensure_ascii=False)
     
     def _generate_mock_prototype(self, manuscript_data: Dict[str, Any], params: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -1001,6 +1096,21 @@ class ModelScopeAIAdapter(BaseAIAdapter):
             print(f"任务生成失败: {e}，使用模拟数据...")
             adapter = OpenAIAIAdapter()
             return adapter._generate_mock_task(content, context, params)
+
+    def assist_with_manuscript(self, content: str, context: Dict[str, Any], params: Dict[str, Any]) -> str:
+        """AI辅助补全原稿表单"""
+        if not self.api_key:
+            adapter = OpenAIAIAdapter()
+            return adapter._generate_mock_manuscript(content, context, params)
+        
+        try:
+            adapter = OpenAIAIAdapter()
+            prompt = adapter._build_manuscript_prompt(content, context, params)
+            return self._call_modelscope_api(prompt)
+        except Exception as e:
+            print(f"原稿补全失败: {e}，使用模拟数据...")
+            adapter = OpenAIAIAdapter()
+            return adapter._generate_mock_manuscript(content, context, params)
 
 
 class AIAdapterFactory:

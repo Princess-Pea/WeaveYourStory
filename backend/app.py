@@ -259,6 +259,44 @@ def ai_assist_task():
             }
         }), 500
 
+@app.route('/api/v1/ai/assist/manuscript', methods=['POST'])
+@token_required
+def ai_assist_manuscript():
+    """
+    AI辅助补全原稿表单
+    请求体规范：{content: str, context: dict, params: dict}
+    响应体规范：{code:200, msg:"success", requestId:"xxx", cost:0.5, data: {result: "补全后的JSON内容"}}
+    """
+    start_time = time.time()
+    data = request.json
+    content = data.get('content', '')
+    context = data.get('context', {})
+    params = data.get('params', {})
+    
+    try:
+        result = ai_adapter.assist_with_manuscript(content, context, params)
+        
+        response_data = {
+            "code": 200,
+            "msg": "success",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": result
+            }
+        }
+        return jsonify(response_data)
+    except Exception as e:
+        return jsonify({
+            "code": 500,
+            "msg": f"AI辅助补全原稿失败: {str(e)}",
+            "requestId": generate_id(),
+            "cost": round(time.time() - start_time, 2),
+            "data": {
+                "result": ""
+            }
+        }), 500
+
 @app.route('/api/v1/game/save', methods=['POST'])
 @token_required
 def save_game():
