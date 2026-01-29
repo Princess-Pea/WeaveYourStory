@@ -1,0 +1,66 @@
+{
+  "draft_id": "draft_a8fd7d26514e43d1",
+  "user_id": "guest",
+  "title": "光阴的故事",
+  "manuscript": {
+    "storyTitle": "光阴的故事",
+    "emotionalTone": "romantic",
+    "storyOutline": "故事发生在一所魔法学院的校园中。主角在整理学校的旧相册时，发现了一张神秘的照片——一个穿着校服的女孩站在校园的某个角落。通过探索校园的各个场景，主角逐渐回忆起与她的点滴故事。每个场景都对应一段回忆，通过完成一系列温暖而浪漫的任务，最终两人的故事在校园的最高塔前达到高潮。游戏充满光影和音乐的交织，每个选择都影响着故事的浪漫程度。",
+    "gameBackground": "魔法学院校园，采用温暖清新的像素风。包括教堂般的宏伟校舍、开满鲜花的庭院、充满书籍的图书馆、漫天星辰的天台、樱花飘落的小径。整个画面色调柔和，充满光影的诗意。",
+    "missions": [
+      {
+        "name": "寻找回忆的碎片",
+        "triggerCondition": "发现神秘的旧照片",
+        "completionCondition": "在校园各地收集与女孩相关的物品",
+        "storyProgression": "开始回忆一段尘封的青春"
+      },
+      {
+        "name": "重游校园的每个角落",
+        "triggerCondition": "掌握足够的回忆碎片",
+        "completionCondition": "访问学院的五个标志性地点，触发回忆场景",
+        "storyProgression": "每个地点都带来一段美好而酸涩的回忆"
+      },
+      {
+        "name": "勇气的决定",
+        "triggerCondition": "所有回忆都已解锁",
+        "completionCondition": "选择是否去天台与女孩相见",
+        "storyProgression": "人生的转折点到来"
+      },
+      {
+        "name": "光阴见证",
+        "triggerCondition": "做出最终选择",
+        "completionCondition": "在校园最高塔前经历故事的结局",
+        "storyProgression": "一个属于两个人的永恒时刻"
+      }
+    ],
+    "characters": [
+      {
+        "name": "君",
+        "personality": "温柔、细心、略显内向但充满温暖",
+        "appearance": "穿着魔法学院校服的女孩，长发披肩，眼睛闪闪发光",
+        "speechStyle": "柔和而温暖，说话时经常微笑，充满女性的温柔"
+      },
+      {
+        "name": "林岚",
+        "personality": "友善、活泼、充满正义感，是主角最好的朋友",
+        "appearance": "短发女孩，穿着运动版校服，脸上始终带着笑容",
+        "speechStyle": "明快爽朗，经常鼓励主角，充满青春气息"
+      },
+      {
+        "name": "校长",
+        "personality": "智慧、温暖、对学生充满期许",
+        "appearance": "年长的女性，穿着优雅的黑袍，眼睛充满智慧的光芒",
+        "speechStyle": "有教养而富有哲理，如同长辈的教诲"
+      },
+      {
+        "name": "时间守护者",
+        "personality": "神秘、古老、掌控时间的魔法生物",
+        "appearance": "半透明的幽灵状生物，身上闪闪发光的粒子不断流动",
+        "speechStyle": "古老而低沉，说话充满超越时间的智慧"
+      }
+    ]
+  },
+  "status": "draft",
+  "created_at": "2026-01-28T17:25:20.827172",
+  "updated_at": "2026-01-28T17:25:20.827182"
+}

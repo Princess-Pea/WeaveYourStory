@@ -1,0 +1,31 @@
+{
+  "draft_id": "draft_88ff253fd72846d8",
+  "user_id": "e027dff7-9f11-4753-a0bf-74d76d0114c5",
+  "title": "睡觉",
+  "manuscript": {
+    "storyTitle": "睡觉",
+    "emotionalTone": "joyful",
+    "storyOutline": "我要睡觉，但怎么也睡不着",
+    "gameBackground": "温暖的卧室，舒适的床",
+    "missions": [
+      {
+        "name": "睡觉",
+        "triggerCondition": "睡着",
+        "completionCondition": "找到困意",
+        "storyProgression": "找到枕头"
+      }
+    ],
+    "characters": [
+      {
+        "name": "我",
+        "personality": "活泼开朗",
+        "appearance": "长发女孩",
+        "speechStyle": "现代",
+        "relationships": "无"
+      }
+    ]
+  },
+  "status": "draft",
+  "created_at": "2026-01-25T17:25:42.203092",
+  "updated_at": "2026-01-25T17:25:42.203106"
+}

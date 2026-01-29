@@ -1,0 +1,22 @@
+{
+  "project_id": "proj_401c0afefe7a4a6d",
+  "user_id": "d13313a9-ee33-427f-9d00-0a8b054686c8",
+  "title": "???????",
+  "game_data": {
+    "scenes": [
+      {
+        "id": "scene1",
+        "name": "????"
+      }
+    ],
+    "characters": [
+      {
+        "id": "char1",
+        "name": "??"
+      }
+    ]
+  },
+  "status": "draft",
+  "created_at": "2026-01-24T11:31:29.876558",
+  "updated_at": "2026-01-24T11:31:29.876568"
+}
